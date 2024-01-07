@@ -7,14 +7,37 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
-public class RobotContainer {
-  public RobotContainer() {
+/**
+ * @brief The object that declares button bindings and chooses autonomous commands.
+ */
+public class RobotContainer 
+{
+  private RoboLogger m_RoboLogger;
+
+  /**
+   * @brief Creates a RobotContainer.
+   * @param logger A RoboLogger object.
+   */
+  public RobotContainer(RoboLogger logger) 
+  {
+    m_RoboLogger = logger;
     configureBindings();
   }
 
-  private void configureBindings() {}
+  /**
+   * @brief Configures the controller bindings.
+   */
+  private void configureBindings()
+  {
+    // Intentionally Empty
+  }
 
-  public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+  /**
+   * @brief Chooses an autonomous commands.
+   * @return The chosen autonomous command.
+   */
+  public Command getAutonomousCommand() 
+  {
+    return Commands.print("No autonomous command configured.");
   }
 }
