@@ -17,9 +17,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    Drivetrain drivetrain = TunerConstants.DriveTrain;
     m_robotContainer = new RobotContainer();
-    drivetrain.runOnce(() -> drivetrain.seedFieldRelative());
   }
 
   @Override
@@ -38,6 +36,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    Drivetrain drivetrain = TunerConstants.DriveTrain;
+    drivetrain.runOnce(() -> drivetrain.seedFieldRelative());
+
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
