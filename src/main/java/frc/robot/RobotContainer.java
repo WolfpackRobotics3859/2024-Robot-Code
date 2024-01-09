@@ -9,33 +9,36 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.drivetrain.TunerConstants;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.commands.drivetrain.drive;
-import frc.robot.commands.drivetrain.fieldRelative;
+import frc.robot.commands.drivetrain.Drive;
+import frc.robot.commands.drivetrain.SeedFieldRelative;
 
-public class RobotContainer {
-
-  private static final Drivetrain DriveTrain = new Drivetrain(TunerConstants.DrivetrainConstants, TunerConstants.FrontLeft,
-                      TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight);
+public class RobotContainer 
+{
+  private static final Drivetrain m_Drivetrain = new Drivetrain(TunerConstants.DRIVETRAIN_CONSTANTS, TunerConstants.FRONT_LEFT,
+                      TunerConstants.FRONT_RIGHT, TunerConstants.BACK_LEFT, TunerConstants.BACK_RIGHT);
 
   private final CommandXboxController primaryController = new CommandXboxController(0);
-  public static final Drivetrain drivetrain = DriveTrain;
+  public static final Drivetrain drivetrain = m_Drivetrain;
   
-  private void configureBindings() {
+  private void configureBindings() 
+  {
     drivetrain.setDefaultCommand(
-      new drive(() -> -primaryController.getLeftY(),
+      new Drive(drivetrain,
+                () -> -primaryController.getLeftY(),
                 () -> -primaryController.getLeftX(),
                 () -> -primaryController.getRightX()
       ));
 
-    primaryController.a().onTrue(new fieldRelative());
+    primaryController.a().onTrue(new SeedFieldRelative(drivetrain));
   }
 
-  public RobotContainer() {
+  public RobotContainer() 
+  {
     configureBindings();
   }
 
-
-  public Command getAutonomousCommand() {
+  public Command getAutonomousCommand() 
+  {
     return Commands.print("No autonomous command configured");
   }
 }
