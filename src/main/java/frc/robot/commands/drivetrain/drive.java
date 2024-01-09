@@ -19,7 +19,12 @@ public class drive extends Command
   private Supplier<Double> SPEED_X_SUPPLIER, SPEED_Y_SUPPLIER, ROTATIONAL_SPEED_SUPPLIER;
   private Drivetrain drivetrain = RobotContainer.drivetrain;
   
-  
+  /**
+   * @brief Sends a field centric request to the swerve drivetrain with given X speed, Y speed, and rotational speed
+   * @param SPEED_X_SUPPLIER The speed in the X direction
+   * @param SPEED_Y_SUPPLIER The speed in the Y direction
+   * @param ROTATIONAL_SPEED_SUPPLIER The rotational speed
+   */
   public drive(Supplier<Double> SPEED_X_SUPPLIER, Supplier<Double> SPEED_Y_SUPPLIER, Supplier<Double> ROTATIONAL_SPEED_SUPPLIER) {
     this.SPEED_X_SUPPLIER = SPEED_X_SUPPLIER;
     this.SPEED_Y_SUPPLIER = SPEED_Y_SUPPLIER;

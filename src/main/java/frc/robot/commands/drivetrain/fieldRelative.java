@@ -15,6 +15,9 @@ public class fieldRelative extends InstantCommand
 {
   private Drivetrain drivetrain = RobotContainer.drivetrain;
   
+  /**
+   * Takes the current orientation of the robot and makes it X forward
+   */
   public fieldRelative() {
     addRequirements(drivetrain);
   }
