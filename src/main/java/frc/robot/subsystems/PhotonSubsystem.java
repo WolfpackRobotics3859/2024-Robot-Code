@@ -11,6 +11,7 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -24,60 +25,39 @@ import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class PhotonSubsystem extends SubsystemBase {
   private PhotonPoseEstimator m_poseEstimator;
   private PhotonCamera m_photonCamera;
+  //TODO move to constants
   private Transform3d robotToCam;
-  private StructPublisher<Pose3d> publisher;
-  private StructArrayPublisher<Pose3d> arrayPublisher;
+  private Pose3d currentPose;
+  
 
   /** Creates a new PhotonSubsystem. */
   public PhotonSubsystem() {
-    publisher = NetworkTableInstance.getDefault().getStructTopic("piss/MyPose", Pose3d.struct).publish();
-    arrayPublisher = NetworkTableInstance.getDefault().getStructArrayTopic("piss/MyPoseArray", Pose3d.struct).publish();
     robotToCam = new Transform3d(new Translation3d(Units.inchesToMeters(8.5), 0.0, Units.inchesToMeters(33.5)), new Rotation3d(0, 15, 0)); //8.5 inches back from center, 33.5 inches up from center, facing forward and a 15 deg up
     m_photonCamera = new PhotonCamera("photonvision");
-    
-    
-    //TODO get camera translation
-    try {
-      m_poseEstimator = new PhotonPoseEstimator(AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile), PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_photonCamera, robotToCam); //8.5 inches back from center, directly centered, 33in tall
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    
+    //TODO get proper camera translation
+    m_poseEstimator = new PhotonPoseEstimator(Constants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_photonCamera, robotToCam); //8.5 inches back from center, directly centered, 33in tall
   }
 
+  public PhotonPipelineResult getLastestResult() 
+  {
+    return m_photonCamera.getLatestResult();
+  }
+
+  public Optional<EstimatedRobotPose> getEstimatedRobotPose() 
+  {
+    return m_poseEstimator.update();
+  }
   @Override
   public void periodic() {
-    Optional<EstimatedRobotPose> estPose = m_poseEstimator.update();
-
-    //mentally ill i know, will soon
-    try {
-      estPose.get();
-    } catch(Exception e) {
-      try {
-        m_poseEstimator = new PhotonPoseEstimator(AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile), PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_photonCamera, robotToCam); //8.5 inches back from center, directly centered, 33in tall
-      } catch(Exception y) {
-        //
-      }
-      }
-    // Throw some debugging data into smartdashboard before I implement poses into drive code with kalman
-    if(m_photonCamera.getLatestResult().hasTargets()) 
-    {
-      SmartDashboard.putNumber("numTargets", m_photonCamera.getLatestResult().targets.size());
-      SmartDashboard.putNumber("confidenceBest", m_photonCamera.getLatestResult().getBestTarget().getPoseAmbiguity());
+    Optional<EstimatedRobotPose> estimatedPose = getEstimatedRobotPose();
+    //If not empty, grab a pose result
+    if(!estimatedPose.isEmpty()) {
+      SmartDashboard.putString("Pose", estimatedPose.get().estimatedPose.toString());
     }
-
-    SmartDashboard.putBoolean("hasTarget", m_photonCamera.getLatestResult().hasTargets());
-    
-    if(!estPose.isEmpty()) 
-    {
-      SmartDashboard.putString("Pose", estPose.get().estimatedPose.toString());
-      publisher.set(estPose.get().estimatedPose);
-      arrayPublisher.set(new Pose3d[] {estPose.get().estimatedPose});
-    }
-    
   }
 }
