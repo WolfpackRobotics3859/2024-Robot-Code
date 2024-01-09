@@ -16,11 +16,11 @@ import frc.robot.constants.drivetrain.DrivetrainConstants;
 public class Drive extends Command
 {
   /*
-   * speedXSupplier - The supplier object for speed in the X direction
-   * speedYSupplier - The supplier object for speed in the Y direction
-   * rotationalSpeedSupplier - The supplier object for rotational speed
+   * m_SpeedXSupplier - The supplier object for speed in the X direction
+   * m_SpeedYSupplier - The supplier object for speed in the Y direction
+   * m_RotationalSpeedSupplier - The supplier object for rotational speed
    */
-  private Supplier<Double> speedXSupplier, speedYSupplier, rotationalSpeedSupplier;
+  private Supplier<Double> m_SpeedXSupplier, m_SpeedYSupplier, m_RotationalSpeedSupplier;
   private Drivetrain m_Drivetrain;
   
   /**
@@ -32,9 +32,9 @@ public class Drive extends Command
    */
   public Drive(Drivetrain drivetrain, Supplier<Double> speedX, Supplier<Double> speedY, Supplier<Double> rotationalSpeed) 
   {
-    this.speedXSupplier = speedX;
-    this.speedYSupplier = speedY;
-    this.rotationalSpeedSupplier = rotationalSpeed;
+    this.m_SpeedXSupplier = speedX;
+    this.m_SpeedYSupplier = speedY;
+    this.m_RotationalSpeedSupplier = rotationalSpeed;
     this.m_Drivetrain = drivetrain;
     addRequirements(drivetrain);
   }
@@ -53,9 +53,9 @@ public class Drive extends Command
     final SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric()
       .withDeadband(DrivetrainConstants.MAX_SPEED * 0.1).withRotationalDeadband(DrivetrainConstants.MAX_ANGULAR_RATE * 0.1)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-      .withVelocityX(speedXSupplier.get() * DrivetrainConstants.MAX_SPEED)
-      .withVelocityY(speedYSupplier.get() * DrivetrainConstants.MAX_SPEED)
-      .withRotationalRate(rotationalSpeedSupplier.get() * DrivetrainConstants.MAX_ANGULAR_RATE);
+      .withVelocityX(m_SpeedXSupplier.get() * DrivetrainConstants.MAX_SPEED)
+      .withVelocityY(m_SpeedYSupplier.get() * DrivetrainConstants.MAX_SPEED)
+      .withRotationalRate(m_RotationalSpeedSupplier.get() * DrivetrainConstants.MAX_ANGULAR_RATE);
 
     m_Drivetrain.setControl(driveRequest);
   }
