@@ -34,7 +34,11 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         super(driveTrainConstants, modules);
     }
 
-  
+  /**
+   * @brief Applies a swerve request to the drivetrain
+   * @param requestSupplier Supplier for the swerve request
+   * @return Applies the given swerve request to the swerve modules
+   */
   public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
     return run(() -> this.setControl(requestSupplier.get()));  
   }
