@@ -5,26 +5,29 @@
 package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class fieldRelative extends InstantCommand 
+public class SeedFieldRelative extends InstantCommand 
 {
-  private Drivetrain drivetrain = RobotContainer.drivetrain;
+  private Drivetrain m_Drivetrain;
   
   /**
-   * Takes the current orientation of the robot and makes it X forward
+   * @brief Takes the current orientation of the robot and makes it X forward
+   * @param drivetrain The swerve drivetrain object
    */
-  public fieldRelative() {
+  public SeedFieldRelative(Drivetrain drivetrain) 
+  {
+    this.m_Drivetrain = drivetrain;
     addRequirements(drivetrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    drivetrain.runOnce(() -> drivetrain.seedFieldRelative());
+  public void initialize() 
+  {
+    m_Drivetrain.runOnce(() -> m_Drivetrain.seedFieldRelative());
   }
 }

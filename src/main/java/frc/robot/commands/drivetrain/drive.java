@@ -10,52 +10,62 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.constants.drivetrain.DrivetrainConstants;
 
-public class drive extends Command
+public class Drive extends Command
 {
-  private Supplier<Double> SPEED_X_SUPPLIER, SPEED_Y_SUPPLIER, ROTATIONAL_SPEED_SUPPLIER;
-  private Drivetrain drivetrain = RobotContainer.drivetrain;
+  /*
+   * speedXSupplier - The supplier object for speed in the X direction
+   * speedYSupplier - The supplier object for speed in the Y direction
+   * rotationalSpeedSupplier - The supplier object for rotational speed
+   */
+  private Supplier<Double> speedXSupplier, speedYSupplier, rotationalSpeedSupplier;
+  private Drivetrain m_Drivetrain;
   
   /**
-   * @brief Sends a field centric request to the swerve drivetrain with given X speed, Y speed, and rotational speed
-   * @param SPEED_X_SUPPLIER The speed in the X direction
-   * @param SPEED_Y_SUPPLIER The speed in the Y direction
-   * @param ROTATIONAL_SPEED_SUPPLIER The rotational speed
+   * @brief Sends a field centric request to the given swerve drivetrain with given X speed, Y speed, and rotational speed
+   * @param drivetrain The swerve drivetrain object
+   * @param speedX The speed in the X direction
+   * @param speedY The speed in the Y direction
+   * @param rotationalSpeed The rotational speed
    */
-  public drive(Supplier<Double> SPEED_X_SUPPLIER, Supplier<Double> SPEED_Y_SUPPLIER, Supplier<Double> ROTATIONAL_SPEED_SUPPLIER) {
-    this.SPEED_X_SUPPLIER = SPEED_X_SUPPLIER;
-    this.SPEED_Y_SUPPLIER = SPEED_Y_SUPPLIER;
-    this.ROTATIONAL_SPEED_SUPPLIER = ROTATIONAL_SPEED_SUPPLIER;
+  public Drive(Drivetrain drivetrain, Supplier<Double> speedX, Supplier<Double> speedY, Supplier<Double> rotationalSpeed) 
+  {
+    this.speedXSupplier = speedX;
+    this.speedYSupplier = speedY;
+    this.rotationalSpeedSupplier = rotationalSpeed;
+    this.m_Drivetrain = drivetrain;
     addRequirements(drivetrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() 
+  {
+    // Intentionally Empty
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    double SPEED_X = SPEED_X_SUPPLIER.get();
-    double SPEED_Y = SPEED_Y_SUPPLIER.get();
-    double ROTATIONAL_SPEED = ROTATIONAL_SPEED_SUPPLIER.get();
-
+  public void execute()
+  {
     final SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric()
       .withDeadband(DrivetrainConstants.MAX_SPEED * 0.1).withRotationalDeadband(DrivetrainConstants.MAX_ANGULAR_RATE * 0.1)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-      .withVelocityX(SPEED_X * DrivetrainConstants.MAX_SPEED)
-      .withVelocityY(SPEED_Y * DrivetrainConstants.MAX_SPEED)
-      .withRotationalRate(ROTATIONAL_SPEED * DrivetrainConstants.MAX_ANGULAR_RATE);
+      .withVelocityX(speedXSupplier.get() * DrivetrainConstants.MAX_SPEED)
+      .withVelocityY(speedYSupplier.get() * DrivetrainConstants.MAX_SPEED)
+      .withRotationalRate(rotationalSpeedSupplier.get() * DrivetrainConstants.MAX_ANGULAR_RATE);
 
-    drivetrain.setControl(driveRequest);
+    m_Drivetrain.setControl(driveRequest);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) 
+  {
+    // Intentionally Empty
+  }
 
   // Returns true when the command should end.
   @Override
