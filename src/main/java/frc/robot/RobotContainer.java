@@ -25,7 +25,6 @@ public class RobotContainer {
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-  private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private void configureBindings() {
     drivetrain.setDefaultCommand(
@@ -37,8 +36,6 @@ public class RobotContainer {
     m_operatorController.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
     m_operatorController.b().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
-
-    drivetrain.registerTelemetry(logger::telemeterize);
   }
 
    public RobotContainer() {
