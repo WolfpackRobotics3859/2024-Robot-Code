@@ -28,6 +28,6 @@ public class SeedFieldRelative extends InstantCommand
   @Override
   public void initialize() 
   {
-    m_Drivetrain.runOnce(() -> m_Drivetrain.seedFieldRelative());
+    m_Drivetrain.seedFieldRelative();
   }
 }
