@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -16,6 +17,10 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,7 +33,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   private PhotonCamera m_photonCamera;
   private PhotonPoseEstimator m_photonPoseEstimator;
   private Timer m_timer;
-
+  StructPublisher<Pose2d> m_posePublisher = NetworkTableInstance.getDefault().getStructTopic("robotPose", Pose2d.struct).publish();
   /**
    * @brief Creates a new Drivetrain.
    * @param driveTrainConstants Drivetrain-wide constants for the swerve drive
@@ -74,6 +79,10 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   @Override
   public void periodic()
   {
+    //Publish pose for advantagescope odometry
+    m_posePublisher.set(m_odometry.getEstimatedPosition());
+    Logger.recordOutput("robotPose", m_odometry.getEstimatedPosition());
+    
     // Ask Photon for a generated pose
     Optional<EstimatedRobotPose> estPose = m_photonPoseEstimator.update();
 

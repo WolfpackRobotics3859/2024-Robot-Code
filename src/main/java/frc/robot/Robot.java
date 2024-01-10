@@ -4,11 +4,15 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.TimedRobot;
+import org.littletonrobotics.junction.LogDataReceiver;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   public RobotContainer m_robotContainer;
@@ -17,12 +21,15 @@ public class Robot extends TimedRobot {
   public void robotInit() 
   {
     m_robotContainer = new RobotContainer();
+    Logger.addDataReceiver(new NT4Publisher());
   }
 
   @Override
   public void robotPeriodic() 
   {
     CommandScheduler.getInstance().run();
+    Logger.recordOutput("RobotRotation", m_robotContainer.getDriveSub().getPigeon2().getAngle());
+    Logger.start();
   }
 
   @Override
