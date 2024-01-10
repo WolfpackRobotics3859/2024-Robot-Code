@@ -98,7 +98,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     if (m_timer.get() > 0.5)
     {
       m_timer.reset();
-      System.out.println("Timer tick");
       SmartDashboard.putString("Pose - Vision", m_odometry.getEstimatedPosition().toString());
       SmartDashboard.putString("Pose - Drivetrain", m_odometry.getEstimatedPosition().toString());
 
