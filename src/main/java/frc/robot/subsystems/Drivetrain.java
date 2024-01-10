@@ -111,7 +111,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     {
       m_timer.reset();
       SmartDashboard.putString("Pose - Vision", m_odometry.getEstimatedPosition().toString());
-      SmartDashboard.putString("Pose - Vision", m_odometry.getEstimatedPosition().toString());
       SmartDashboard.putString("Pose - Drivetrain", m_odometry.getEstimatedPosition().toString());
 
       SmartDashboard.putBoolean("Od seeded", m_odometrySeeded);
