@@ -16,22 +16,18 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.Constants;
+import frc.robot.constants.drivetrain.DrivetrainConstants;
 
 public class Drivetrain extends SwerveDrivetrain implements Subsystem 
 {
-  private boolean odometrySeeded = false;
+  private boolean m_odometrySeeded = false;
   private PhotonCamera m_photonCamera;
   private PhotonPoseEstimator m_photonPoseEstimator;
-  private Pose3d currentPose;
-  private Timer timer;
+  private Timer m_timer;
   
   /** 
     @brief Creates a new Drivetrain.
@@ -42,7 +38,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   public Drivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules)
   {
     super(driveTrainConstants, OdometryUpdateFrequency, modules);
-    
   }
 
   /** 
@@ -53,11 +48,13 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   public Drivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules)
   {
     super(driveTrainConstants, modules);
+    //Create a photon camera and pose estimator object
     m_photonCamera = new PhotonCamera("photonvision");
-    m_photonPoseEstimator = new PhotonPoseEstimator(Constants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_photonCamera, Constants.ROBOT_TO_CAM); //8.5 inches back from center, directly centered, 33in tall
-    currentPose = new Pose3d(); 
-    this.timer = new Timer();
-    timer.start();
+    m_photonPoseEstimator = new PhotonPoseEstimator(DrivetrainConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_photonCamera, DrivetrainConstants.ROBOT_TO_CAM);
+    
+    //Create a timer for less critical tasks such as Smartdashboard updates
+    this.m_timer = new Timer();
+    m_timer.start();
   }
 
 
@@ -77,7 +74,8 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   {
     Optional<EstimatedRobotPose> estPose = m_photonPoseEstimator.update();
     //Seeds an initial odometry value from vision system
-    if(!odometrySeeded) {
+    if(!m_odometrySeeded) 
+    {
       //Update vision data
       //Check if pose data is valid
       if(!estPose.isEmpty()) 
@@ -85,27 +83,26 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
         //Seed pose
         this.m_odometry.resetPosition(estPose.get().estimatedPose.getRotation().toRotation2d(), m_modulePositions, estPose.get().estimatedPose.toPose2d());
         //this.currentPose = estPose.get().estimatedPose;
-        odometrySeeded = true;
+        m_odometrySeeded = true;
       }
     } else {
       //Check if pose data is valid
       if(!estPose.isEmpty()) {      
         //Add vision to kalman filter
         addVisionMeasurement(estPose.get().estimatedPose.toPose2d(), ModuleCount);
-        //Bad
-        currentPose = estPose.get().estimatedPose;
       }
 
     }
+
     //Report robots current pose to smartdashboard every second
-    if(timer.get() > 1.0) 
+    if(m_timer.get() > 1.0) 
     {
-      timer.reset();
+      m_timer.reset();
       System.out.println("Timer tick");
-      SmartDashboard.putString("Pose - Vision", currentPose.toPose2d().toString());
+      SmartDashboard.putString("Pose - Vision",  m_odometry.getEstimatedPosition().toString());
       SmartDashboard.putString("Pose - Drivetrain", m_odometry.getEstimatedPosition().toString());
 
-      SmartDashboard.putBoolean("Od seeded", odometrySeeded);
+      SmartDashboard.putBoolean("Od seeded", m_odometrySeeded);
     }
   }
 }

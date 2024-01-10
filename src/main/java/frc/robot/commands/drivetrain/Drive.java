@@ -10,8 +10,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Drivetrain;
 import frc.robot.constants.drivetrain.DrivetrainConstants;
+import frc.robot.subsystems.Drivetrain;
 
 public class Drive extends Command
 {
