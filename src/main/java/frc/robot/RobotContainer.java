@@ -17,7 +17,7 @@ public class RobotContainer
   private final Drivetrain m_Drivetrain = new Drivetrain(TunerConstants.DRIVETRAIN_CONSTANTS, TunerConstants.FRONT_LEFT,
                       TunerConstants.FRONT_RIGHT, TunerConstants.BACK_LEFT, TunerConstants.BACK_RIGHT);
 
-  private final CommandXboxController primaryController = new CommandXboxController(0);
+  private final CommandXboxController m_primaryController = new CommandXboxController(0);
 
   public Drivetrain getDriveSub()
   {
@@ -28,11 +28,11 @@ public class RobotContainer
   {
     m_Drivetrain.setDefaultCommand(
       new Drive(m_Drivetrain,
-                () -> -primaryController.getLeftY(),
-                () -> -primaryController.getLeftX(),
-                () -> -primaryController.getRightX()
+                () -> -m_primaryController.getLeftY(),
+                () -> -m_primaryController.getLeftX(),
+                () -> -m_primaryController.getRightX()
       ));
-    primaryController.a().onTrue(new SeedFieldRelative(m_Drivetrain));
+    m_primaryController.a().onTrue(new SeedFieldRelative(m_Drivetrain));
   }
 
   public RobotContainer() 

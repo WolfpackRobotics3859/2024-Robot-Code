@@ -10,15 +10,15 @@ import frc.robot.subsystems.Drivetrain;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class SeedFieldRelative extends InstantCommand 
+public class SeedFieldRelative extends InstantCommand
 {
   private Drivetrain m_Drivetrain;
-  
+
   /**
    * @brief Takes the current orientation of the robot and makes it X forward
    * @param drivetrain The swerve drivetrain object
    */
-  public SeedFieldRelative(Drivetrain drivetrain) 
+  public SeedFieldRelative(Drivetrain drivetrain)
   {
     this.m_Drivetrain = drivetrain;
     addRequirements(drivetrain);
@@ -26,7 +26,7 @@ public class SeedFieldRelative extends InstantCommand
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() 
+  public void initialize()
   {
     m_Drivetrain.seedFieldRelative();
   }
