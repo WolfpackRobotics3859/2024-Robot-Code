@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.drivetrain.TunerConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.vision.PhotonSubsystem;
 import frc.robot.commands.drivetrain.Drive;
 import frc.robot.commands.drivetrain.SeedFieldRelative;
 
@@ -18,6 +19,8 @@ public class RobotContainer
                       TunerConstants.FRONT_RIGHT, TunerConstants.BACK_LEFT, TunerConstants.BACK_RIGHT);
 
   private final CommandXboxController primaryController = new CommandXboxController(0);
+  //TODO Remove
+  //private final PhotonSubsystem photonSubsystem = new PhotonSubsystem();
 
   public Drivetrain getDriveSub()
   {
@@ -40,7 +43,10 @@ public class RobotContainer
   {
     configureBindings();
   }
-
+  //TODO remove
+  //public PhotonSubsystem getPhotonSubsystem() {
+    //return this.photonSubsystem;
+  //}
   public Command getAutonomousCommand() 
   {
     return Commands.print("No autonomous command configured");

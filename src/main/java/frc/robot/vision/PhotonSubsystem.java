@@ -2,9 +2,8 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.vision;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
@@ -13,16 +12,11 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructArrayPublisher;
-import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -41,6 +35,7 @@ public class PhotonSubsystem extends SubsystemBase {
     m_photonCamera = new PhotonCamera("photonvision");
     //TODO get proper camera translation
     m_poseEstimator = new PhotonPoseEstimator(Constants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_photonCamera, robotToCam); //8.5 inches back from center, directly centered, 33in tall
+    currentPose = new Pose3d(); 
   }
 
   public PhotonPipelineResult getLastestResult() 
@@ -52,12 +47,18 @@ public class PhotonSubsystem extends SubsystemBase {
   {
     return m_poseEstimator.update();
   }
+
+  public Pose3d getLastVisionMeasurement() {
+    return currentPose;
+  }
   @Override
   public void periodic() {
     Optional<EstimatedRobotPose> estimatedPose = getEstimatedRobotPose();
     //If not empty, grab a pose result
     if(!estimatedPose.isEmpty()) {
-      SmartDashboard.putString("Pose", estimatedPose.get().estimatedPose.toString());
+      currentPose = estimatedPose.get().estimatedPose;
+
+      SmartDashboard.putString("Pose", currentPose.toString());
     }
   }
 }
