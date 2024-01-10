@@ -22,15 +22,17 @@ public class Drive extends Command
    */
   private Supplier<Double> m_SpeedXSupplier, m_SpeedYSupplier, m_RotationalSpeedSupplier;
   private Drivetrain m_Drivetrain;
-  
+
   /**
-   * @brief Sends a field centric request to the given swerve drivetrain with given X speed, Y speed, and rotational speed
+   * @brief Sends a field centric request to the given swerve drivetrain with
+   * given X speed, Y speed, and rotational speed
    * @param drivetrain The swerve drivetrain object
    * @param speedX The speed in the X direction
    * @param speedY The speed in the Y direction
    * @param rotationalSpeed The rotational speed
    */
-  public Drive(Drivetrain drivetrain, Supplier<Double> speedX, Supplier<Double> speedY, Supplier<Double> rotationalSpeed) 
+  public Drive(Drivetrain drivetrain, Supplier<Double> speedX, Supplier<Double> speedY,
+      Supplier<Double> rotationalSpeed)
   {
     this.m_SpeedXSupplier = speedX;
     this.m_SpeedYSupplier = speedY;
@@ -41,7 +43,7 @@ public class Drive extends Command
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() 
+  public void initialize()
   {
     // Intentionally Empty
   }
@@ -51,25 +53,27 @@ public class Drive extends Command
   public void execute()
   {
     final SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric()
-      .withDeadband(DrivetrainConstants.MAX_SPEED * 0.1).withRotationalDeadband(DrivetrainConstants.MAX_ANGULAR_RATE * 0.1)
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-      .withVelocityX(m_SpeedXSupplier.get() * DrivetrainConstants.MAX_SPEED)
-      .withVelocityY(m_SpeedYSupplier.get() * DrivetrainConstants.MAX_SPEED)
-      .withRotationalRate(m_RotationalSpeedSupplier.get() * DrivetrainConstants.MAX_ANGULAR_RATE);
+        .withDeadband(DrivetrainConstants.MAX_SPEED * 0.1)
+        .withRotationalDeadband(DrivetrainConstants.MAX_ANGULAR_RATE * 0.1)
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+        .withVelocityX(m_SpeedXSupplier.get() * DrivetrainConstants.MAX_SPEED)
+        .withVelocityY(m_SpeedYSupplier.get() * DrivetrainConstants.MAX_SPEED)
+        .withRotationalRate(m_RotationalSpeedSupplier.get() * DrivetrainConstants.MAX_ANGULAR_RATE);
 
     m_Drivetrain.setControl(driveRequest);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) 
+  public void end(boolean interrupted)
   {
     // Intentionally Empty
   }
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished()
+  {
     return false;
   }
 }
