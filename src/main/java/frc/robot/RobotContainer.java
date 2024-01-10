@@ -14,22 +14,26 @@ import frc.robot.commands.drivetrain.SeedFieldRelative;
 
 public class RobotContainer 
 {
-  private static final Drivetrain m_Drivetrain = new Drivetrain(TunerConstants.DRIVETRAIN_CONSTANTS, TunerConstants.FRONT_LEFT,
+  private final Drivetrain m_Drivetrain = new Drivetrain(TunerConstants.DRIVETRAIN_CONSTANTS, TunerConstants.FRONT_LEFT,
                       TunerConstants.FRONT_RIGHT, TunerConstants.BACK_LEFT, TunerConstants.BACK_RIGHT);
 
   private final CommandXboxController primaryController = new CommandXboxController(0);
-  public static final Drivetrain drivetrain = m_Drivetrain;
+
+  public Drivetrain getDriveSub()
+  {
+    return this.m_Drivetrain;
+  }
   
   private void configureBindings() 
   {
-    drivetrain.setDefaultCommand(
-      new Drive(drivetrain,
+    m_Drivetrain.setDefaultCommand(
+      new Drive(m_Drivetrain,
                 () -> -primaryController.getLeftY(),
                 () -> -primaryController.getLeftX(),
                 () -> -primaryController.getRightX()
       ));
 
-    primaryController.a().onTrue(new SeedFieldRelative(drivetrain));
+    primaryController.a().onTrue(new SeedFieldRelative(m_Drivetrain));
   }
 
   public RobotContainer() 
