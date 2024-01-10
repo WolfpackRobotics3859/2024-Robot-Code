@@ -23,22 +23,11 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.constants.drivetrain.DrivetrainConstants;
 
 public class Drivetrain extends SwerveDrivetrain implements Subsystem
-public class Drivetrain extends SwerveDrivetrain implements Subsystem
 {
   private boolean m_odometrySeeded = false;
   private PhotonCamera m_photonCamera;
   private PhotonPoseEstimator m_photonPoseEstimator;
   private Timer m_timer;
-
-  /**
-   * @brief Creates a new Drivetrain.
-   * @param driveTrainConstants Drivetrain-wide constants for the swerve drive
-   * @param OdometryUpdateFrequency The frequency to run the odometry loop. If
-   * unspecified, this is 250 Hz on CAN FD, and 100 Hz on CAN 2.0
-   * @param modules Constants for each specific module
-   */
-  public Drivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
-      SwerveModuleConstants... modules)
 
   /**
    * @brief Creates a new Drivetrain.
@@ -91,25 +80,17 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   public Command applyRequest(Supplier<SwerveRequest> requestSupplier)
   {
     return run(() -> this.setControl(requestSupplier.get()));
-    return run(() -> this.setControl(requestSupplier.get()));
   }
 
   @Override
   public void periodic()
-  public void periodic()
   {
-    // Ask Photon for a generated pose
     // Ask Photon for a generated pose
     Optional<EstimatedRobotPose> estPose = m_photonPoseEstimator.update();
 
     // Checks if Photon returned a pose
     if (!estPose.isEmpty())
-
-    // Checks if Photon returned a pose
-    if (!estPose.isEmpty())
     {
-      // Seeds an initial odometry value from vision system
-      if (!m_odometrySeeded)
       // Seeds an initial odometry value from vision system
       if (!m_odometrySeeded)
       {
@@ -120,16 +101,11 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
       } else
       {
         // Add vision to kalman filter
-      } else
-      {
-        // Add vision to kalman filter
         addVisionMeasurement(estPose.get().estimatedPose.toPose2d(), ModuleCount);
 
 
       }
     }
-    // Report robots current pose to smartdashboard every half second
-    if (m_timer.get() > 0.5)
     // Report robots current pose to smartdashboard every half second
     if (m_timer.get() > 0.5)
     {
