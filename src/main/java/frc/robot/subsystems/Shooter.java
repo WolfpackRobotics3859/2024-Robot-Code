@@ -96,16 +96,29 @@ public class Shooter extends SubsystemBase
   }
 
   // Telemetry Functions
+
+  /**
+   * @brief Gets the velocity of shooter motor 1.
+   * @return Returns a Status Signal of the current velocity.
+  */
   public StatusSignal<Double> getShooterMotor1Velocity()
   {
     return m_ShooterMotor1.getVelocity();
   }
 
+  /**
+   * @brief Gets the velocity of shooter motor 2.
+   * @return Returns a Status Signal of the current velocity.
+  */
   public StatusSignal<Double> getShooterMotor2Velocity()
   {
     return m_ShooterMotor2.getVelocity();
   }
 
+  /**
+   * @brief Gets the position of the wrist motor.
+   * @return Returns a Status Signal of the current position.
+  */
   public StatusSignal<Double> getWristMotorPos()
   {
     return m_ShooterMotor1.getPosition();
