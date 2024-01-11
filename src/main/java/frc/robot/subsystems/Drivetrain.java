@@ -82,7 +82,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     //Publish pose for advantagescope odometry
     m_posePublisher.set(m_odometry.getEstimatedPosition());
     Logger.recordOutput("robotPose", m_odometry.getEstimatedPosition());
-    
+
     // Ask Photon for a generated pose
     Optional<EstimatedRobotPose> estPose = m_photonPoseEstimator.update();
 
@@ -99,7 +99,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
       } else
       {
         // Add vision to kalman filter
-        addVisionMeasurement(estPose.get().estimatedPose.toPose2d(), ModuleCount);
+        this.addVisionMeasurement(estPose.get().estimatedPose.toPose2d(), estPose.get().timestampSeconds);
 
       }
     }
