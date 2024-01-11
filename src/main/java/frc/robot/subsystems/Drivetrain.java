@@ -53,22 +53,11 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
    * @param driveTrainConstants Drivetrain-wide constants for the swerve drive
    * @param modules Constants for each specific module
    */
-  /**
-   * @brief Creates a new Drivetrain without specifying the frequency to run the
-   * odometry loop.
-   * @param driveTrainConstants Drivetrain-wide constants for the swerve drive
-   * @param modules Constants for each specific module
-   */
   public Drivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules)
   {
     super(driveTrainConstants, modules);
     // Create a photon camera and pose estimator object
-    // Create a photon camera and pose estimator object
     m_photonCamera = new PhotonCamera("photonvision");
-    m_photonPoseEstimator = new PhotonPoseEstimator(DrivetrainConstants.TAG_LAYOUT,
-        PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_photonCamera, DrivetrainConstants.ROBOT_TO_CAM);
-
-    // Create a timer for less critical tasks such as Smartdashboard updates
     m_photonPoseEstimator = new PhotonPoseEstimator(DrivetrainConstants.TAG_LAYOUT,
         PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_photonCamera, DrivetrainConstants.ROBOT_TO_CAM);
 
@@ -93,7 +82,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     //Publish pose for advantagescope odometry
     m_posePublisher.set(m_odometry.getEstimatedPosition());
     Logger.recordOutput("robotPose", m_odometry.getEstimatedPosition());
-    
+
     // Ask Photon for a generated pose
     Optional<EstimatedRobotPose> estPose = m_photonPoseEstimator.update();
 
@@ -110,7 +99,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
       } else
       {
         // Add vision to kalman filter
-        addVisionMeasurement(estPose.get().estimatedPose.toPose2d(), ModuleCount);
+        this.addVisionMeasurement(estPose.get().estimatedPose.toPose2d(), estPose.get().timestampSeconds);
 
 
       }
