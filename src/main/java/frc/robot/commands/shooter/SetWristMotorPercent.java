@@ -12,7 +12,11 @@ public class SetWristMotorPercent extends Command
   Shooter m_Shooter;
   double m_Percent;
 
-  /** Creates a new SetWristPosition. */
+  /**
+   * @brief Applies a percent of the available voltage to the wrist motor.
+   * @param shooter The shooter subsystem object.
+   * @param percent The percent voltage to apply to the motor, from -1 to 1.
+  */
   public SetWristMotorPercent(Shooter shooter, double percent)
   {
     this.m_Shooter = shooter;

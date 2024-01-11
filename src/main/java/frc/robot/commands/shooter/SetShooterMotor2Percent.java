@@ -12,7 +12,11 @@ public class SetShooterMotor2Percent extends Command
   Shooter m_Shooter;
   double m_Percent;
   
-  /** Creates a new SetMotor1Velocity. */
+  /**
+   * @brief Applies a percent of the available voltage to shooter motor 2.
+   * @param shooter The shooter subsystem object.
+   * @param percent The percent voltage to apply to the motor, from -1 to 1.
+  */
   public SetShooterMotor2Percent(Shooter shooter, double percent)
   {
     this.m_Shooter = shooter;

@@ -12,7 +12,11 @@ public class SetWristMotorPosition extends Command
   Shooter m_Shooter;
   double m_Position;
 
-  /** Creates a new SetWristPosition. */
+  /**
+   * @brief Spins the wrist motor towards a given position.
+   * @param shooter The shooter subsystem object.
+   * @param velocity The desired position to send the motor towards, measured in rotations.
+  */
   public SetWristMotorPosition(Shooter shooter, double position)
   {
     this.m_Shooter = shooter;

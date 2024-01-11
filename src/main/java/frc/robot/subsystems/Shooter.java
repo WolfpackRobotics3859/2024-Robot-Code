@@ -21,7 +21,9 @@ public class Shooter extends SubsystemBase
   private final TalonFX m_ShooterMotor2 = new TalonFX(Hardware.SHOOTER_MOTOR_2_ID);
   private final TalonFX m_WristMotor = new TalonFX(Hardware.WRIST_MOTOR_ID);
 
-  /** Creates a new Shooter. */
+    /**
+   * @brief Creates a new Shooter subsystem.
+  */
   public Shooter() 
   {
     m_ShooterMotor1.getConfigurator().apply(ShooterConstants.SHOOTER_GAINS);
@@ -30,24 +32,41 @@ public class Shooter extends SubsystemBase
   }
 
   // Shooter Functions
-  public void setMotor1Velocity(double rpm)
+
+  /**
+   * @brief Applies a Motion Magic request to motor 1 with the set velocity.
+   * @param velocity The desired velocity to run the motor at, measured in rotations per second.
+  */
+  public void setMotor1Velocity(double velocity)
   {
-    MotionMagicVelocityVoltage request = new MotionMagicVelocityVoltage(rpm, 40, false, 70, 0, false, false, false);
+    MotionMagicVelocityVoltage request = new MotionMagicVelocityVoltage(velocity, 40, false, 70, 0, false, false, false);
     m_ShooterMotor1.setControl(request);
   }
 
-  public void setMotor2Velocity(double rpm)
+  /**
+   * @brief Applies a Motion Magic Velocity request to motor 2 with the set velocity.
+   * @param velocity The desired velocity to run the motor at, measured in rotations per second.
+  */
+  public void setMotor2Velocity(double velocity)
   {
-    MotionMagicVelocityVoltage request = new MotionMagicVelocityVoltage(rpm, 1, false, 0, 0, false, false, false);
+    MotionMagicVelocityVoltage request = new MotionMagicVelocityVoltage(velocity, 1, false, 0, 0, false, false, false);
     m_ShooterMotor2.setControl(request);
   }
 
+  /**
+   * @brief Applies a duty cycle to motor 1 with the set percentage of the available voltage.
+   * @param percent The percent of the available voltage to apply to the motor, from -1 to 1.
+  */
   public void setShooterMotor1Percent(double percent)
   {
     DutyCycleOut request = new DutyCycleOut(percent, false, false, false, false);
     m_ShooterMotor1.setControl(request);
   }
 
+  /**
+   * @brief Applies a duty cycle to motor 2 with the set percentage of the available voltage.
+   * @param percent The percent of the available voltage to apply to the motor, from -1 to 1.
+  */
   public void setShooterMotor2Percent(double percent)
   {
     DutyCycleOut request = new DutyCycleOut(percent, false, false, false, false);
@@ -55,12 +74,21 @@ public class Shooter extends SubsystemBase
   }
 
   // Wrist Functions
+
+  /**
+   * @brief Applies a Position Duty Cycle request to the wrist motor with the set position.
+   * @param position The desired position to spin the motor toward, measured in rotations.
+  */
   public void setWristPos(double position)
   {
     PositionDutyCycle request = new PositionDutyCycle(position, 4, false, 0, 0, false, false, false);
     m_WristMotor.setControl(request);
   }
 
+  /**
+   * @brief Applies a duty cycle to the wrist motor with the set percentage of the available voltage.
+   * @param percent The percent of the available voltage to apply to the motor, from -1 to 1.
+  */
   public void setWristPercent(double percent)
   {
     DutyCycleOut request = new DutyCycleOut(percent, false, false, false, false);

@@ -11,8 +11,12 @@ public class SetShooterMotor1Velocity extends Command
 {
   Shooter m_Shooter;
   double m_Velocity;
-  
-  /** Creates a new SetMotor1Velocity. */
+
+  /**
+   * @brief Runs motor number 1 at a given velocity.
+   * @param shooter The shooter subsystem object.
+   * @param velocity The desired velocity to run the motor at, measured in rotations per second.
+  */
   public SetShooterMotor1Velocity(Shooter shooter, double velocity)
   {
     this.m_Shooter = shooter;
