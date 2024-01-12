@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.constants.Hardware;
 import frc.robot.constants.drivetrain.TunerConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
@@ -20,7 +21,7 @@ public class RobotContainer
   private final Shooter m_Shooter = new Shooter();
   
   // Controllers
-  private final CommandXboxController primaryController = new CommandXboxController(0);
+  private final CommandXboxController primaryController = new CommandXboxController(Hardware.PRIMARY_CONTROLLER_PORT);
 
   /**
    * @brief Gets the drivetrain subsystem.

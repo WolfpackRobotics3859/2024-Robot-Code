@@ -2,6 +2,9 @@ package frc.robot.constants;
 
 public class Hardware
 {
+    // Controllers
+    public static final int PRIMARY_CONTROLLER_PORT = 0;
+    public static final int SECONDARY_CONTROLLER_PORT = 1;
     // Front Left Swerve Module
     public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 1;
     public static final int FRONT_LEFT_STEER_MOTOR_ID = 2;
