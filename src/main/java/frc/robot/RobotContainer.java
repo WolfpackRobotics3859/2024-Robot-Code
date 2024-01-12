@@ -9,14 +9,18 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.drivetrain.TunerConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Shooter;
 import frc.robot.commands.drivetrain.Drive;
 import frc.robot.commands.drivetrain.SeedFieldRelative;
 
 public class RobotContainer 
 {
+  // Subsystems
   private final Drivetrain m_Drivetrain = new Drivetrain(TunerConstants.DRIVETRAIN_CONSTANTS, TunerConstants.FRONT_LEFT,
                       TunerConstants.FRONT_RIGHT, TunerConstants.BACK_LEFT, TunerConstants.BACK_RIGHT);
-
+  private final Shooter m_Shooter = new Shooter();
+  
+  // Controllers
   private final CommandXboxController primaryController = new CommandXboxController(0);
 
   public Drivetrain getDriveSub()
