@@ -34,43 +34,58 @@ public class Shooter extends SubsystemBase
   // Shooter Functions
 
   /**
-   * @brief Applies a Motion Magic request to motor 1 with the set velocity.
+   * @brief Applies a Motion Magic request to the selected motor with the set velocity.
+   * @param motor The motor you want to send the request to MOTOR_1 or MOTOR_2, setting this to WRIST_MOTOR will do nothing.
    * @param velocity The desired velocity to run the motor at, measured in rotations per second.
   */
-  public void setMotor1Velocity(double velocity)
+  public void setMotorVelocity(ShooterConstants.MOTOR motor, double velocity)
   {
     MotionMagicVelocityVoltage request = new MotionMagicVelocityVoltage(velocity, 40, false, 0, 0, false, false, false);
-    m_ShooterMotor1.setControl(request);
+
+    switch (motor){
+      case MOTOR_1:
+        m_ShooterMotor1.setControl(request);
+        break;
+      case MOTOR_2:
+        m_ShooterMotor2.setControl(request);
+        break;
+      case WRIST_MOTOR:
+        break;
+      default:
+        DutyCycleOut defaultRequest = new DutyCycleOut(0, false, false, false, false);
+        m_ShooterMotor1.setControl(defaultRequest);
+        m_ShooterMotor2.setControl(defaultRequest);
+        m_WristMotor.setControl(defaultRequest);
+        break;
+    }
   }
 
   /**
-   * @brief Applies a Motion Magic Velocity request to motor 2 with the set velocity.
-   * @param velocity The desired velocity to run the motor at, measured in rotations per second.
-  */
-  public void setMotor2Velocity(double velocity)
-  {
-    MotionMagicVelocityVoltage request = new MotionMagicVelocityVoltage(velocity, 40, false, 0, 0, false, false, false);
-    m_ShooterMotor2.setControl(request);
-  }
-
-  /**
-   * @brief Applies a duty cycle to motor 1 with the set percentage of the available voltage.
+   * @brief Applies a duty cycle to the given motor with the set percentage of the available voltage.
+   * @param motor The desired motor to send the request to.
    * @param percent The percent of the available voltage to apply to the motor, from -1 to 1.
   */
-  public void setShooterMotor1Percent(double percent)
+  public void setShooterMotorPercent(ShooterConstants.MOTOR motor, double percent)
   {
     DutyCycleOut request = new DutyCycleOut(percent, false, false, false, false);
-    m_ShooterMotor1.setControl(request);
-  }
 
-  /**
-   * @brief Applies a duty cycle to motor 2 with the set percentage of the available voltage.
-   * @param percent The percent of the available voltage to apply to the motor, from -1 to 1.
-  */
-  public void setShooterMotor2Percent(double percent)
-  {
-    DutyCycleOut request = new DutyCycleOut(percent, false, false, false, false);
-    m_ShooterMotor2.setControl(request);
+    switch (motor){
+      case MOTOR_1:
+        m_ShooterMotor1.setControl(request);
+        break;
+      case MOTOR_2:
+        m_ShooterMotor2.setControl(request);
+        break;
+      case WRIST_MOTOR:
+        m_WristMotor.setControl(request);
+        break;
+      default:
+        DutyCycleOut defaultRequest = new DutyCycleOut(0, false, false, false, false);
+        m_ShooterMotor1.setControl(defaultRequest);
+        m_ShooterMotor2.setControl(defaultRequest);
+        m_WristMotor.setControl(defaultRequest);
+        break;
+    }
   }
 
   // Wrist Functions
@@ -81,38 +96,29 @@ public class Shooter extends SubsystemBase
   */
   public void setWristPos(double position)
   {
-    PositionDutyCycle request = new PositionDutyCycle(position, 4, false, 0, 0, false, false, false);
-    m_WristMotor.setControl(request);
-  }
-
-  /**
-   * @brief Applies a duty cycle to the wrist motor with the set percentage of the available voltage.
-   * @param percent The percent of the available voltage to apply to the motor, from -1 to 1.
-  */
-  public void setWristPercent(double percent)
-  {
-    DutyCycleOut request = new DutyCycleOut(percent, false, false, false, false);
+    PositionDutyCycle request = new PositionDutyCycle(position, ShooterConstants.WRIST_VELOCITY, false, 0, 0, false, false, false);
     m_WristMotor.setControl(request);
   }
 
   // Telemetry Functions
 
   /**
-   * @brief Gets the velocity of shooter motor 1.
+   * @brief Gets the velocity of a motor in the shooter subsystem.
+   * @param motor The desired motor to get the velocity from.
    * @return Returns a Status Signal of the current velocity.
   */
-  public StatusSignal<Double> getShooterMotor1Velocity()
+  public StatusSignal<Double> getShooterMotorVelocity(ShooterConstants.MOTOR motor)
   {
-    return m_ShooterMotor1.getVelocity();
-  }
-
-  /**
-   * @brief Gets the velocity of shooter motor 2.
-   * @return Returns a Status Signal of the current velocity.
-  */
-  public StatusSignal<Double> getShooterMotor2Velocity()
-  {
-    return m_ShooterMotor2.getVelocity();
+    switch (motor){
+      case MOTOR_1:
+        return m_ShooterMotor1.getVelocity();
+      case MOTOR_2:
+        return m_ShooterMotor2.getVelocity();
+      case WRIST_MOTOR:
+        return m_WristMotor.getVelocity();
+      default:
+        return m_ShooterMotor1.getVelocity();
+    }
   }
 
   /**

@@ -6,6 +6,7 @@ package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
+import frc.robot.constants.shooter.ShooterConstants.MOTOR;
 
 public class SetWristMotorPercent extends Command
 {
@@ -28,7 +29,7 @@ public class SetWristMotorPercent extends Command
   @Override
   public void initialize() 
   {
-    m_Shooter.setWristPercent(this.m_Percent);
+    m_Shooter.setShooterMotorPercent(MOTOR.WRIST_MOTOR, this.m_Percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -42,7 +43,7 @@ public class SetWristMotorPercent extends Command
   @Override
   public void end(boolean interrupted) 
   {
-    m_Shooter.setWristPercent(0);
+    m_Shooter.setShooterMotorPercent(MOTOR.WRIST_MOTOR, 0);
   }
 
   // Returns true when the command should end.

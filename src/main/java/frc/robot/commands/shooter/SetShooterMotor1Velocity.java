@@ -5,6 +5,7 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.shooter.ShooterConstants.MOTOR;
 import frc.robot.subsystems.Shooter;
 
 public class SetShooterMotor1Velocity extends Command
@@ -28,7 +29,7 @@ public class SetShooterMotor1Velocity extends Command
   @Override
   public void initialize()
   {
-     m_Shooter.setMotor1Velocity(this.m_Velocity);
+     m_Shooter.setMotorVelocity(MOTOR.MOTOR_1, this.m_Velocity);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -42,7 +43,7 @@ public class SetShooterMotor1Velocity extends Command
   @Override
   public void end(boolean interrupted)
   {
-    m_Shooter.setShooterMotor1Percent(0);
+    m_Shooter.setShooterMotorPercent(MOTOR.MOTOR_1, 0);
   }
 
   // Returns true when the command should end.
