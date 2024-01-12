@@ -23,9 +23,22 @@ public class RobotContainer
   // Controllers
   private final CommandXboxController primaryController = new CommandXboxController(0);
 
+  /**
+   * @brief Gets the drivetrain subsystem.
+   * @return The drivetrain object
+   */
   public Drivetrain getDriveSub()
   {
     return this.m_Drivetrain;
+  }
+
+  /**
+   * @brief Gets the shooter subsystem.
+   * @return The shooter object
+   */
+  public Shooter getShooter()
+  {
+    return this.m_Shooter;
   }
   
   private void configureBindings() 
@@ -36,8 +49,6 @@ public class RobotContainer
                 () -> -primaryController.getLeftX(),
                 () -> -primaryController.getRightX()
       ));
-
-    primaryController.a().onTrue(new SeedFieldRelative(m_Drivetrain));
   }
 
   public RobotContainer() 
