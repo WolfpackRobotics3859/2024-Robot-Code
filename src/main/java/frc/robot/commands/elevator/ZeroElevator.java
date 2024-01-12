@@ -41,11 +41,6 @@ public class ZeroElevator extends Command {
   @Override
   public void end(boolean interrupted)
   {
-    // If command is not interrupted (ie ends naturally), set the position to zero
-    if(!interrupted)
-    {
-      m_elevator.zeroMotor();
-    }
     // Set the elevator to neutral
     m_elevator.setElevatorPercent(0);
   }

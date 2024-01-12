@@ -61,14 +61,6 @@ public class Elevator extends SubsystemBase
     m_ElevatorMotor1.setControl(request);
   }
 
-  /**
-   * @brief Sets the elevator motor position to 0.
-   */
-  public void zeroMotor()
-  {
-    m_ElevatorMotor1.getConfigurator().setPosition(0);
-  }
-
   // Telemetry
 
   /** 
