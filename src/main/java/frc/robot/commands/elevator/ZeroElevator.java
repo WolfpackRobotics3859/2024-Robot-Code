@@ -5,11 +5,15 @@
 package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Elevator;
 
 public class ZeroElevator extends Command {
+  Elevator m_elevator;
   /** Creates a new ZeroElevator. */
-  public ZeroElevator() {
-    // Use addRequirements() here to declare subsystem dependencies.
+  public ZeroElevator(Elevator elevator)
+  {
+    this.m_elevator = elevator;
+    addRequirements(m_elevator);
   }
 
   // Called when the command is initially scheduled.
