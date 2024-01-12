@@ -19,15 +19,22 @@ public class DrivetrainConstants
 
         public static final AprilTagFieldLayout TAG_LAYOUT;
         
-        static {
-            try {
+        static 
+        {
+            try 
+            {
                 TAG_LAYOUT = AprilTagFields.kDefaultField.loadAprilTagLayoutField();
-            } catch (UncheckedIOException e) {
+            } 
+            catch (UncheckedIOException e) 
+            {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
         }
 
         public static final double AMBIGUITY_THRESHOLD = 0.25;
-        public static final Transform3d ROBOT_TO_CAM = new Transform3d(new Translation3d(Units.inchesToMeters(6.676595), 0.0, Units.inchesToMeters(27.63304)), new Rotation3d(0, -45, 0));
+        
+        public static final Transform3d FORWARD_CAMERA_POSITION = new Transform3d(new Translation3d(Units.inchesToMeters(6.676595), 0.0, Units.inchesToMeters(27.63304)), new Rotation3d(0, -45, 0));
+        public static final Transform3d REAR_CAMERA_POSITION = new Transform3d(); //Intentionally Empty until we have a rear cam
+
 }

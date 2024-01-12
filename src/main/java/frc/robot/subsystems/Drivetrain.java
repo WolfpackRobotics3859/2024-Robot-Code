@@ -33,7 +33,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   private PhotonCamera m_photonCamera;
   private PhotonPoseEstimator m_photonPoseEstimator;
   private Timer m_timer;
-  StructPublisher<Pose2d> m_posePublisher = NetworkTableInstance.getDefault().getStructTopic("robotPose", Pose2d.struct).publish();
 
   /** 
     @brief Creates a new Drivetrain.
@@ -55,8 +54,8 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   {
     super(driveTrainConstants, modules);
     // Create a photon camera and pose estimator object
-    m_photonCamera = new PhotonCamera("photonvision");
-    m_photonPoseEstimator = new PhotonPoseEstimator(DrivetrainConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_photonCamera, DrivetrainConstants.ROBOT_TO_CAM);
+    m_photonCamera = new PhotonCamera("front_camera");
+    m_photonPoseEstimator = new PhotonPoseEstimator(DrivetrainConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_photonCamera, DrivetrainConstants.FORWARD_CAMERA_POSITION);
 
     // Create a timer for less critical tasks such as Smartdashboard updates
     this.m_timer = new Timer();
@@ -78,7 +77,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   public void periodic() 
   {
     //Publish pose for advantagescope odometry
-    m_posePublisher.set(m_odometry.getEstimatedPosition());
     Logger.recordOutput("robotPose", m_odometry.getEstimatedPosition());
 
     // Ask Photon for a generated pose
@@ -94,13 +92,12 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
         this.m_odometry.resetPosition(estPose.get().estimatedPose.getRotation().toRotation2d(), m_modulePositions,
             estPose.get().estimatedPose.toPose2d());
         m_odometrySeeded = true;
-      } else
+      } 
+      else
       {
         // Add vision to kalman filter
         this.addVisionMeasurement(estPose.get().estimatedPose.toPose2d(), estPose.get().timestampSeconds);
         SmartDashboard.putString("Pose - Vision", estPose.get().estimatedPose.toPose2d().toString());
-
-
       }
     }
     // Report robots current pose to smartdashboard every half second
@@ -108,9 +105,12 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     {
       m_timer.reset();
       SmartDashboard.putString("Pose - Drivetrain", m_odometry.getEstimatedPosition().toString());
-      try {
+      try 
+      {
         SmartDashboard.putNumber("Pose Ambuguity", m_photonCamera.getLatestResult().getBestTarget().getPoseAmbiguity());
-      } catch(Exception e) {
+      } 
+      catch(Exception e) 
+      {
 
       }
       SmartDashboard.putBoolean("Od seeded", m_odometrySeeded);
