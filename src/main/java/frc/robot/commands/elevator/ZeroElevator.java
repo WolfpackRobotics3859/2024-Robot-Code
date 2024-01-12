@@ -9,7 +9,8 @@ import com.ctre.phoenix6.signals.ReverseLimitValue;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator;
 
-public class ZeroElevator extends Command {
+public class ZeroElevator extends Command
+{
   Elevator m_elevator;
   
   /**
