@@ -39,7 +39,7 @@ public class Shooter extends SubsystemBase
   */
   public void setMotor1Velocity(double velocity)
   {
-    MotionMagicVelocityVoltage request = new MotionMagicVelocityVoltage(velocity, 40, false, 70, 0, false, false, false);
+    MotionMagicVelocityVoltage request = new MotionMagicVelocityVoltage(velocity, 40, false, 0, 0, false, false, false);
     m_ShooterMotor1.setControl(request);
   }
 
@@ -49,7 +49,7 @@ public class Shooter extends SubsystemBase
   */
   public void setMotor2Velocity(double velocity)
   {
-    MotionMagicVelocityVoltage request = new MotionMagicVelocityVoltage(velocity, 1, false, 0, 0, false, false, false);
+    MotionMagicVelocityVoltage request = new MotionMagicVelocityVoltage(velocity, 40, false, 0, 0, false, false, false);
     m_ShooterMotor2.setControl(request);
   }
 
