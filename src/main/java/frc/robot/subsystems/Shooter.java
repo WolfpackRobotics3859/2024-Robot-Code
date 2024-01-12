@@ -26,8 +26,8 @@ public class Shooter extends SubsystemBase
   */
   public Shooter() 
   {
-    m_ShooterMotor1.getConfigurator().apply(ShooterConstants.SHOOTER_GAINS);
-    m_ShooterMotor2.getConfigurator().apply(ShooterConstants.SHOOTER_GAINS);
+    m_ShooterMotor1.getConfigurator().apply(ShooterConstants.SHOOTER_1_GAINS);
+    m_ShooterMotor2.getConfigurator().apply(ShooterConstants.SHOOTER_2_GAINS);
     m_WristMotor.getConfigurator().apply(ShooterConstants.WRIST_GAINS);
   }
 
