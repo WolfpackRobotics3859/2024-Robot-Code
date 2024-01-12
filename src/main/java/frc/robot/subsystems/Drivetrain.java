@@ -102,6 +102,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
         this.addVisionMeasurement(estPose.get().estimatedPose.toPose2d(), estPose.get().timestampSeconds);
         SmartDashboard.putString("Pose - Vision", estPose.get().estimatedPose.toPose2d().toString());
 
+
       }
     }
     // Report robots current pose to smartdashboard every half second
