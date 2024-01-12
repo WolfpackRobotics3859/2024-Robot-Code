@@ -28,7 +28,7 @@ public class SetWristMotorPosition extends Command
   @Override
   public void initialize() 
   {
-    m_Shooter.setWristPos(m_Position);
+    m_Shooter.setWristPos(this.m_Position);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

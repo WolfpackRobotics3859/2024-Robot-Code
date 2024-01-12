@@ -28,7 +28,7 @@ public class SetShooterMotor1Percent extends Command
   @Override
   public void initialize()
   {
-    m_Shooter.setShooterMotor1Percent(m_Percent);
+    m_Shooter.setShooterMotor1Percent(this.m_Percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

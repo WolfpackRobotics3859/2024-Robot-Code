@@ -28,7 +28,7 @@ public class SetShooterMotor2Velocity extends Command
   @Override
   public void initialize() 
   {
-    m_Shooter.setMotor2Velocity(m_Velocity);
+    m_Shooter.setMotor2Velocity(this.m_Velocity);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

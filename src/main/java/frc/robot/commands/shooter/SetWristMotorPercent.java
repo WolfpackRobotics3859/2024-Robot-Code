@@ -28,7 +28,7 @@ public class SetWristMotorPercent extends Command
   @Override
   public void initialize() 
   {
-    m_Shooter.setWristPercent(m_Percent);
+    m_Shooter.setWristPercent(this.m_Percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
