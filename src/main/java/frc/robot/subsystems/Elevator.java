@@ -41,31 +41,52 @@ public class Elevator extends SubsystemBase
     m_ElevatorMotor2.setControl(followRequest);
   }
 
+  /**
+   * @brief Sets the elevator motors to a given position.
+   * @param position The position to send the motors to.
+   */
   public void setElevatorPosition(double position)
   {
     PositionDutyCycle request = new PositionDutyCycle(position, ElevatorConstants.ELEVATOR_VELOCITY, false, 0, 0, false, false, false);
     m_ElevatorMotor1.setControl(request);
   }
 
+  /**
+   * @brief Sets the elevator motors to a given percentage of the available voltage.
+   * @param percent The percentage to set the elevator motor to (-1 to 1).
+   */
   public void setElevatorPercent(double percent)
   {
     DutyCycleOut request = new DutyCycleOut(percent, false, false, false, false);
     m_ElevatorMotor1.setControl(request);
   }
 
+  /**
+   * @brief Sets the elevator motor position to 0.
+   */
+  public void zeroMotor()
+  {
+    m_ElevatorMotor1.getConfigurator().setPosition(0);
+  }
+
+  // Telemetry
+
+  /** 
+   * @brief Gets the elevator's current position.
+   * @return A Status Signal of the current elevator position.
+   */
   public StatusSignal<Double> getElevatorPosition()
   {
     return m_ElevatorMotor1.getPosition();
   }
 
+  /** 
+   * @brief Gets the current state of the limit switch.
+   * @return The current state of the limit switch as a ReverseLimitValue.
+   */
   public ReverseLimitValue getLimitSwitch()
   {
     return m_ElevatorMotor1.getReverseLimit().getValue();
-  }
-
-  public void zeroMotor()
-  {
-    m_ElevatorMotor1.getConfigurator().setPosition(0);
   }
 
   @Override

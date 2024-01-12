@@ -11,7 +11,11 @@ import frc.robot.subsystems.Elevator;
 
 public class ZeroElevator extends Command {
   Elevator m_elevator;
-  /** Creates a new ZeroElevator. */
+  
+  /**
+   * @brief Moves the elevator down at a fixed rate until it hits the limit switch at the bottom, where it sets it's position to 0.
+   * @param elevator The elevator subsystem object.
+   */
   public ZeroElevator(Elevator elevator)
   {
     this.m_elevator = elevator;
@@ -22,6 +26,7 @@ public class ZeroElevator extends Command {
   @Override
   public void initialize() 
   {
+    // Send the elevator down
     m_elevator.setElevatorPercent(-.1);
   }
 
@@ -36,16 +41,19 @@ public class ZeroElevator extends Command {
   @Override
   public void end(boolean interrupted)
   {
+    // If command is not interrupted (ie ends naturally), set the position to zero
     if(!interrupted)
     {
       m_elevator.zeroMotor();
     }
+    // Set the elevator to neutral
     m_elevator.setElevatorPercent(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    // Get the limit switch value and end the command if the switch is closed
     if (m_elevator.getLimitSwitch() == ReverseLimitValue.ClosedToGround)
     {
       return true;
