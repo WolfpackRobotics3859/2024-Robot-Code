@@ -28,21 +28,21 @@ public class SetWristMotorPosition extends Command
   @Override
   public void initialize() 
   {
-    // Intentionally Empty
+    m_Shooter.setWristPos(m_Position);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
-    m_Shooter.setWristPos(m_Position);
+    // Intentionally Empty
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) 
   {
-    // Intentionally Empty
+    // Intentionally Emptya
   }
 
   // Returns true when the command should end.

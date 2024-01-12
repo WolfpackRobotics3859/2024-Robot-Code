@@ -28,21 +28,21 @@ public class SetWristMotorPercent extends Command
   @Override
   public void initialize() 
   {
-    // Intentionally Empty
+    m_Shooter.setWristPercent(m_Percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
-    m_Shooter.setWristPercent(m_Percent);
+    // Intentionally Empty
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) 
   {
-    // Intentionally Empty
+    m_Shooter.setWristPercent(0);
   }
 
   // Returns true when the command should end.
