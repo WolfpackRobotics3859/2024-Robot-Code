@@ -11,7 +11,6 @@ import frc.robot.constants.drivetrain.TunerConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.drivetrain.Drive;
-import frc.robot.commands.drivetrain.SeedFieldRelative;
 
 public class RobotContainer 
 {
@@ -40,6 +39,11 @@ public class RobotContainer
   {
     return this.m_Shooter;
   }
+
+  public RobotContainer() 
+  {
+    configureBindings();
+  }
   
   private void configureBindings() 
   {
@@ -49,11 +53,6 @@ public class RobotContainer
                 () -> -primaryController.getLeftX(),
                 () -> -primaryController.getRightX()
       ));
-  }
-
-  public RobotContainer() 
-  {
-    configureBindings();
   }
 
   public Command getAutonomousCommand() 
