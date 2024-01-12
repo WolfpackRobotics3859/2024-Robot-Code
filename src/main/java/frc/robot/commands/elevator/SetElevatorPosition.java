@@ -5,28 +5,49 @@
 package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Elevator;
 
 public class SetElevatorPosition extends Command {
-  /** Creates a new SetElevatorPosition. */
-  public SetElevatorPosition() {
-    // Use addRequirements() here to declare subsystem dependencies.
+  Elevator m_Elevator;
+  double m_Position;
+
+  /**
+   * @brief Sends the elevator motors toward a given position.
+   * @param elevator The elevator subsystem object.
+   * @param position The position to send the elevator toward.
+  */
+  public SetElevatorPosition(Elevator elevator, double position)
+  {
+    this.m_Elevator = elevator;
+    this.m_Position = position;
+    addRequirements(elevator);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize()
+  {
+    m_Elevator.setElevatorPosition(this.m_Position);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute()
+  {
+    // Intentionally Empty
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted)
+  {
+    m_Elevator.setElevatorPercent(0);
+  }
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished()
+  {
     return false;
   }
 }
