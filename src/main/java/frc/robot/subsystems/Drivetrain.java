@@ -12,20 +12,21 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructPublisher;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.constants.drivetrain.DrivetrainConstants;
+import frc.robot.constants.drivetrain.TunerConstants;
 
 public class Drivetrain extends SwerveDrivetrain implements Subsystem 
 {
@@ -33,7 +34,26 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   private PhotonCamera m_photonCamera;
   private PhotonPoseEstimator m_photonPoseEstimator;
   private Timer m_timer;
+  private final SwerveRequest.ApplyChassisSpeeds m_autoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
+  //TODO document
+  private void configurePathPlanner()
+  {
+    double driveBaseRadius = 0;
+    for (var moduleLocation : m_moduleLocations) {
+      driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
+    }
+    
+    AutoBuilder.configureHolonomic(
+      ()->this.getState().Pose,
+      this::seedFieldRelative,
+      this::getCurrentRobotChassisSpeeds,
+      (speeds)->this.setControl(m_autoRequest.withSpeeds(speeds)),
+      new HolonomicPathFollowerConfig(new PIDConstants(5, 0, 0), new PIDConstants(5, 0, 0), TunerConstants.SPEED_AT_12_VOLTS_MPS, driveBaseRadius, new ReplanningConfig()),
+      ()->false,
+      this);
+
+  }
   /** 
     @brief Creates a new Drivetrain.
     @param driveTrainConstants Drivetrain-wide constants for the swerve drive
@@ -43,6 +63,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   public Drivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules)
   {
     super(driveTrainConstants, OdometryUpdateFrequency, modules);
+    configurePathPlanner();
   }
 
   /** 
@@ -60,6 +81,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     // Create a timer for less critical tasks such as Smartdashboard updates
     this.m_timer = new Timer();
     m_timer.start();
+    configurePathPlanner();
   }
 
   /**
@@ -72,7 +94,13 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     return run(() -> this.setControl(requestSupplier.get()));  
   }
 
+  public ChassisSpeeds getCurrentRobotChassisSpeeds()
+  {
+        return m_kinematics.toChassisSpeeds(getState().ModuleStates);
+  }
 
+
+  
   @Override
   public void periodic() 
   {
