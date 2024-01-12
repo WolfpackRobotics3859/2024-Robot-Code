@@ -12,6 +12,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ReverseLimitValue;
 
 import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -55,6 +56,16 @@ public class Elevator extends SubsystemBase
   public StatusSignal<Double> getElevatorPosition()
   {
     return m_ElevatorMotor1.getPosition();
+  }
+
+  public ReverseLimitValue getLimitSwitch()
+  {
+    return m_ElevatorMotor1.getReverseLimit().getValue();
+  }
+
+  public void zeroMotor()
+  {
+    m_ElevatorMotor1.getConfigurator().setPosition(0);
   }
 
   @Override
