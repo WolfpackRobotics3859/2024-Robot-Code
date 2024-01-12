@@ -6,6 +6,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 
@@ -26,6 +27,8 @@ public class DrivetrainConstants
             throw new RuntimeException(e);
         }
     }
-    public static final Transform3d ROBOT_TO_CAM = new Transform3d(new Translation3d(Units.inchesToMeters(8.5), 0.0, Units.inchesToMeters(33.5)), new Rotation3d(0, 15, 0)); //8.5 inches back from center, 33.5 inches up from center, facing forward and a 15 deg up, is a rough guestimate from lack of camera mount
+
+    public static final double AMBIGUITY_THRESHOLD = 0.25;
+    public static final Transform3d ROBOT_TO_CAM = new Transform3d(new Translation3d(Units.inchesToMeters(6.676595), 0.0, Units.inchesToMeters(27.63304)), new Rotation3d(0, -45, 0));
 
 }

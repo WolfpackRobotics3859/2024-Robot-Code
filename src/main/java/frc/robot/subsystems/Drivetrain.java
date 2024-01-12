@@ -87,8 +87,8 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     Optional<EstimatedRobotPose> estPose = m_photonPoseEstimator.update();
 
     // Checks if Photon returned a pose
-    if (!estPose.isEmpty())
-    {
+    if (!estPose.isEmpty() && m_photonCamera.getLatestResult().getBestTarget().getPoseAmbiguity() < DrivetrainConstants.AMBIGUITY_THRESHOLD)
+    { 
       // Seeds an initial odometry value from vision system
       if (!m_odometrySeeded)
       {
@@ -100,6 +100,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
       {
         // Add vision to kalman filter
         this.addVisionMeasurement(estPose.get().estimatedPose.toPose2d(), estPose.get().timestampSeconds);
+        SmartDashboard.putString("Pose - Vision", estPose.get().estimatedPose.toPose2d().toString());
 
 
       }
@@ -108,8 +109,13 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     if (m_timer.get() > 0.5)
     {
       m_timer.reset();
-      SmartDashboard.putString("Pose - Vision", m_odometry.getEstimatedPosition().toString());
       SmartDashboard.putString("Pose - Drivetrain", m_odometry.getEstimatedPosition().toString());
+      try {
+        SmartDashboard.putNumber("Pose Ambuguity", m_photonCamera.getLatestResult().getBestTarget().getPoseAmbiguity());
+      } catch(Exception e) {
+
+      }
+      
 
       SmartDashboard.putBoolean("Od seeded", m_odometrySeeded);
     }
