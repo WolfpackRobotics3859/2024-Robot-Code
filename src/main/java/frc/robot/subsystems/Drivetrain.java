@@ -111,9 +111,9 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
       } 
       catch(Exception e) 
       {
-
+        //Intenionally Empty
       }
-      SmartDashboard.putBoolean("Od seeded", m_odometrySeeded);
+      SmartDashboard.putBoolean("Odometry seeded", m_odometrySeeded);
     }
   }
 }
