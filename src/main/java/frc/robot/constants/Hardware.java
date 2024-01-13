@@ -5,7 +5,10 @@ public class Hardware
     // Controllers
     public static final int PRIMARY_CONTROLLER_PORT = 0;
     public static final int SECONDARY_CONTROLLER_PORT = 1;
+<<<<<<< HEAD
 
+=======
+>>>>>>> cb671cd (15: Implement Shooter Subsystem)
     // Front Left Swerve Module
     public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 1;
     public static final int FRONT_LEFT_STEER_MOTOR_ID = 2;
@@ -30,9 +33,12 @@ public class Hardware
     public static final int SHOOTER_MOTOR_1_ID = 9;
     public static final int SHOOTER_MOTOR_2_ID = 10;
     public static final int WRIST_MOTOR_ID = 11;
+<<<<<<< HEAD
 
     // Elevator
     public static final int ELEVATOR_LIMIT_SWITCH_ID = 0;
     public static final int ELEVATOR_MOTOR_1_ID = 11;
     public static final int ELEVATOR_MOTOR_2_ID = 0;
+=======
+>>>>>>> cb671cd (15: Implement Shooter Subsystem)
 }
