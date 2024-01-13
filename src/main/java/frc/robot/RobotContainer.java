@@ -31,6 +31,7 @@ public class RobotContainer
 
   // Getters
 
+<<<<<<< HEAD
 =======
   private final Shooter m_Shooter = new Shooter();
   
@@ -40,6 +41,10 @@ public class RobotContainer
 >>>>>>> cb671cd (15: Implement Shooter Subsystem)
   /**
    * @brief Gets the drivetrain subsystem.
+=======
+  /**
+   * @brief Gets the Drivetrain subsystem.
+>>>>>>> 8ff2aba (Update Documentation)
    * @return The drivetrain object
    */
   public Drivetrain getDriveSub()
@@ -49,6 +54,9 @@ public class RobotContainer
 
   /**
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 8ff2aba (Update Documentation)
    * @brief Gets the elevator subsystem.
    * @return The elevator object
    */
