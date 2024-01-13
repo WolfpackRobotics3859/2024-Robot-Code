@@ -1,8 +1,10 @@
 package frc.robot.constants.elevator;
 
 import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 
 public class ElevatorConstants
@@ -30,4 +32,7 @@ public class ElevatorConstants
         .withReverseLimitType(ReverseLimitTypeValue.NormallyOpen)
         .withReverseLimitEnable(true)
         .withReverseLimitRemoteSensorID(Hardware.ELEVATOR_LIMIT_SWITCH_ID);
+
+    public static final MotorOutputConfigs BRAKE_CONFIG = new MotorOutputConfigs()
+        .withNeutralMode(NeutralModeValue.Brake);
 }

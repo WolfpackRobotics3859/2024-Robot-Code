@@ -8,10 +8,12 @@ import javax.swing.text.Position;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
 
 import edu.wpi.first.wpilibj.DutyCycle;
@@ -35,6 +37,10 @@ public class Elevator extends SubsystemBase
     
     // Applies limit switch configuration to the first motor
     m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.HARD_LIMIT_CONFIGS);
+
+    // Applies a brake neutral mode to both motors
+    m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.BRAKE_CONFIG);
+    m_ElevatorMotor2.getConfigurator().apply(ElevatorConstants.BRAKE_CONFIG);
     
     // Send a request to the second motor to follow the first
     Follower followRequest = new Follower(Hardware.ELEVATOR_MOTOR_1_ID, false);
