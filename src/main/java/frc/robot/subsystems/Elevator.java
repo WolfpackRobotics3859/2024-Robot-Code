@@ -4,20 +4,15 @@
 
 package frc.robot.subsystems;
 
-import javax.swing.text.Position;
-
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
 
-import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Hardware;
 import frc.robot.constants.elevator.ElevatorConstants;
 
 public class Elevator extends SubsystemBase

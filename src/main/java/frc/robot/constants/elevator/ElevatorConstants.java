@@ -8,6 +8,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 
+import frc.robot.constants.Hardware;
+
 public class ElevatorConstants
 {
     /** Gains for the elevator motors */
