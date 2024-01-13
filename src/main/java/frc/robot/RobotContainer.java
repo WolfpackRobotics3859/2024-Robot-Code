@@ -27,6 +27,11 @@ public class RobotContainer
 
   // Getters
 
+  private final Shooter m_Shooter = new Shooter();
+  
+  // Controllers
+  private final CommandXboxController primaryController = new CommandXboxController(Hardware.PRIMARY_CONTROLLER_PORT);
+
   /**
    * @brief Gets the drivetrain subsystem.
    * @return The drivetrain object
