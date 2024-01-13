@@ -40,9 +40,10 @@ public class Shooter extends SubsystemBase
   */
   public void setMotorVelocity(ShooterConstants.MOTOR motor, double velocity)
   {
-    MotionMagicVelocityVoltage request = new MotionMagicVelocityVoltage(velocity, 40, false, 0, 0, false, false, false);
+    MotionMagicVelocityVoltage request = new MotionMagicVelocityVoltage(velocity, ShooterConstants.SHOOTER_MOTOR_ACCELERATION, false, 0, 0, false, false, false);
 
-    switch (motor){
+    switch (motor)
+    {
       case MOTOR_1:
         m_ShooterMotor1.setControl(request);
         break;

@@ -21,6 +21,8 @@ public class ShooterConstants
     
     public static final double WRIST_VELOCITY = 4;
 
+    public static final double SHOOTER_MOTOR_ACCELERATION = 40;
+
     // Motor Enum
     public enum MOTOR
     {
