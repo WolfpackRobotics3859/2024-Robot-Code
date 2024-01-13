@@ -25,11 +25,20 @@ public class RobotContainer
   private final CommandXboxController primaryController = new CommandXboxController(0);
 
   // Getters
+
+  /**
+   * @brief Gets the Drivetrain subsystem.
+   * @return The drivetrain object
+   */
   public Drivetrain getDriveSub()
   {
     return this.m_Drivetrain;
   }
 
+  /**
+   * @brief Gets the elevator subsystem.
+   * @return The elevator object
+   */
   public Elevator getElevator()
   {
     return this.m_Elevator;
