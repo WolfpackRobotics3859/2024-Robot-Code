@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 
 public class ElevatorConstants
@@ -23,7 +24,9 @@ public class ElevatorConstants
     /** Software limits for the elevator */
     public static final SoftwareLimitSwitchConfigs SOFT_LIMIT_CONFIGS = new SoftwareLimitSwitchConfigs()
         .withForwardSoftLimitEnable(true)
-        .withForwardSoftLimitThreshold(ELEVATOR_MAX_FORWARD_POS);
+        .withForwardSoftLimitThreshold(ELEVATOR_MAX_FORWARD_POS)
+        .withReverseSoftLimitEnable(true)
+        .withReverseSoftLimitThreshold(0);
 
     /** Limit switch configuration */
     public static final HardwareLimitSwitchConfigs HARD_LIMIT_CONFIGS = new HardwareLimitSwitchConfigs()
@@ -31,7 +34,8 @@ public class ElevatorConstants
         .withReverseLimitAutosetPositionValue(0)
         .withReverseLimitType(ReverseLimitTypeValue.NormallyOpen)
         .withReverseLimitEnable(true)
-        .withReverseLimitRemoteSensorID(Hardware.ELEVATOR_LIMIT_SWITCH_ID);
+        .withReverseLimitRemoteSensorID(Hardware.ELEVATOR_LIMIT_SWITCH_ID)
+        .withReverseLimitSource(ReverseLimitSourceValue.RemoteCANcoder);
 
     public static final MotorOutputConfigs BRAKE_CONFIG = new MotorOutputConfigs()
         .withNeutralMode(NeutralModeValue.Brake);
