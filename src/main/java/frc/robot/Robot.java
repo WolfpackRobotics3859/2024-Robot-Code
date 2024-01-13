@@ -14,38 +14,26 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   @Override
-  public void robotInit() 
-  {
+  public void robotInit() {
     m_robotContainer = new RobotContainer();
   }
 
   @Override
-  public void robotPeriodic() 
-  {
+  public void robotPeriodic() {
     CommandScheduler.getInstance().run();
   }
 
   @Override
-  public void disabledInit() 
-  {
-    // Intentionally Empty
-  }
+  public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() 
-  {
-    // Intentionally Empty
-  }
+  public void disabledPeriodic() {}
 
   @Override
-  public void disabledExit() 
-  {
-    // Intentionally Empty
-  }
+  public void disabledExit() {}
 
   @Override
-  public void autonomousInit() 
-  {
+  public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -54,52 +42,32 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousPeriodic() 
-  {
-    // Intentionally Empty
-  }
+  public void autonomousPeriodic() {}
 
   @Override
-  public void autonomousExit() 
-  {
-    // Intentionally Empty
-  }
+  public void autonomousExit() {}
 
   @Override
-  public void teleopInit() 
-  {
+  public void teleopInit() {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
   }
 
   @Override
-  public void teleopPeriodic() 
-  {
-    // Intentionally Empty
-  }
+  public void teleopPeriodic() {}
 
   @Override
-  public void teleopExit() 
-  {
-    // Intentionally Empty
-  }
+  public void teleopExit() {}
 
   @Override
-  public void testInit() 
-  {
+  public void testInit() {
     CommandScheduler.getInstance().cancelAll();
   }
 
   @Override
-  public void testPeriodic() 
-  {
-    // Intentionally Empty
-  }
+  public void testPeriodic() {}
 
   @Override
-  public void testExit() 
-  {
-    // Intentionally Empty
-  }
+  public void testExit() {}
 }
