@@ -10,10 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.drivetrain.TunerConstants;
 import frc.robot.subsystems.Drivetrain;
-<<<<<<< HEAD
 import frc.robot.subsystems.Elevator;
-=======
->>>>>>> cb671cd (15: Implement Shooter Subsystem)
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.drivetrain.Drive;
 
@@ -22,7 +19,6 @@ public class RobotContainer
   // Subsystems
   private final Drivetrain m_Drivetrain = new Drivetrain(TunerConstants.DRIVETRAIN_CONSTANTS, TunerConstants.FRONT_LEFT,
                       TunerConstants.FRONT_RIGHT, TunerConstants.BACK_LEFT, TunerConstants.BACK_RIGHT);
-<<<<<<< HEAD
   private final Elevator m_Elevator = new Elevator();
   private final Shooter m_Shooter = new Shooter();
 
@@ -31,20 +27,8 @@ public class RobotContainer
 
   // Getters
 
-<<<<<<< HEAD
-=======
-  private final Shooter m_Shooter = new Shooter();
-  
-  // Controllers
-  private final CommandXboxController primaryController = new CommandXboxController(Hardware.PRIMARY_CONTROLLER_PORT);
-
->>>>>>> cb671cd (15: Implement Shooter Subsystem)
   /**
    * @brief Gets the drivetrain subsystem.
-=======
-  /**
-   * @brief Gets the Drivetrain subsystem.
->>>>>>> 8ff2aba (Update Documentation)
    * @return The drivetrain object
    */
   public Drivetrain getDriveSub()
@@ -53,10 +37,6 @@ public class RobotContainer
   }
 
   /**
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 8ff2aba (Update Documentation)
    * @brief Gets the elevator subsystem.
    * @return The elevator object
    */
@@ -66,8 +46,6 @@ public class RobotContainer
   }
 
   /**
-=======
->>>>>>> cb671cd (15: Implement Shooter Subsystem)
    * @brief Gets the shooter subsystem.
    * @return The shooter object
    */
