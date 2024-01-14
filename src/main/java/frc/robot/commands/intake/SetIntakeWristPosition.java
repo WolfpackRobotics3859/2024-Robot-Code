@@ -7,40 +7,43 @@ package frc.robot.commands.intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class RunIntakeCommand extends Command
- {
-  /** Creates a new RunIntakeCommand. */
+public class SetIntakeWristPosition extends Command 
+{
+  
+  IntakeSubsystem m_Intake;
+  double m_Position;
 
-  private IntakeSubsystem m_intakeSubsystem;
-  double m_Percent;
-
-  public RunIntakeCommand(IntakeSubsystem intake, double percent)
+  /**
+   * @brief Spins the wrist motor towards a given position.
+   * @param shooter The shooter subsystem object.
+   * @param velocity The desired position to send the motor towards, measured in rotations.
+  */
+  public SetIntakeWristPosition(IntakeSubsystem intake, double position)
   {
-    this.m_intakeSubsystem = intake;
-    this.m_Percent = percent;
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intake);
+    this.m_Intake = intake;
+    this.m_Position = position;
+    addRequirements(m_Intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() 
   {
-        m_intakeSubsystem.setIntakePercent(this.m_Percent);
-
+    m_Intake.setWristPosition(this.m_Position);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute()
+  public void execute() 
   {
+    // Intentionally Empty
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) 
   {
-
+    // Intentionally Emptya
   }
 
   // Returns true when the command should end.
