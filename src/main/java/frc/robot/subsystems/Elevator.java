@@ -7,10 +7,11 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.ReverseLimitValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.elevator.ElevatorConstants;
@@ -19,6 +20,7 @@ public class Elevator extends SubsystemBase
 {
   private final TalonFX m_ElevatorMotor1 = new TalonFX(Hardware.ELEVATOR_MOTOR_1_ID);
   private final TalonFX m_ElevatorMotor2 = new TalonFX(Hardware.ELEVATOR_MOTOR_2_ID);
+  private final CANcoder m_CANcoder = new CANcoder(Hardware.ELEVATOR_CANCODER_ID);
 
   /** Creates a new Elevator. */
   public Elevator()
@@ -26,16 +28,19 @@ public class Elevator extends SubsystemBase
     // Apply gains to both motors
     m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.ELEVATOR_GAINS);
     m_ElevatorMotor2.getConfigurator().apply(ElevatorConstants.ELEVATOR_GAINS);
+    m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.MOTION_MAGIC_CONFIGS);
 
     // Applies the software position limit to the first motor
     m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.SOFT_LIMIT_CONFIGS);
-    
-    // Applies limit switch configuration to the first motor
-    m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.HARD_LIMIT_CONFIGS);
 
     // Applies a brake neutral mode to both motors
     m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.BRAKE_CONFIG);
     m_ElevatorMotor2.getConfigurator().apply(ElevatorConstants.BRAKE_CONFIG);
+
+    m_CANcoder.getConfigurator().apply(ElevatorConstants.MAGNET_SENSOR_CONFIGS);
+
+    // Applies the cancoder as the feedback source for the motor
+    m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.FEEDBACK_CONFIGS);
     
     // Send a request to the second motor to follow the first
     Follower followRequest = new Follower(Hardware.ELEVATOR_MOTOR_1_ID, false);
@@ -48,8 +53,11 @@ public class Elevator extends SubsystemBase
    */
   public void setElevatorPosition(double position)
   {
-    PositionDutyCycle request = new PositionDutyCycle(position, ElevatorConstants.ELEVATOR_VELOCITY, false, 0, 0, false, false, false);
-    m_ElevatorMotor1.setControl(request);
+    if (position <= ElevatorConstants.ELEVATOR_MAX_FORWARD_POS || position >= ElevatorConstants.ELEVATAOR_MAX_REVERSE_POS)
+    {
+      MotionMagicVoltage request = new MotionMagicVoltage(position, false, ElevatorConstants.ELEVATOR_FEED_FORWARD, 0, false, false, false);
+      m_ElevatorMotor1.setControl(request);
+    }
   }
 
   /**
@@ -59,7 +67,7 @@ public class Elevator extends SubsystemBase
   public void setElevatorPercent(double percent)
   {
     DutyCycleOut request = new DutyCycleOut(percent, false, false, false, false);
-    m_ElevatorMotor1.setControl(request);
+    m_ElevatorMotor1.setControl(request);  
   }
 
   // Telemetry
@@ -73,18 +81,20 @@ public class Elevator extends SubsystemBase
     return m_ElevatorMotor1.getPosition();
   }
 
-  /** 
-   * @brief Gets the current state of the limit switch.
-   * @return The current state of the limit switch as a ReverseLimitValue.
+  /**
+   * @brief Gets the CANcoder's current absolute position.
+   * @return A Status Signal of CANcoder's current absolute position.
    */
-  public ReverseLimitValue getLimitSwitch()
+  public StatusSignal<Double> getCANcoderPosition()
   {
-    return m_ElevatorMotor1.getReverseLimit().getValue();
+    return m_CANcoder.getAbsolutePosition();
   }
 
   @Override
   public void periodic()
   {
+    SmartDashboard.putNumber("Elevator pos", this.getElevatorPosition().getValue());
+    SmartDashboard.putNumber("Cancoder pos", this.getCANcoderPosition().getValue());
     // Intentionally Empty
   }
 }
