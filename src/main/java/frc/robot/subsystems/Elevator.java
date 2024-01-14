@@ -11,6 +11,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Hardware;
@@ -20,14 +21,17 @@ public class Elevator extends SubsystemBase
 {
   private final TalonFX m_ElevatorMotor1 = new TalonFX(Hardware.ELEVATOR_MOTOR_1_ID);
   private final TalonFX m_ElevatorMotor2 = new TalonFX(Hardware.ELEVATOR_MOTOR_2_ID);
-  private final CANcoder m_CANcoder = new CANcoder(Hardware.ELEVATOR_CANCODER_ID);
+  private final CANcoder m_CANCoder = new CANcoder(Hardware.ELEVATOR_CANCODER_ID);
+  private final Timer m_timer;
+
 
   /** Creates a new Elevator. */
   public Elevator()
   {
-    // Apply gains to both motors
+    // Applies gains to the motor
     m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.ELEVATOR_GAINS);
-    m_ElevatorMotor2.getConfigurator().apply(ElevatorConstants.ELEVATOR_GAINS);
+
+    // Applies Motion Magic configs to the motor
     m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.MOTION_MAGIC_CONFIGS);
 
     // Applies the software position limit to the first motor
@@ -35,9 +39,9 @@ public class Elevator extends SubsystemBase
 
     // Applies a brake neutral mode to both motors
     m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.BRAKE_CONFIG);
-    m_ElevatorMotor2.getConfigurator().apply(ElevatorConstants.BRAKE_CONFIG);
 
-    m_CANcoder.getConfigurator().apply(ElevatorConstants.MAGNET_SENSOR_CONFIGS);
+    // Configures the CANCoder
+    m_CANCoder.getConfigurator().apply(ElevatorConstants.MAGNET_SENSOR_CONFIGS);
 
     // Applies the cancoder as the feedback source for the motor
     m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.FEEDBACK_CONFIGS);
@@ -45,6 +49,10 @@ public class Elevator extends SubsystemBase
     // Send a request to the second motor to follow the first
     Follower followRequest = new Follower(Hardware.ELEVATOR_MOTOR_1_ID, false);
     m_ElevatorMotor2.setControl(followRequest);
+
+    // Start a timer
+    this.m_timer = new Timer();
+    m_timer.start();
   }
 
   /**
@@ -85,16 +93,19 @@ public class Elevator extends SubsystemBase
    * @brief Gets the CANcoder's current absolute position.
    * @return A Status Signal of CANcoder's current absolute position.
    */
-  public StatusSignal<Double> getCANcoderPosition()
+  public StatusSignal<Double> getCANCoderPosition()
   {
-    return m_CANcoder.getAbsolutePosition();
+    return m_CANCoder.getAbsolutePosition();
   }
 
   @Override
   public void periodic()
   {
-    SmartDashboard.putNumber("Elevator pos", this.getElevatorPosition().getValue());
-    SmartDashboard.putNumber("Cancoder pos", this.getCANcoderPosition().getValue());
-    // Intentionally Empty
+    if (m_timer.get() > 0.5)
+    {
+      m_timer.reset();
+      SmartDashboard.putNumber("Elevator position", this.getElevatorPosition().getValue());
+      SmartDashboard.putNumber("Cancoder position", this.getCANCoderPosition().getValue());
+    }
   }
 }
