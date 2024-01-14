@@ -4,18 +4,36 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
 import java.util.function.Supplier;
+
+import org.littletonrobotics.junction.Logger;
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.constants.drivetrain.DrivetrainConstants;
 
 public class Drivetrain extends SwerveDrivetrain implements Subsystem 
 {
+  private boolean m_odometrySeeded = false;
+  private PhotonCamera m_photonCamera;
+  private PhotonPoseEstimator m_photonPoseEstimator;
+  private Timer m_timer;
+
   /** 
     @brief Creates a new Drivetrain.
     @param driveTrainConstants Drivetrain-wide constants for the swerve drive
@@ -35,6 +53,13 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   public Drivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules)
   {
     super(driveTrainConstants, modules);
+    // Create a photon camera and pose estimator object
+    m_photonCamera = new PhotonCamera("front_camera");
+    m_photonPoseEstimator = new PhotonPoseEstimator(DrivetrainConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_photonCamera, DrivetrainConstants.FORWARD_CAMERA_POSITION);
+
+    // Create a timer for less critical tasks such as Smartdashboard updates
+    this.m_timer = new Timer();
+    m_timer.start();
   }
 
   /**
@@ -51,6 +76,44 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   @Override
   public void periodic() 
   {
-    // Intentionally Empty
+    //Publish pose for advantagescope odometry
+    Logger.recordOutput("robotPose", m_odometry.getEstimatedPosition());
+
+    // Ask Photon for a generated pose
+    Optional<EstimatedRobotPose> estPose = m_photonPoseEstimator.update();
+
+    // Checks if Photon returned a pose
+    if (!estPose.isEmpty() && m_photonCamera.getLatestResult().getBestTarget().getPoseAmbiguity() < DrivetrainConstants.AMBIGUITY_THRESHOLD)
+    { 
+      // Seeds an initial odometry value from vision system
+      if (!m_odometrySeeded)
+      {
+        // Seed pose
+        this.m_odometry.resetPosition(estPose.get().estimatedPose.getRotation().toRotation2d(), m_modulePositions,
+            estPose.get().estimatedPose.toPose2d());
+        m_odometrySeeded = true;
+      } 
+      else
+      {
+        // Add vision to kalman filter
+        this.addVisionMeasurement(estPose.get().estimatedPose.toPose2d(), estPose.get().timestampSeconds);
+        SmartDashboard.putString("Pose - Vision", estPose.get().estimatedPose.toPose2d().toString());
+      }
+    }
+    // Report robots current pose to smartdashboard every half second
+    if (m_timer.get() > 0.5)
+    {
+      m_timer.reset();
+      SmartDashboard.putString("Pose - Drivetrain", m_odometry.getEstimatedPosition().toString());
+      try 
+      {
+        SmartDashboard.putNumber("Pose Ambuguity", m_photonCamera.getLatestResult().getBestTarget().getPoseAmbiguity());
+      } 
+      catch(Exception e) 
+      {
+        //Intenionally Empty
+      }
+      SmartDashboard.putBoolean("Odometry seeded", m_odometrySeeded);
+    }
   }
 }
