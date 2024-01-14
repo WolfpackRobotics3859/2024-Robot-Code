@@ -18,9 +18,9 @@ public class ElevatorConstants
 {
     /** Gains for the elevator motors */
     public static final Slot0Configs ELEVATOR_GAINS = new Slot0Configs()
-        .withKP(1).withKI(0).withKD(0)
-        .withKS(0).withKV(0).withKA(0)
-        .withGravityType(GravityTypeValue.Arm_Cosine);
+        .withKP(18).withKI(0).withKD(0.1)
+        .withKS(0.4).withKV(0.15).withKA(0)
+        .withKG(0.05).withGravityType(GravityTypeValue.Arm_Cosine);
 
     public static final MotionMagicConfigs MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(10)
