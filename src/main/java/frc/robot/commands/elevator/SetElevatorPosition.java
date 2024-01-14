@@ -42,7 +42,7 @@ public class SetElevatorPosition extends Command
   @Override
   public void end(boolean interrupted)
   {
-    m_Elevator.setElevatorPercent(0);
+    // Intentionally Empty
   }
 
   // Returns true when the command should end.
