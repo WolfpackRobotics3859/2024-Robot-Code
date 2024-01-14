@@ -14,6 +14,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.drivetrain.Drive;
 import frc.robot.commands.elevator.SetElevatorPosition;
+import frc.robot.commands.drivetrain.SeedFieldRelative;
 
 public class RobotContainer 
 {
@@ -24,7 +25,7 @@ public class RobotContainer
   private final Shooter m_Shooter = new Shooter();
 
   // Controllers
-  private final CommandXboxController primaryController = new CommandXboxController(Hardware.PRIMARY_CONTROLLER_PORT);
+  private final CommandXboxController m_primaryController = new CommandXboxController(Hardware.PRIMARY_CONTROLLER_PORT);
 
   // Getters
   
@@ -64,9 +65,9 @@ public class RobotContainer
   {
     m_Drivetrain.setDefaultCommand(
       new Drive(m_Drivetrain,
-                () -> -primaryController.getLeftY(),
-                () -> -primaryController.getLeftX(),
-                () -> -primaryController.getRightX()
+                () -> -m_primaryController.getLeftY(),
+                () -> -m_primaryController.getLeftX(),
+                () -> -m_primaryController.getRightX()
       ));
 
       primaryController.a().whileTrue(new SetElevatorPosition(m_Elevator, .1));
