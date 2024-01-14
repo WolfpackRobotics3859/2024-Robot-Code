@@ -32,7 +32,7 @@ public class Hardware
     public static final int WRIST_MOTOR_ID = 11;
 
     // Elevator
-    public static final int ELEVATOR_CANCODER_ID = 5;
     public static final int ELEVATOR_MOTOR_1_ID = 12;
     public static final int ELEVATOR_MOTOR_2_ID = 18;
+    public static final int ELEVATOR_CANCODER_ID = 5;
 }
