@@ -14,7 +14,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
 
-  private TalonFX intakeMotor = new TalonFX(9);
+  private TalonFX intakeMotor = new TalonFX(17);
 
 
   public IntakeSubsystem()
@@ -30,7 +30,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setIntakePosition(double position)
   {
-    MotionMagicVelocityVoltage request = new MotionMagicVelocityVoltage(position, 0, false, 0, 10, false, false, false);
+    MotionMagicVelocityVoltage request = new MotionMagicVelocityVoltage(position, 40, false, 0, 0, false, false, false);
     intakeMotor.setControl(request);
   }
 }

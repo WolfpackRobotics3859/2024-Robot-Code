@@ -10,9 +10,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.drivetrain.TunerConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.drivetrain.Drive;
 import frc.robot.commands.drivetrain.SeedFieldRelative;
+import frc.robot.commands.intake.RunIntakeCommand;
 
 public class RobotContainer 
 {
@@ -20,6 +22,7 @@ public class RobotContainer
   private final Drivetrain m_Drivetrain = new Drivetrain(TunerConstants.DRIVETRAIN_CONSTANTS, TunerConstants.FRONT_LEFT,
                       TunerConstants.FRONT_RIGHT, TunerConstants.BACK_LEFT, TunerConstants.BACK_RIGHT);
   private final Shooter m_Shooter = new Shooter();
+  private final IntakeSubsystem m_Intake = new IntakeSubsystem();
   
   // Controllers
   private final CommandXboxController m_primaryController = new CommandXboxController(Hardware.PRIMARY_CONTROLLER_PORT);
@@ -57,6 +60,7 @@ public class RobotContainer
       ));
 
       m_primaryController.a().onTrue(new SeedFieldRelative(m_Drivetrain));
+      m_primaryController.b().whileTrue(new RunIntakeCommand(m_Intake, 60));
   }
 
   public Command getAutonomousCommand() 
