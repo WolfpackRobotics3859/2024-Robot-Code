@@ -29,7 +29,6 @@ public class Robot extends LoggedRobot
   public void robotPeriodic() 
   {
     CommandScheduler.getInstance().run();
-    
   }
 
   @Override
@@ -83,7 +82,7 @@ public class Robot extends LoggedRobot
   @Override
   public void teleopPeriodic() 
   {
- 
+    // Intentionally Empty
   }
 
   @Override

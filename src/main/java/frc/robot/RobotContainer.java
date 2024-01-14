@@ -13,7 +13,6 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.drivetrain.Drive;
-import frc.robot.commands.elevator.SetElevatorPosition;
 
 public class RobotContainer 
 {
@@ -68,10 +67,6 @@ public class RobotContainer
                 () -> -m_primaryController.getLeftX(),
                 () -> -m_primaryController.getRightX()
       ));
-
-      m_primaryController.a().whileTrue(new SetElevatorPosition(m_Elevator, .1));
-      m_primaryController.b().whileTrue(new SetElevatorPosition(m_Elevator, .2));
-      m_primaryController.x().whileTrue(new SetElevatorPosition(m_Elevator, 0));
   }
 
   public Command getAutonomousCommand() 
