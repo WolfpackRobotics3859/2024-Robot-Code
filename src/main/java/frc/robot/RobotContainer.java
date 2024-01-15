@@ -15,6 +15,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.commands.drivetrain.Drive;
 import frc.robot.commands.drivetrain.SeedFieldRelative;
 import frc.robot.commands.intake.RunIntakeCommand;
+import frc.robot.commands.intake.SetIntakeWristPosition;
 
 public class RobotContainer 
 {
@@ -60,7 +61,8 @@ public class RobotContainer
       ));
 
       m_primaryController.a().onTrue(new SeedFieldRelative(m_Drivetrain));
-      m_primaryController.b().whileTrue(new RunIntakeCommand(m_Intake, 60));
+      m_primaryController.b().whileTrue(new RunIntakeCommand(m_Intake, 0.3));
+      m_primaryController.x().whileTrue((new SetIntakeWristPosition(m_Intake, 30)));
   }
 
   public Command getAutonomousCommand() 

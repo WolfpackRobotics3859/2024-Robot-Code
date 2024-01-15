@@ -9,7 +9,6 @@ import frc.robot.constants.Hardware;
 import frc.robot.constants.intake.IntakeConstants;
 
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
