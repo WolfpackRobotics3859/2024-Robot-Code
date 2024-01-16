@@ -1,6 +1,16 @@
 package frc.robot.constants.shooter;
 
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+
+import frc.robot.constants.Hardware;
 
 public class ShooterConstants
 {
@@ -18,6 +28,30 @@ public class ShooterConstants
     public static final Slot0Configs WRIST_GAINS = new Slot0Configs()
         .withKP(0.03).withKI(0).withKD(0)
         .withKS(0).withKV(0).withKA(0);
+
+    public static final double SHOOTER_WRIST_MAX_FORWARD_POS = .2;
+    public static final double SHOOTER_WRIST_MAX_REVERSE_POS = 0;
+
+    /** Software limits for the elevator */
+    public static final SoftwareLimitSwitchConfigs SOFT_LIMIT_CONFIGS = new SoftwareLimitSwitchConfigs()
+        .withForwardSoftLimitEnable(true)
+        .withForwardSoftLimitThreshold(SHOOTER_WRIST_MAX_FORWARD_POS)
+        .withReverseSoftLimitEnable(true)
+        .withReverseSoftLimitThreshold(SHOOTER_WRIST_MAX_REVERSE_POS);
+
+    public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs()
+        .withFeedbackRemoteSensorID(Hardware.SHOOTER_CANCODER_ID)
+        .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder)
+        .withRotorToSensorRatio(1)
+        .withSensorToMechanismRatio(1);
+
+    public static final MagnetSensorConfigs MAGNET_SENSOR_CONFIGS = new MagnetSensorConfigs()
+        .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
+        .withMagnetOffset(0);
+    
+    public static final MotorOutputConfigs BRAKE_CONFIG = new MotorOutputConfigs()
+        .withNeutralMode(NeutralModeValue.Brake)
+        .withInverted(InvertedValue.Clockwise_Positive);
     
     public static final double WRIST_VELOCITY = 4;
 
