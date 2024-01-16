@@ -137,7 +137,7 @@ public class Shooter extends SubsystemBase
   */
   public StatusSignal<Double> getWristMotorPos()
   {
-    return m_ShooterMotor1.getPosition();
+    return m_WristCANCoder.getAbsolutePosition();
   }
 
   @Override
