@@ -7,7 +7,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.constants.Hardware;
@@ -20,8 +21,9 @@ public class Shooter extends SubsystemBase
   private final TalonFX m_ShooterMotor1 = new TalonFX(Hardware.SHOOTER_MOTOR_1_ID);
   private final TalonFX m_ShooterMotor2 = new TalonFX(Hardware.SHOOTER_MOTOR_2_ID);
   private final TalonFX m_WristMotor = new TalonFX(Hardware.WRIST_MOTOR_ID);
+  private final CANcoder m_WristCANCoder = new CANcoder(Hardware.SHOOTER_CANCODER_ID);
 
-    /**
+  /**
    * @brief Creates a new Shooter subsystem.
   */
   public Shooter() 
@@ -29,6 +31,13 @@ public class Shooter extends SubsystemBase
     m_ShooterMotor1.getConfigurator().apply(ShooterConstants.SHOOTER_1_GAINS);
     m_ShooterMotor2.getConfigurator().apply(ShooterConstants.SHOOTER_2_GAINS);
     m_WristMotor.getConfigurator().apply(ShooterConstants.WRIST_GAINS);
+
+    m_WristCANCoder.getConfigurator().apply(ShooterConstants.MAGNET_SENSOR_CONFIGS);
+
+    m_WristMotor.getConfigurator().apply(ShooterConstants.MOTION_MAGIC_CONFIGS);
+    m_WristMotor.getConfigurator().apply(ShooterConstants.BRAKE_CONFIG);
+    m_WristMotor.getConfigurator().apply(ShooterConstants.FEEDBACK_CONFIGS);
+    m_WristMotor.getConfigurator().apply(ShooterConstants.SOFT_LIMIT_CONFIGS);
   }
 
   // Shooter Functions
@@ -97,7 +106,7 @@ public class Shooter extends SubsystemBase
   */
   public void setWristPos(double position)
   {
-    PositionDutyCycle request = new PositionDutyCycle(position, ShooterConstants.WRIST_VELOCITY, false, 0, 0, false, false, false);
+    MotionMagicVoltage request = new MotionMagicVoltage(position, false, ShooterConstants.SHOOTER_WRIST_FEED_FORWARD, 0, false, false, false);
     m_WristMotor.setControl(request);
   }
 

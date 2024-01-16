@@ -2,6 +2,7 @@ package frc.robot.constants.shooter;
 
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -29,8 +30,13 @@ public class ShooterConstants
         .withKP(0.03).withKI(0).withKD(0)
         .withKS(0).withKV(0).withKA(0);
 
+    public static final MotionMagicConfigs MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
+        .withMotionMagicCruiseVelocity(10)
+        .withMotionMagicAcceleration(2);
+
     public static final double SHOOTER_WRIST_MAX_FORWARD_POS = .2;
     public static final double SHOOTER_WRIST_MAX_REVERSE_POS = 0;
+    public static final double SHOOTER_WRIST_FEED_FORWARD = 0;
 
     /** Software limits for the elevator */
     public static final SoftwareLimitSwitchConfigs SOFT_LIMIT_CONFIGS = new SoftwareLimitSwitchConfigs()
