@@ -13,7 +13,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.constants.Hardware;
 import frc.robot.constants.shooter.ShooterConstants;
-
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase
@@ -22,6 +23,8 @@ public class Shooter extends SubsystemBase
   private final TalonFX m_ShooterMotor2 = new TalonFX(Hardware.SHOOTER_MOTOR_2_ID);
   private final TalonFX m_WristMotor = new TalonFX(Hardware.WRIST_MOTOR_ID);
   private final CANcoder m_WristCANCoder = new CANcoder(Hardware.SHOOTER_CANCODER_ID);
+
+  private final Timer m_timer;
 
   /**
    * @brief Creates a new Shooter subsystem.
@@ -38,6 +41,9 @@ public class Shooter extends SubsystemBase
     m_WristMotor.getConfigurator().apply(ShooterConstants.BRAKE_CONFIG);
     m_WristMotor.getConfigurator().apply(ShooterConstants.FEEDBACK_CONFIGS);
     m_WristMotor.getConfigurator().apply(ShooterConstants.SOFT_LIMIT_CONFIGS);
+
+    this.m_timer = new Timer();
+    m_timer.start();
   }
 
   // Shooter Functions
@@ -143,6 +149,10 @@ public class Shooter extends SubsystemBase
   @Override
   public void periodic()
   {
-    // Intentionally Empty
+    if (m_timer.get() > 0.5)
+    {
+      m_timer.reset();
+      SmartDashboard.putNumber("Elevator position", this.getWristMotorPos().getValue());
+    }
   }
 }

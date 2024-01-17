@@ -56,7 +56,7 @@ public class ShooterConstants
 
     public static final MagnetSensorConfigs MAGNET_SENSOR_CONFIGS = new MagnetSensorConfigs()
         .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
-        .withMagnetOffset(0);
+        .withMagnetOffset(0.269);
     
     public static final MotorOutputConfigs BRAKE_CONFIG = new MotorOutputConfigs()
         .withNeutralMode(NeutralModeValue.Brake)
