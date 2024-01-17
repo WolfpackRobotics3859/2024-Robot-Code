@@ -7,6 +7,8 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -27,8 +29,9 @@ public class ShooterConstants
     
     // Wrist motor
     public static final Slot0Configs WRIST_GAINS = new Slot0Configs()
-        .withKP(0.03).withKI(0).withKD(0)
-        .withKS(0).withKV(0).withKA(0);
+        .withKP(18).withKI(0).withKD(0.1)
+        .withKS(0.4).withKV(0.15).withKA(0)
+        .withKG(0.05).withGravityType(GravityTypeValue.Arm_Cosine);
 
     public static final MotionMagicConfigs MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(10)
