@@ -22,7 +22,7 @@ public class Shooter extends SubsystemBase
   private final TalonFX m_ShooterMotor1 = new TalonFX(Hardware.SHOOTER_MOTOR_1_ID);
   private final TalonFX m_ShooterMotor2 = new TalonFX(Hardware.SHOOTER_MOTOR_2_ID);
   private final TalonFX m_WristMotor = new TalonFX(Hardware.WRIST_MOTOR_ID);
-  private final CANcoder m_WristCANCoder = new CANcoder(Hardware.SHOOTER_CANCODER_ID);
+  private final CANcoder m_WristCANCoder = new CANcoder(Hardware.SHOOTER_WRIST_CANCODER_ID);
 
   private final Timer m_timer;
 
@@ -31,16 +31,13 @@ public class Shooter extends SubsystemBase
   */
   public Shooter() 
   {
-    m_ShooterMotor1.getConfigurator().apply(ShooterConstants.SHOOTER_1_GAINS);
-    m_ShooterMotor2.getConfigurator().apply(ShooterConstants.SHOOTER_2_GAINS);
-    m_WristMotor.getConfigurator().apply(ShooterConstants.WRIST_GAINS);
+    // Motor configuration
+    m_ShooterMotor1.getConfigurator().apply(ShooterConstants.SHOOTER_MOTOR_1_CONFIGURATION);
+    m_ShooterMotor2.getConfigurator().apply(ShooterConstants.SHOOTER_MOTOR_2_CONFIGURATION);
+    m_WristMotor.getConfigurator().apply(ShooterConstants.WRIST_MOTOR_CONFIGURATION);
 
-    m_WristCANCoder.getConfigurator().apply(ShooterConstants.MAGNET_SENSOR_CONFIGS);
-
-    m_WristMotor.getConfigurator().apply(ShooterConstants.MOTION_MAGIC_CONFIGS);
-    m_WristMotor.getConfigurator().apply(ShooterConstants.BRAKE_CONFIG);
-    m_WristMotor.getConfigurator().apply(ShooterConstants.FEEDBACK_CONFIGS);
-    m_WristMotor.getConfigurator().apply(ShooterConstants.SOFT_LIMIT_CONFIGS);
+    // CANCoder configuration
+    m_WristCANCoder.getConfigurator().apply(ShooterConstants.WRIST_CANCODER_CONFIGURATION);
 
     this.m_timer = new Timer();
     m_timer.start();
@@ -110,7 +107,7 @@ public class Shooter extends SubsystemBase
    * @brief Applies a Position Duty Cycle request to the wrist motor with the set position.
    * @param position The desired position to spin the motor toward, measured in rotations.
   */
-  public void setWristPos(double position)
+  public void setWristPosition(double position)
   {
     MotionMagicVoltage request = new MotionMagicVoltage(position, false, ShooterConstants.SHOOTER_WRIST_FEED_FORWARD, 0, false, false, false);
     m_WristMotor.setControl(request);
@@ -141,7 +138,7 @@ public class Shooter extends SubsystemBase
    * @brief Gets the position of the wrist motor.
    * @return Returns a Status Signal of the current position.
   */
-  public StatusSignal<Double> getWristMotorPos()
+  public StatusSignal<Double> getWristMotorPosition()
   {
     return m_WristCANCoder.getAbsolutePosition();
   }
@@ -152,7 +149,7 @@ public class Shooter extends SubsystemBase
     if (m_timer.get() > 0.5)
     {
       m_timer.reset();
-      SmartDashboard.putNumber("Elevator position", this.getWristMotorPos().getValue());
+      SmartDashboard.putNumber("Elevator position", this.getWristMotorPosition().getValue());
     }
   }
 }
