@@ -14,7 +14,7 @@ public class SetFeederMotorVelocity extends Command
   double m_Velocity;
 
   /**
-   * @brief Runs motor number 1 at a given velocity.
+   * @brief Runs the feeder motor at a given velocity.
    * @param shooter The shooter subsystem object.
    * @param velocity The desired velocity to run the motor at, measured in rotations per second.
   */

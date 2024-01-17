@@ -14,7 +14,7 @@ public class SetFeederMotorPercent extends Command
   double m_Percent;
 
   /**
-   * @brief Applies a percent of the available voltage to shooter motor 1.
+   * @brief Applies a percent of the available voltage to the feeder motor.
    * @param shooter The shooter subsystem object.
    * @param percent The percent voltage to apply to the motor, from -1 to 1.
   */
