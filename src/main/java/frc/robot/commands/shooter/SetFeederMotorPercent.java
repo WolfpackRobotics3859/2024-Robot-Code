@@ -43,7 +43,7 @@ public class SetFeederMotorPercent extends Command
   @Override
   public void end(boolean interrupted)
   {
-    m_Shooter.setShooterMotorPercent(MOTOR.MOTOR_1, 0);
+    m_Shooter.setShooterMotorPercent(MOTOR.FEEDER_MOTOR, 0);
   }
 
   // Returns true when the command should end.
