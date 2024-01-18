@@ -9,7 +9,6 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -32,15 +31,19 @@ public class ShooterConstants
         .withKS(0.035335).withKV(0.11133).withKA(0.0098933);
     
     // Wrist motor
+    public static final Slot0Configs WRIST_GAINS = new Slot0Configs()
+        .withKP(0.03).withKI(0).withKD(0)
+        .withKS(0).withKV(0).withKA(0);
+
+    // Feeder motor
+    public static final Slot0Configs FEEDER_GAINS = new Slot0Configs()
+        .withKP(0.03).withKI(0).withKD(0)
+        .withKS(0).withKV(0).withKA(0);
+    
     public static final double WRIST_VELOCITY = 4;
     public static final double SHOOTER_WRIST_MAX_FORWARD_ROTATION = .2;
     public static final double SHOOTER_WRIST_MAX_REVERSE_ROTATION = 0;
     public static final double SHOOTER_WRIST_FEED_FORWARD = 0;
-
-    public static final Slot0Configs WRIST_GAINS = new Slot0Configs()
-        .withKP(18).withKI(0).withKD(0.1)
-        .withKS(0.4).withKV(0.15).withKA(0)
-        .withKG(0.05).withGravityType(GravityTypeValue.Arm_Cosine);
 
     public static final MotionMagicConfigs WRIST_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(10)
@@ -87,6 +90,7 @@ public class ShooterConstants
     {
         MOTOR_1,
         MOTOR_2,
-        WRIST_MOTOR
+        WRIST_MOTOR,
+        FEEDER_MOTOR
     }
 }

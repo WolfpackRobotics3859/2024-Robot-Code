@@ -22,6 +22,7 @@ public class Shooter extends SubsystemBase
   private final TalonFX m_ShooterMotor1 = new TalonFX(Hardware.SHOOTER_MOTOR_1_ID);
   private final TalonFX m_ShooterMotor2 = new TalonFX(Hardware.SHOOTER_MOTOR_2_ID);
   private final TalonFX m_WristMotor = new TalonFX(Hardware.WRIST_MOTOR_ID);
+  private final TalonFX m_FeederMotor = new TalonFX(Hardware.FEEDER_MOTOR_ID);
   private final CANcoder m_WristCANCoder = new CANcoder(Hardware.SHOOTER_WRIST_CANCODER_ID);
 
   private final Timer m_timer;
@@ -35,6 +36,7 @@ public class Shooter extends SubsystemBase
     m_ShooterMotor1.getConfigurator().apply(ShooterConstants.SHOOTER_MOTOR_1_CONFIGURATION);
     m_ShooterMotor2.getConfigurator().apply(ShooterConstants.SHOOTER_MOTOR_2_CONFIGURATION);
     m_WristMotor.getConfigurator().apply(ShooterConstants.WRIST_MOTOR_CONFIGURATION);
+    m_FeederMotor.getConfigurator().apply(ShooterConstants.FEEDER_GAINS);
 
     // CANCoder configuration
     m_WristCANCoder.getConfigurator().apply(ShooterConstants.WRIST_CANCODER_CONFIGURATION);
@@ -64,6 +66,9 @@ public class Shooter extends SubsystemBase
         break;
       case WRIST_MOTOR:
         break;
+      case FEEDER_MOTOR:
+        m_FeederMotor.setControl(request);
+        break;
       default:
         DutyCycleOut defaultRequest = new DutyCycleOut(0, false, false, false, false);
         m_ShooterMotor1.setControl(defaultRequest);
@@ -91,6 +96,9 @@ public class Shooter extends SubsystemBase
         break;
       case WRIST_MOTOR:
         m_WristMotor.setControl(request);
+        break;
+      case FEEDER_MOTOR:
+        m_FeederMotor.setControl(request);
         break;
       default:
         DutyCycleOut defaultRequest = new DutyCycleOut(0, false, false, false, false);
@@ -129,6 +137,8 @@ public class Shooter extends SubsystemBase
         return m_ShooterMotor2.getVelocity();
       case WRIST_MOTOR:
         return m_WristMotor.getVelocity();
+      case FEEDER_MOTOR:
+        return m_FeederMotor.getVelocity();
       default:
         return m_ShooterMotor1.getVelocity();
     }
