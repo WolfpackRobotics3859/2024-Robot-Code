@@ -45,6 +45,7 @@ public class ShooterConstants
     public static final double SHOOTER_WRIST_MAX_REVERSE_ROTATION = 0;
     public static final double SHOOTER_WRIST_FEED_FORWARD = 0;
 
+    // Wrist configs
     public static final MotionMagicConfigs WRIST_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(10)
         .withMotionMagicAcceleration(2);
@@ -76,6 +77,9 @@ public class ShooterConstants
 
     public static final TalonFXConfiguration SHOOTER_MOTOR_2_CONFIGURATION = new TalonFXConfiguration()
         .withSlot0(SHOOTER_2_GAINS);
+
+    public static final TalonFXConfiguration FEEDER_MOTOR_CONFIGURATION = new TalonFXConfiguration()
+        .withSlot0(FEEDER_GAINS);
 
     public static final TalonFXConfiguration WRIST_MOTOR_CONFIGURATION = new TalonFXConfiguration()
         .withFeedback(WRIST_FEEDBACK_CONFIGS).withMotionMagic(WRIST_MOTION_MAGIC_CONFIGS)

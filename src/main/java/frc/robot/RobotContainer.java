@@ -26,7 +26,6 @@ public class RobotContainer
   private final CommandXboxController m_primaryController = new CommandXboxController(Hardware.PRIMARY_CONTROLLER_PORT);
 
   // Getters
-  
   /**
    * @brief Gets the Drivetrain subsystem.
    * @return The drivetrain object

@@ -74,6 +74,7 @@ public class Shooter extends SubsystemBase
         m_ShooterMotor1.setControl(defaultRequest);
         m_ShooterMotor2.setControl(defaultRequest);
         m_WristMotor.setControl(defaultRequest);
+        m_FeederMotor.setControl(defaultRequest);
         break;
     }
   }
@@ -105,6 +106,7 @@ public class Shooter extends SubsystemBase
         m_ShooterMotor1.setControl(defaultRequest);
         m_ShooterMotor2.setControl(defaultRequest);
         m_WristMotor.setControl(defaultRequest);
+        m_FeederMotor.setControl(defaultRequest);
         break;
     }
   }
@@ -159,7 +161,7 @@ public class Shooter extends SubsystemBase
     if (m_timer.get() > 0.5)
     {
       m_timer.reset();
-      SmartDashboard.putNumber("Elevator position", this.getWristMotorPosition().getValue());
+      SmartDashboard.putNumber("Shooter Wrist position", this.getWristMotorPosition().getValue());
     }
   }
 }
