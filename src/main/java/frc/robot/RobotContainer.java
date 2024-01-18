@@ -14,8 +14,6 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.drivetrain.Drive;
 import frc.robot.commands.drivetrain.SeedFieldRelative;
-import frc.robot.commands.intake.RunIntakeCommand;
-import frc.robot.commands.intake.SetIntakeWristPosition;
 
 public class RobotContainer 
 {
@@ -46,6 +44,15 @@ public class RobotContainer
     return this.m_Shooter;
   }
 
+   /**
+   * @brief Gets the intake subsystem.
+   * @return The intake object
+   */
+  public IntakeSubsystem getIntake()
+  {
+    return this.m_Intake;
+  }
+
   public RobotContainer() 
   {
     configureBindings();
@@ -61,8 +68,7 @@ public class RobotContainer
       ));
 
       m_primaryController.a().onTrue(new SeedFieldRelative(m_Drivetrain));
-      m_primaryController.b().whileTrue(new RunIntakeCommand(m_Intake, 0.3));
-      m_primaryController.x().whileTrue((new SetIntakeWristPosition(m_Intake, 30)));
+     
   }
 
   public Command getAutonomousCommand() 

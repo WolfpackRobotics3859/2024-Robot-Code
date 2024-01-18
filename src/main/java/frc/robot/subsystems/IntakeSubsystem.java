@@ -17,33 +17,32 @@ public class IntakeSubsystem extends SubsystemBase
 {
   /** Creates a new IntakeSubsystem. */
 
-  private TalonFX m_IntakeMotor = new TalonFX(Hardware.INTAKE_MOTOR_ID);
+  private TalonFX m_RollerMotor = new TalonFX(Hardware.INTAKE_ROLLER_MOTOR_ID);
   private final TalonFX m_WristMotor = new TalonFX(Hardware.INTAKE_WRIST_MOTOR_ID);
 
 
   public IntakeSubsystem()
   {
-    this.m_IntakeMotor.getConfigurator().apply(IntakeConstants.INTAKE_GAINS);
+    this.m_RollerMotor.getConfigurator().apply(IntakeConstants.INTAKE_ROLLER_GAINS);
     this.m_WristMotor.getConfigurator().apply(IntakeConstants.INTAKE_WRIST_GAINS);
-    this.m_WristMotor.getConfigurator().apply(IntakeConstants.MOTION_MAGIC_CONFIGS);
-
-  }
-
-  @Override
-  public void periodic()
-  {
-    // Intentionally Empty
+    this.m_WristMotor.getConfigurator().apply(IntakeConstants.WRIST_MOTOR_MOTION_MAGIC_CONFIGS);
   }
 
   public void setIntakePercent(double percent)
   {
     DutyCycleOut request = new DutyCycleOut(percent, false, false, false, false);
-    m_IntakeMotor.setControl(request);
+    m_RollerMotor.setControl(request);
   }
 
   public void setWristPosition (double position)
   {
     MotionMagicVoltage request = new MotionMagicVoltage(position, false, IntakeConstants.INTAKE_WRIST_FEED_FORWARD, 0, false, false, false);
     m_WristMotor.setControl(request);
+  }
+  
+   @Override
+  public void periodic()
+  {
+    // Intentionally Empty
   }
 }

@@ -22,7 +22,6 @@ public class SetIntakeWristPosition extends Command
   {
     this.m_Intake = intake;
     this.m_Position = position;
-    addRequirements(m_Intake);
   }
 
   // Called when the command is initially scheduled.

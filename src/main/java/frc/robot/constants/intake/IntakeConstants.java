@@ -10,13 +10,13 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 /** Add your docs here. */
 public class IntakeConstants
 {
-    public static final Slot0Configs INTAKE_GAINS = new Slot0Configs()
+    public static final Slot0Configs INTAKE_ROLLER_GAINS = new Slot0Configs()
         .withKP(0.1).withKI(0).withKD(0);
 
     public static final Slot0Configs INTAKE_WRIST_GAINS = new Slot0Configs()
         .withKP(0.1).withKI(0).withKD(0);
 
-    public static final MotionMagicConfigs MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
+    public static final MotionMagicConfigs WRIST_MOTOR_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(10)
         .withMotionMagicAcceleration(2);
 

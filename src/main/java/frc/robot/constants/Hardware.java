@@ -31,6 +31,6 @@ public class Hardware
     public static final int WRIST_MOTOR_ID = 11;
 
     //Intake Motors
-    public static final int INTAKE_MOTOR_ID = 12;
+    public static final int INTAKE_ROLLER_MOTOR_ID = 12;
     public static final int INTAKE_WRIST_MOTOR_ID = 13;
 }
