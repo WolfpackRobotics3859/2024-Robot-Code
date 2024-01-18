@@ -18,6 +18,11 @@ public class ShooterConstants
     public static final Slot0Configs WRIST_GAINS = new Slot0Configs()
         .withKP(0.03).withKI(0).withKD(0)
         .withKS(0).withKV(0).withKA(0);
+
+    // Feeder motor
+    public static final Slot0Configs FEEDER_GAINS = new Slot0Configs()
+        .withKP(0.03).withKI(0).withKD(0)
+        .withKS(0).withKV(0).withKA(0);
     
     public static final double WRIST_VELOCITY = 4;
 
@@ -28,6 +33,7 @@ public class ShooterConstants
     {
         MOTOR_1,
         MOTOR_2,
-        WRIST_MOTOR
+        WRIST_MOTOR,
+        FEEDER_MOTOR
     }
 }
