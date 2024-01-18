@@ -11,28 +11,41 @@ import frc.robot.constants.Hardware;
 import frc.robot.constants.drivetrain.TunerConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.drivetrain.Drive;
-import frc.robot.commands.drivetrain.SeedFieldRelative;
 
 public class RobotContainer 
 {
   // Subsystems
   private final Drivetrain m_Drivetrain = new Drivetrain(TunerConstants.DRIVETRAIN_CONSTANTS, TunerConstants.FRONT_LEFT,
                       TunerConstants.FRONT_RIGHT, TunerConstants.BACK_LEFT, TunerConstants.BACK_RIGHT);
+  private final Elevator m_Elevator = new Elevator();
   private final Shooter m_Shooter = new Shooter();
   private final IntakeSubsystem m_Intake = new IntakeSubsystem();
   
+
   // Controllers
   private final CommandXboxController m_primaryController = new CommandXboxController(Hardware.PRIMARY_CONTROLLER_PORT);
 
+  // Getters
+  
   /**
-   * @brief Gets the drivetrain subsystem.
+   * @brief Gets the Drivetrain subsystem.
    * @return The drivetrain object
    */
   public Drivetrain getDriveSub()
   {
     return this.m_Drivetrain;
+  }
+
+  /**
+   * @brief Gets the elevator subsystem.
+   * @return The elevator object
+   */
+  public Elevator getElevator()
+  {
+    return this.m_Elevator;
   }
 
   /**
@@ -66,9 +79,6 @@ public class RobotContainer
                 () -> -m_primaryController.getLeftX(),
                 () -> -m_primaryController.getRightX()
       ));
-
-      m_primaryController.a().onTrue(new SeedFieldRelative(m_Drivetrain));
-     
   }
 
   public Command getAutonomousCommand() 

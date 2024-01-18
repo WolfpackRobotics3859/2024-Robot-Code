@@ -5,6 +5,7 @@ public class Hardware
     // Controllers
     public static final int PRIMARY_CONTROLLER_PORT = 0;
     public static final int SECONDARY_CONTROLLER_PORT = 1;
+    
     // Front Left Swerve Module
     public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 1;
     public static final int FRONT_LEFT_STEER_MOTOR_ID = 2;
@@ -33,4 +34,9 @@ public class Hardware
     //Intake Motors
     public static final int INTAKE_ROLLER_MOTOR_ID = 12;
     public static final int INTAKE_WRIST_MOTOR_ID = 13;
+    
+    // Elevator
+    public static final int ELEVATOR_MOTOR_1_ID = 12;
+    public static final int ELEVATOR_MOTOR_2_ID = 18;
+    public static final int ELEVATOR_CANCODER_ID = 5;
 }
