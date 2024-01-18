@@ -42,7 +42,7 @@ public class SetIntakeWristPosition extends Command
   @Override
   public void end(boolean interrupted) 
   {
-    // Intentionally Emptya
+    // Intentionally Empty
   }
 
   // Returns true when the command should end.

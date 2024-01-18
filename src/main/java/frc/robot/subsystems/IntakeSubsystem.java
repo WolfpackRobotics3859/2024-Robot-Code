@@ -28,7 +28,7 @@ public class IntakeSubsystem extends SubsystemBase
     this.m_WristMotor.getConfigurator().apply(IntakeConstants.WRIST_MOTOR_MOTION_MAGIC_CONFIGS);
   }
 
-  public void setIntakePercent(double percent)
+  public void setRollerStrength(double percent)
   {
     DutyCycleOut request = new DutyCycleOut(percent, false, false, false, false);
     m_RollerMotor.setControl(request);
@@ -39,7 +39,7 @@ public class IntakeSubsystem extends SubsystemBase
     MotionMagicVoltage request = new MotionMagicVoltage(position, false, IntakeConstants.INTAKE_WRIST_FEED_FORWARD, 0, false, false, false);
     m_WristMotor.setControl(request);
   }
-  
+
    @Override
   public void periodic()
   {

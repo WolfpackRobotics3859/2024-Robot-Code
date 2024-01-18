@@ -25,7 +25,7 @@ public class SetIntakeRollersPercent extends Command
   @Override
   public void initialize() 
   {
-    m_intakeSubsystem.setIntakePercent(this.m_Percent);
+    m_intakeSubsystem.setRollerStrength(this.m_Percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
