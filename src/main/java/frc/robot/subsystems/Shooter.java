@@ -7,11 +7,14 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.constants.Hardware;
 import frc.robot.constants.shooter.ShooterConstants;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase
@@ -20,16 +23,26 @@ public class Shooter extends SubsystemBase
   private final TalonFX m_ShooterMotor2 = new TalonFX(Hardware.SHOOTER_MOTOR_2_ID);
   private final TalonFX m_WristMotor = new TalonFX(Hardware.WRIST_MOTOR_ID);
   private final TalonFX m_FeederMotor = new TalonFX(Hardware.FEEDER_MOTOR_ID);
+  private final CANcoder m_WristCANCoder = new CANcoder(Hardware.SHOOTER_WRIST_CANCODER_ID);
+
+  private final Timer m_timer;
 
   /**
    * @brief Creates a new Shooter subsystem.
   */
   public Shooter() 
   {
-    m_ShooterMotor1.getConfigurator().apply(ShooterConstants.SHOOTER_1_GAINS);
-    m_ShooterMotor2.getConfigurator().apply(ShooterConstants.SHOOTER_2_GAINS);
-    m_WristMotor.getConfigurator().apply(ShooterConstants.WRIST_GAINS);
+    // Motor configuration
+    m_ShooterMotor1.getConfigurator().apply(ShooterConstants.SHOOTER_MOTOR_1_CONFIGURATION);
+    m_ShooterMotor2.getConfigurator().apply(ShooterConstants.SHOOTER_MOTOR_2_CONFIGURATION);
+    m_WristMotor.getConfigurator().apply(ShooterConstants.WRIST_MOTOR_CONFIGURATION);
     m_FeederMotor.getConfigurator().apply(ShooterConstants.FEEDER_GAINS);
+
+    // CANCoder configuration
+    m_WristCANCoder.getConfigurator().apply(ShooterConstants.WRIST_CANCODER_CONFIGURATION);
+
+    this.m_timer = new Timer();
+    m_timer.start();
   }
 
   // Shooter Functions
@@ -61,6 +74,7 @@ public class Shooter extends SubsystemBase
         m_ShooterMotor1.setControl(defaultRequest);
         m_ShooterMotor2.setControl(defaultRequest);
         m_WristMotor.setControl(defaultRequest);
+        m_FeederMotor.setControl(defaultRequest);
         break;
     }
   }
@@ -92,6 +106,7 @@ public class Shooter extends SubsystemBase
         m_ShooterMotor1.setControl(defaultRequest);
         m_ShooterMotor2.setControl(defaultRequest);
         m_WristMotor.setControl(defaultRequest);
+        m_FeederMotor.setControl(defaultRequest);
         break;
     }
   }
@@ -102,9 +117,9 @@ public class Shooter extends SubsystemBase
    * @brief Applies a Position Duty Cycle request to the wrist motor with the set position.
    * @param position The desired position to spin the motor toward, measured in rotations.
   */
-  public void setWristPos(double position)
+  public void setWristPosition(double position)
   {
-    PositionDutyCycle request = new PositionDutyCycle(position, ShooterConstants.WRIST_VELOCITY, false, 0, 0, false, false, false);
+    MotionMagicVoltage request = new MotionMagicVoltage(position, false, ShooterConstants.SHOOTER_WRIST_FEED_FORWARD, 0, false, false, false);
     m_WristMotor.setControl(request);
   }
 
@@ -135,14 +150,18 @@ public class Shooter extends SubsystemBase
    * @brief Gets the position of the wrist motor.
    * @return Returns a Status Signal of the current position.
   */
-  public StatusSignal<Double> getWristMotorPos()
+  public StatusSignal<Double> getWristMotorPosition()
   {
-    return m_ShooterMotor1.getPosition();
+    return m_WristCANCoder.getAbsolutePosition();
   }
 
   @Override
   public void periodic()
   {
-    // Intentionally Empty
+    if (m_timer.get() > 0.5)
+    {
+      m_timer.reset();
+      SmartDashboard.putNumber("Shooter Wrist position", this.getWristMotorPosition().getValue());
+    }
   }
 }
