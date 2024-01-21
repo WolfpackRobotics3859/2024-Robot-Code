@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -57,6 +59,7 @@ public class RobotContainer
       ));
 
       m_primaryController.a().onTrue(new SeedFieldRelative(m_Drivetrain));
+      m_primaryController.b().whileTrue(new PathPlannerAuto("Amp Auto"));
   }
 
   public Command getAutonomousCommand() 

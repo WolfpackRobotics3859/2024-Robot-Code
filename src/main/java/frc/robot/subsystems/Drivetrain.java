@@ -36,20 +36,24 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   private Timer m_timer;
   private final SwerveRequest.ApplyChassisSpeeds m_autoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
-  //TODO document
+  /** 
+    @brief Configure PathPlanner objects for automatic path following
+  */
   private void configurePathPlanner()
   {
+    //Determine the radius of the drivebase from module locations
     double driveBaseRadius = 0;
     for (var moduleLocation : m_moduleLocations) {
       driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
     }
     
+    //Create drivetrain object for pathplanner to use in its calculations
     AutoBuilder.configureHolonomic(
       ()->this.getState().Pose,
       this::seedFieldRelative,
       this::getCurrentRobotChassisSpeeds,
       (speeds)->this.setControl(m_autoRequest.withSpeeds(speeds)),
-      new HolonomicPathFollowerConfig(new PIDConstants(5, 0, 0), new PIDConstants(5, 0, 0), TunerConstants.SPEED_AT_12_VOLTS_MPS, driveBaseRadius, new ReplanningConfig()),
+      new HolonomicPathFollowerConfig(new PIDConstants(7, 0, 0), new PIDConstants(7, 0, 0), TunerConstants.SPEED_AT_12_VOLTS_MPS, driveBaseRadius, new ReplanningConfig()),
       ()->false,
       this);
 
@@ -94,6 +98,10 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     return run(() -> this.setControl(requestSupplier.get()));  
   }
 
+  /**
+   * @brief Gets the robots current ChassisSpeeds object
+   * @return The robot's chassis speeds object
+   */
   public ChassisSpeeds getCurrentRobotChassisSpeeds()
   {
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
