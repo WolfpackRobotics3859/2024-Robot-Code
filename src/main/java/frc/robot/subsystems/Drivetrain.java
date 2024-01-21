@@ -43,7 +43,8 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   {
     //Determine the radius of the drivebase from module locations
     double driveBaseRadius = 0;
-    for (var moduleLocation : m_moduleLocations) {
+    for (var moduleLocation : m_moduleLocations) 
+    {
       driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
     }
     
@@ -104,7 +105,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
    */
   public ChassisSpeeds getCurrentRobotChassisSpeeds()
   {
-        return m_kinematics.toChassisSpeeds(getState().ModuleStates);
+    return m_kinematics.toChassisSpeeds(getState().ModuleStates);
   }
 
 

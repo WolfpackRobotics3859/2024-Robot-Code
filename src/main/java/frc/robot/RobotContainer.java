@@ -58,8 +58,6 @@ public class RobotContainer
                 () -> -m_primaryController.getRightX()
       ));
 
-      m_primaryController.a().onTrue(new SeedFieldRelative(m_Drivetrain));
-      m_primaryController.b().whileTrue(new PathPlannerAuto("Amp Auto"));
   }
 
   public Command getAutonomousCommand() 
