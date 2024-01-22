@@ -27,6 +27,10 @@ public class Shooter extends SubsystemBase
 
   private final Timer m_timer;
 
+  private double m_GoalPosition;
+  private double m_BottomLimit;
+  private double m_TopLimit;
+
   /**
    * @brief Creates a new Shooter subsystem.
   */
@@ -43,6 +47,10 @@ public class Shooter extends SubsystemBase
 
     this.m_timer = new Timer();
     m_timer.start();
+
+    m_BottomLimit = 0;
+    m_TopLimit = 0;
+    m_GoalPosition = 0;
   }
 
   // Shooter Functions
@@ -123,6 +131,21 @@ public class Shooter extends SubsystemBase
     m_WristMotor.setControl(request);
   }
 
+  public void setWristTopLimit(double limit)
+  {
+    m_TopLimit = limit;
+  }
+
+  public void setWristBottomLimit(double limit)
+  {
+    m_BottomLimit = limit;
+  }
+
+  public void setGoalPosition(double position)
+  {
+    m_GoalPosition = position;
+  }
+
   // Telemetry Functions
 
   /**
@@ -155,6 +178,20 @@ public class Shooter extends SubsystemBase
     return m_WristCANCoder.getAbsolutePosition();
   }
 
+  public boolean getWristWithinLimits()
+  {
+    final double position = getWristMotorPosition().getValueAsDouble();
+
+    if (position < m_BottomLimit || position > m_TopLimit)
+    {
+      return false;
+    }
+    else
+    {
+      return true;
+    }
+  }
+
   @Override
   public void periodic()
   {
@@ -162,6 +199,7 @@ public class Shooter extends SubsystemBase
     {
       m_timer.reset();
       SmartDashboard.putNumber("Shooter Wrist position", this.getWristMotorPosition().getValue());
+      SmartDashboard.putNumber("Top Limit", m_TopLimit);
     }
   }
 }
