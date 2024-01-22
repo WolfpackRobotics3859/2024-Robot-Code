@@ -22,7 +22,6 @@ public class SetWristMotorPercent extends Command
   {
     this.m_Shooter = shooter;
     this.m_Percent = percent;
-    addRequirements(m_Shooter);
   }
 
   // Called when the command is initially scheduled.

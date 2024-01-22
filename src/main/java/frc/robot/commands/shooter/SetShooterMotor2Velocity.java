@@ -22,7 +22,6 @@ public class SetShooterMotor2Velocity extends Command
   {
     this.m_Shooter = shooter;
     this.m_Velocity = velocity;
-    addRequirements(shooter);
   }
 
   // Called when the command is initially scheduled.

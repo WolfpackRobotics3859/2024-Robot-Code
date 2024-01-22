@@ -22,7 +22,6 @@ public class SetShooterMotor1Percent extends Command
   {
     this.m_Shooter = shooter;
     this.m_Percent = percent;
-    addRequirements(shooter);
   }
 
   // Called when the command is initially scheduled.

@@ -6,28 +6,29 @@ package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
+import frc.robot.constants.shooter.ShooterConstants.MOTOR;
 
-public class SetWristMotorPosition extends Command
+public class SetWristTopLimit extends Command
 {
   Shooter m_Shooter;
-  double m_Position;
+  double m_Limit;
 
   /**
-   * @brief Spins the wrist motor towards a given position.
+   * @brief Applies a percent of the available voltage to the wrist motor.
    * @param shooter The shooter subsystem object.
-   * @param velocity The desired position to send the motor towards, measured in rotations.
+   * @param percent The percent voltage to apply to the motor, from -1 to 1.
   */
-  public SetWristMotorPosition(Shooter shooter, double position)
+  public SetWristTopLimit(Shooter shooter, double limit)
   {
     this.m_Shooter = shooter;
-    this.m_Position = position;
+    this.m_Limit = limit;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() 
   {
-    m_Shooter.setWristPosition(this.m_Position);
+    m_Shooter.setShooterMotorPercent(MOTOR.WRIST_MOTOR, this.m_Limit);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -41,7 +42,7 @@ public class SetWristMotorPosition extends Command
   @Override
   public void end(boolean interrupted) 
   {
-    // Intentionally Emptya
+    m_Shooter.setShooterMotorPercent(MOTOR.WRIST_MOTOR, 0);
   }
 
   // Returns true when the command should end.
