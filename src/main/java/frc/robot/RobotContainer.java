@@ -23,7 +23,9 @@ public class RobotContainer
   private final Elevator m_Elevator = new Elevator();
   private final Shooter m_Shooter = new Shooter();
   private final IntakeSubsystem m_Intake = new IntakeSubsystem();
-  
+
+  // Orchestrator
+  private final Orchestrator m_Orchestrator = new Orchestrator(m_Drivetrain, m_Shooter, m_Elevator, m_Intake);
 
   // Controllers
   private final CommandXboxController m_primaryController = new CommandXboxController(Hardware.PRIMARY_CONTROLLER_PORT);
