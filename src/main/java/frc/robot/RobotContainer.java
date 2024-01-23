@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.drivetrain.TunerConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.drivetrain.Drive;
@@ -21,6 +22,8 @@ public class RobotContainer
                       TunerConstants.FRONT_RIGHT, TunerConstants.BACK_LEFT, TunerConstants.BACK_RIGHT);
   private final Elevator m_Elevator = new Elevator();
   private final Shooter m_Shooter = new Shooter();
+  private final IntakeSubsystem m_Intake = new IntakeSubsystem();
+  
 
   // Controllers
   private final CommandXboxController m_primaryController = new CommandXboxController(Hardware.PRIMARY_CONTROLLER_PORT);
@@ -51,6 +54,15 @@ public class RobotContainer
   public Shooter getShooter()
   {
     return this.m_Shooter;
+  }
+
+   /**
+   * @brief Gets the intake subsystem.
+   * @return The intake object
+   */
+  public IntakeSubsystem getIntake()
+  {
+    return this.m_Intake;
   }
 
   public RobotContainer() 
