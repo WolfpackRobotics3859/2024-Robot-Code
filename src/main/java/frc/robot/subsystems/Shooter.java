@@ -200,6 +200,7 @@ public class Shooter extends SubsystemBase
       m_timer.reset();
       SmartDashboard.putNumber("Shooter Wrist position", this.getWristMotorPosition().getValue());
       SmartDashboard.putNumber("Top Limit", m_TopLimit);
+      SmartDashboard.putNumber("goal pos", m_GoalPosition);
     }
   }
 }
