@@ -33,6 +33,10 @@ public class Hardware
     public static final int FEEDER_MOTOR_ID = 13;
     public static final int SHOOTER_WRIST_CANCODER_ID = 6;
 
+    //Intake Motors
+    public static final int INTAKE_ROLLER_MOTOR_ID = 12;
+    public static final int INTAKE_WRIST_MOTOR_ID = 13;
+    
     // Elevator
     public static final int ELEVATOR_MOTOR_1_ID = 12;
     public static final int ELEVATOR_MOTOR_2_ID = 18;
