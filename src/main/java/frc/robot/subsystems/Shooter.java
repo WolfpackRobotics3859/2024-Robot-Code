@@ -180,7 +180,7 @@ public class Shooter extends SubsystemBase
 
   public boolean getWristWithinLimits()
   {
-    final double position = getWristMotorPosition().getValueAsDouble();
+    final double position = m_WristMotor.getPosition().getValueAsDouble();
 
     if (position < m_BottomLimit || position > m_TopLimit)
     {
