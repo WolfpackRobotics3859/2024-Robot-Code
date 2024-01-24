@@ -131,16 +131,28 @@ public class Shooter extends SubsystemBase
     m_WristMotor.setControl(request);
   }
 
+  /**
+   * @brief Sets the top limit for the wrist.
+   * @param position The desired position to set the limit to.
+  */
   public void setWristTopLimit(double limit)
   {
     m_TopLimit = limit;
   }
 
+  /**
+   * @brief Sets the bottom limit for the wrist.
+   * @param position The desired position to set the limit to.
+  */
   public void setWristBottomLimit(double limit)
   {
     m_BottomLimit = limit;
   }
 
+  /**
+   * @brief Sets the goal position for the wrist.
+   * @param position The desired position to set the goal to.
+  */
   public void setGoalPosition(double position)
   {
     m_GoalPosition = position;
@@ -178,6 +190,10 @@ public class Shooter extends SubsystemBase
     return m_WristCANCoder.getAbsolutePosition();
   }
 
+  /**
+   * @brief Gets whether or not the wrist is currently within the set limits.
+   * @return True if the current wrist position is within the set limits, false if it is not
+   */
   public boolean getWristWithinLimits()
   {
     final double position = m_WristMotor.getPosition().getValueAsDouble();
