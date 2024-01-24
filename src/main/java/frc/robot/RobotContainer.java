@@ -67,6 +67,15 @@ public class RobotContainer
     return this.m_Intake;
   }
 
+  /**
+   * @brief Gets the orchestrator.
+   * @return The orchestrator object
+   */
+  public Orchestrator getOrchestrator()
+  {
+    return this.m_Orchestrator;
+  }
+
   public RobotContainer() 
   {
     configureBindings();
