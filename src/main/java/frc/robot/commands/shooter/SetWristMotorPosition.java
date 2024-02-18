@@ -5,7 +5,9 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.shooter.ShooterConstants;
 import frc.robot.subsystems.Shooter;
+import frc.robot.utils.Util;
 
 public class SetWristMotorPosition extends Command
 {
@@ -21,7 +23,6 @@ public class SetWristMotorPosition extends Command
   {
     this.m_Shooter = shooter;
     this.m_Position = position;
-    addRequirements(m_Shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -42,13 +43,25 @@ public class SetWristMotorPosition extends Command
   @Override
   public void end(boolean interrupted) 
   {
-    // Intentionally Emptya
+    // if command was interrupted stop the shooter (set the desired position to just wherever it is at the moment)
+    if (interrupted)
+    {
+      m_Shooter.setWristPosition(m_Shooter.getWristMotorPosition().getValueAsDouble());
+    }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
   {
-    return false;
+    // if shooter wrist is at set position end the command
+    if (Util.epsilonEquals(m_Shooter.getWristMotorPosition().getValueAsDouble(), m_Position, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
 }

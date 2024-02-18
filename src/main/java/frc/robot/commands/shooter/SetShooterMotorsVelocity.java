@@ -5,8 +5,10 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.shooter.ShooterConstants;
 import frc.robot.constants.shooter.ShooterConstants.MOTOR;
 import frc.robot.subsystems.Shooter;
+import frc.robot.utils.Util;
 
 public class SetShooterMotorsVelocity extends Command
 {
@@ -46,14 +48,26 @@ public class SetShooterMotorsVelocity extends Command
   @Override
   public void end(boolean interrupted)
   {
-    m_Shooter.setShooterMotorPercent(MOTOR.MOTOR_1, 0);
-    m_Shooter.setShooterMotorPercent(MOTOR.MOTOR_2, 0);
+    if (interrupted)
+    {
+      m_Shooter.setShooterMotorPercent(MOTOR.MOTOR_1, 0);
+      m_Shooter.setShooterMotorPercent(MOTOR.MOTOR_2, 0);
+    }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished()
   {
-    return false;
+    // if both motors are at proper velocity
+    
+    if(Util.epsilonEquals(m_Shooter.getShooterMotorVelocity(MOTOR.MOTOR_1).getValueAsDouble(), m_Velocity1, ShooterConstants.SHOOTER_VELOCITY_TOLERANCE) && Util.epsilonEquals(m_Shooter.getShooterMotorVelocity(MOTOR.MOTOR_2).getValueAsDouble(), m_Velocity2, ShooterConstants.SHOOTER_VELOCITY_TOLERANCE))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
 }

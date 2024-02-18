@@ -5,16 +5,16 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.Intake;
 
 public class SetIntakeRollersPercent extends Command
  {
   /** Creates a new RunIntakeCommand. */
 
-  private IntakeSubsystem m_intakeSubsystem;
+  private Intake m_intakeSubsystem;
   double m_Percent;
 
-  public SetIntakeRollersPercent(IntakeSubsystem intake, double percent)
+  public SetIntakeRollersPercent(Intake intake, double percent)
   {
     this.m_intakeSubsystem = intake;
     this.m_Percent = percent;
@@ -25,7 +25,7 @@ public class SetIntakeRollersPercent extends Command
   @Override
   public void initialize() 
   {
-    m_intakeSubsystem.setRollerStrength(this.m_Percent);
+    m_intakeSubsystem.setRollerPercent(this.m_Percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,7 +39,7 @@ public class SetIntakeRollersPercent extends Command
   @Override
   public void end(boolean interrupted) 
   {
-    //Intentionally empty
+    m_intakeSubsystem.setRollerPercent(0);
   }
 
   // Returns true when the command should end.

@@ -11,6 +11,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
+//import frc.robot.subsystems.Orchestrator;
 import frc.robot.constants.drivetrain.DrivetrainConstants;
 
 public class Drive extends Command
@@ -22,6 +23,7 @@ public class Drive extends Command
    */
   private Supplier<Double> m_SpeedXSupplier, m_SpeedYSupplier, m_RotationalSpeedSupplier;
   private Drivetrain m_Drivetrain;
+  //private Orchestrator m_Orchestrator;
   
   /**
    * @brief Sends a field centric request to the given swerve drivetrain with given X speed, Y speed, and rotational speed
@@ -36,6 +38,7 @@ public class Drive extends Command
     this.m_SpeedYSupplier = speedY;
     this.m_RotationalSpeedSupplier = rotationalSpeed;
     this.m_Drivetrain = drivetrain;
+    //this.m_Orchestrator = orchestrator;
     addRequirements(drivetrain);
   }
 
@@ -58,6 +61,8 @@ public class Drive extends Command
       .withRotationalRate(m_RotationalSpeedSupplier.get() * DrivetrainConstants.MAX_ANGULAR_RATE);
 
     m_Drivetrain.setControl(driveRequest);
+
+    //m_Orchestrator.updateDriveOdometry(m_Drivetrain.getOdometry().getEstimatedPosition());
   }
 
   // Called once the command ends or is interrupted.

@@ -42,6 +42,7 @@ public class SetFeederMotorVelocity extends Command
   @Override
   public void end(boolean interrupted)
   {
+    if(interrupted)
     m_Shooter.setShooterMotorPercent(MOTOR.FEEDER_MOTOR, 0);
   }
 

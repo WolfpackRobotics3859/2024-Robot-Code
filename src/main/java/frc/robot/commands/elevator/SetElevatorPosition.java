@@ -5,7 +5,9 @@
 package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.elevator.ElevatorConstants;
 import frc.robot.subsystems.Elevator;
+import frc.robot.utils.*;
 
 public class SetElevatorPosition extends Command
 {
@@ -42,13 +44,25 @@ public class SetElevatorPosition extends Command
   @Override
   public void end(boolean interrupted)
   {
-    // Intentionally Empty
+    // if command was interrupted set elevator to stop
+    if (interrupted)
+    {
+      m_Elevator.setElevatorPercent(0);
+    }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished()
   {
-    return false;
+    // if elevator is at set position end command
+    if (Util.epsilonEquals(m_Elevator.getElevatorPosition().getValueAsDouble(), m_Position, ElevatorConstants.ELEVATOR_POSITION_TOLERANCE))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
 }

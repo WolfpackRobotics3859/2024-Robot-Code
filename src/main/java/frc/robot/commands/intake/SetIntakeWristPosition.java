@@ -5,12 +5,14 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.constants.intake.IntakeConstants;
+import frc.robot.subsystems.Intake;
+import frc.robot.utils.Util;
 
 public class SetIntakeWristPosition extends Command 
 {
   
-  IntakeSubsystem m_Intake;
+  Intake m_Intake;
   double m_Position;
 
   /**
@@ -18,7 +20,7 @@ public class SetIntakeWristPosition extends Command
    * @param shooter The shooter subsystem object.
    * @param velocity The desired position to send the motor towards, measured in rotations.
   */
-  public SetIntakeWristPosition(IntakeSubsystem intake, double position)
+  public SetIntakeWristPosition(Intake intake, double position)
   {
     this.m_Intake = intake;
     this.m_Position = position;
@@ -49,6 +51,14 @@ public class SetIntakeWristPosition extends Command
   @Override
   public boolean isFinished() 
   {
-    return false;
+    // if intake is at position end the command
+    if (Util.epsilonEquals(m_Intake.getWristPosition().getValueAsDouble(), m_Position, IntakeConstants.INTAKE_WRIST_POSITION_TOLERANCE))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
 }
