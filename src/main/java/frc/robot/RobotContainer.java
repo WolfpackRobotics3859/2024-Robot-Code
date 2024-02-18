@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.drivetrain.TunerConstants;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Orchestrator;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.drivetrain.Drive;
@@ -22,10 +23,10 @@ public class RobotContainer
                       TunerConstants.FRONT_RIGHT, TunerConstants.BACK_LEFT, TunerConstants.BACK_RIGHT);
   private final Elevator m_Elevator = new Elevator();
   private final Shooter m_Shooter = new Shooter();
-  private final IntakeSubsystem m_Intake = new IntakeSubsystem();
+  private final Intake m_Intake = new Intake();
 
   // Orchestrator
-  private final Orchestrator m_Orchestrator = new Orchestrator(m_Drivetrain, m_Shooter, m_Elevator, m_Intake);
+  private final Orchestrator m_Orchestrator = new Orchestrator(m_Drivetrain, m_Elevator, m_Shooter, m_Intake);
 
   // Controllers
   private final CommandXboxController m_primaryController = new CommandXboxController(Hardware.PRIMARY_CONTROLLER_PORT);
@@ -58,22 +59,27 @@ public class RobotContainer
     return this.m_Shooter;
   }
 
-   /**
+  /**
    * @brief Gets the intake subsystem.
    * @return The intake object
    */
-  public IntakeSubsystem getIntake()
+  public Intake getIntake()
   {
     return this.m_Intake;
   }
 
-  /**
-   * @brief Gets the orchestrator.
-   * @return The orchestrator object
-   */
   public Orchestrator getOrchestrator()
   {
     return this.m_Orchestrator;
+  }
+
+  /**
+   * Gets the driver controller
+   * @return The primary (driver) controller
+   */
+  public CommandXboxController getController()
+  {
+    return this.m_primaryController;
   }
 
   public RobotContainer() 
