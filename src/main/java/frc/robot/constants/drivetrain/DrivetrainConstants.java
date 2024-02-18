@@ -17,7 +17,7 @@ public class DrivetrainConstants
     /** Radians per second */
     public static final double MAX_ANGULAR_RATE = Math.PI;
 
-        public static final AprilTagFieldLayout TAG_LAYOUT;
+    public static final AprilTagFieldLayout TAG_LAYOUT;
         
         static 
         {
