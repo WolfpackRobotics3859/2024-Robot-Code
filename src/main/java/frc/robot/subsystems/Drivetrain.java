@@ -18,6 +18,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -67,8 +68,12 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   public Command applyRequest(Supplier<SwerveRequest> requestSupplier)
   {
     return run(() -> this.setControl(requestSupplier.get()));  
+    
   }
 
+  public SwerveDrivePoseEstimator getOdometry() {
+    return m_odometry;
+  }
 
   @Override
   public void periodic() 

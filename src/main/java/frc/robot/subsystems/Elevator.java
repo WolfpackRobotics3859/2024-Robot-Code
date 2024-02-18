@@ -10,6 +10,7 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,31 +25,20 @@ public class Elevator extends SubsystemBase
   private final CANcoder m_CANCoder = new CANcoder(Hardware.ELEVATOR_CANCODER_ID);
   private final Timer m_timer;
 
+  private double m_ElevatorGoalPosition;
 
   /** Creates a new Elevator. */
   public Elevator()
   {
-    // Applies gains to the motor
-    m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.ELEVATOR_GAINS);
+    m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.ELEVATOR_MOTOR_CONFIG);
 
-    // Applies Motion Magic configs to the motor
-    m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.MOTION_MAGIC_CONFIGS);
-
-    // Applies the software position limit to the first motor
-    m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.SOFT_LIMIT_CONFIGS);
-
-    // Applies a brake neutral mode to both motors
-    m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.BRAKE_CONFIG);
-
-    // Configures the CANCoder
-    m_CANCoder.getConfigurator().apply(ElevatorConstants.MAGNET_SENSOR_CONFIGS);
-
-    // Applies the cancoder as the feedback source for the motor
-    m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.FEEDBACK_CONFIGS);
+    m_CANCoder.getConfigurator().apply(ElevatorConstants.ELEVATOR_CANCODER_CONFIGURATION);
     
     // Send a request to the second motor to follow the first
     Follower followRequest = new Follower(Hardware.ELEVATOR_MOTOR_1_ID, false);
     m_ElevatorMotor2.setControl(followRequest);
+
+    this.m_ElevatorGoalPosition = 0;
 
     // Start a timer
     this.m_timer = new Timer();
@@ -61,11 +51,8 @@ public class Elevator extends SubsystemBase
    */
   public void setElevatorPosition(double position)
   {
-    if (position <= ElevatorConstants.ELEVATOR_MAX_FORWARD_POS || position >= ElevatorConstants.ELEVATAOR_MAX_REVERSE_POS)
-    {
       MotionMagicVoltage request = new MotionMagicVoltage(position, false, ElevatorConstants.ELEVATOR_FEED_FORWARD, 0, false, false, false);
       m_ElevatorMotor1.setControl(request);
-    }
   }
 
   /**
@@ -76,6 +63,38 @@ public class Elevator extends SubsystemBase
   {
     DutyCycleOut request = new DutyCycleOut(percent, false, false, false, false);
     m_ElevatorMotor1.setControl(request);  
+  }
+
+  public void setGoalElevatorPosition(double position)
+  {
+    if (position == 0 || position == 1)
+    {
+      this.m_ElevatorGoalPosition = position;
+    }
+  }
+
+  public void setBrakeMode(boolean brake)
+  {
+    if (brake)
+    {
+      m_ElevatorMotor1.setNeutralMode(NeutralModeValue.Brake);
+      m_ElevatorMotor2.setNeutralMode(NeutralModeValue.Brake);
+    }
+    else
+    {
+      m_ElevatorMotor1.setNeutralMode(NeutralModeValue.Coast);
+      m_ElevatorMotor2.setNeutralMode(NeutralModeValue.Coast);
+    }
+  }
+
+  public double getElevatorGoalPosition()
+  {
+    return this.m_ElevatorGoalPosition;
+  }
+
+  public StatusSignal<Double> getElevatorMovementError()
+  {
+    return this.m_ElevatorMotor1.getClosedLoopError();
   }
 
   // Telemetry
@@ -98,6 +117,11 @@ public class Elevator extends SubsystemBase
     return m_CANCoder.getAbsolutePosition();
   }
 
+  public boolean isAtPosition(double goalPosition, double tolerance)
+  {
+    return (getElevatorPosition().getValueAsDouble() - tolerance <= goalPosition) && (getElevatorPosition().getValueAsDouble() + tolerance >= goalPosition);
+  }
+
   @Override
   public void periodic()
   {
@@ -105,7 +129,6 @@ public class Elevator extends SubsystemBase
     {
       m_timer.reset();
       SmartDashboard.putNumber("Elevator position", this.getElevatorPosition().getValue());
-      SmartDashboard.putNumber("Cancoder position", this.getCANCoderPosition().getValue());
     }
   }
 }

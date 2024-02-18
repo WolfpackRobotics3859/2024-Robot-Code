@@ -13,6 +13,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.constants.Hardware;
 import frc.robot.constants.shooter.ShooterConstants;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,6 +25,8 @@ public class Shooter extends SubsystemBase
   private final TalonFX m_WristMotor = new TalonFX(Hardware.WRIST_MOTOR_ID);
   private final TalonFX m_FeederMotor = new TalonFX(Hardware.FEEDER_MOTOR_ID);
   private final CANcoder m_WristCANCoder = new CANcoder(Hardware.SHOOTER_WRIST_CANCODER_ID);
+  private final DigitalInput m_BeamBreak1 = new DigitalInput(Hardware.BEAM_BREAK_1_ID);
+  private final DigitalInput m_BeamBreak2 = new DigitalInput(Hardware.BEAM_BREAK_2_ID);
 
   private final Timer m_timer;
 
@@ -152,9 +155,28 @@ public class Shooter extends SubsystemBase
   */
   public StatusSignal<Double> getWristMotorPosition()
   {
-    return m_WristCANCoder.getAbsolutePosition();
+    return m_WristMotor.getPosition();
+  }
+  
+  public StatusSignal<Double> getWristMovementError()
+  {
+    return m_WristMotor.getClosedLoopError();
   }
 
+  public boolean getBeamBreak1()
+  {
+    return m_BeamBreak1.get();
+  }
+
+  public boolean getBeamBreak2()
+  {
+    return m_BeamBreak2.get();
+  }
+
+  public boolean wristIsAtPosition(double goalPosition, double tolerance)
+  {
+    return (getWristMotorPosition().getValueAsDouble() - tolerance <= goalPosition) && (getWristMotorPosition().getValueAsDouble() + tolerance >= goalPosition);
+  }
   @Override
   public void periodic()
   {
@@ -162,6 +184,8 @@ public class Shooter extends SubsystemBase
     {
       m_timer.reset();
       SmartDashboard.putNumber("Shooter Wrist position", this.getWristMotorPosition().getValue());
+      SmartDashboard.putBoolean("Beam Break1", this.getBeamBreak1());
+      SmartDashboard.putBoolean("Beam Break 2", this.getBeamBreak2());
     }
   }
 }
