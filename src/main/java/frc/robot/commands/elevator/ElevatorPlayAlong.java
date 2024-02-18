@@ -5,7 +5,7 @@
 package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Orchestrator;
+import frc.robot.subsystems.Orchestrator;
 import frc.robot.subsystems.Elevator;
 
 public class ElevatorPlayAlong extends Command {
@@ -16,7 +16,6 @@ public class ElevatorPlayAlong extends Command {
   {
     this.m_Elevator = elevator;
     this.m_Orchestrator = orchestrator;
-    addRequirements(m_Elevator);
   }
 
   // Called when the command is initially scheduled.
@@ -30,7 +29,10 @@ public class ElevatorPlayAlong extends Command {
   @Override
   public void execute()
   {
-    // Intentionally Empty
+    m_Orchestrator.updateElevatorOdometry
+    (
+      this.m_Elevator.getElevatorPosition().getValueAsDouble()
+    );
   }
 
   // Called once the command ends or is interrupted.

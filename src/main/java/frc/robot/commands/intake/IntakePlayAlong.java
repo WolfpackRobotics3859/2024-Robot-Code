@@ -5,18 +5,17 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Orchestrator;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.Orchestrator;
+import frc.robot.subsystems.Intake;
 
 public class IntakePlayAlong extends Command {
-  IntakeSubsystem m_Intake;
+  Intake m_Intake;
   Orchestrator m_Orchestrator;
 
-  public IntakePlayAlong(IntakeSubsystem intake, Orchestrator orchestrator)
+  public IntakePlayAlong(Intake intake, Orchestrator orchestrator)
   {
     this.m_Intake = intake;
     this.m_Orchestrator = orchestrator;
-    addRequirements(m_Intake);
   }
 
   // Called when the command is initially scheduled.
@@ -30,7 +29,10 @@ public class IntakePlayAlong extends Command {
   @Override
   public void execute()
   {
-    // Intentionally Empty
+    m_Orchestrator.updateIntakeOdometry
+    (
+      m_Intake.getWristPosition().getValueAsDouble()
+    );
   }
 
   // Called once the command ends or is interrupted.

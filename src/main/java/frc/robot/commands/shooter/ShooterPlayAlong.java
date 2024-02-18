@@ -1,11 +1,12 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+// // Copyright (c) FIRST and other WPILib contributors.
+// // Open Source Software; you can modify and/or share it under the terms of
+// // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Orchestrator;
+import frc.robot.constants.shooter.ShooterConstants.MOTOR;
+import frc.robot.subsystems.Orchestrator;
 import frc.robot.subsystems.Shooter;
 
 public class ShooterPlayAlong extends Command {
@@ -16,7 +17,6 @@ public class ShooterPlayAlong extends Command {
   {
     this.m_Shooter = shooter;
     this.m_Orchestrator = orchestrator;
-    addRequirements(m_Shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -30,7 +30,15 @@ public class ShooterPlayAlong extends Command {
   @Override
   public void execute()
   {
-    // Intentionally Empty
+    m_Orchestrator.updateShooterOdometry
+    (
+        m_Shooter.getShooterMotorVelocity(MOTOR.MOTOR_1).getValueAsDouble(),
+        m_Shooter.getShooterMotorVelocity(MOTOR.MOTOR_2).getValueAsDouble(),
+        m_Shooter.getShooterMotorVelocity(MOTOR.FEEDER_MOTOR).getValueAsDouble(),
+        m_Shooter.getWristMotorPosition().getValueAsDouble(),
+        m_Shooter.getBeamBreak1(),
+        m_Shooter.getBeamBreak2()
+    );
   }
 
   // Called once the command ends or is interrupted.
