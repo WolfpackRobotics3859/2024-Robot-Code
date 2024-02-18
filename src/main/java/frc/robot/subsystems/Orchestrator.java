@@ -9,23 +9,20 @@ import java.util.function.BooleanSupplier;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.commands.elevator.SetElevatorPosition;
-import frc.robot.commands.intake.SetIntakeWristPosition;
-import frc.robot.commands.shooter.SetFeederMotorPercent;
 import frc.robot.commands.shooter.SetFeederMotorVelocity;
 import frc.robot.commands.shooter.SetShooterMotorsVelocity;
-import frc.robot.commands.shooter.SetWristMotorPercent;
 import frc.robot.commands.shooter.SetWristMotorPosition;
 import frc.robot.constants.elevator.ElevatorConstants;
 import frc.robot.constants.shooter.ShooterConstants;
 import frc.robot.constants.shooter.ShooterConstants.MOTOR;
-import frc.robot.statemachines.OrchestratorStateMachine.DesiredAction;
 import frc.robot.states.ElevatorState;
 import frc.robot.states.IntakeState;
 import frc.robot.states.ShooterState;
 import frc.robot.utils.Util;
 
-public class OrchestratorV2 extends SubsystemBase {
+public class Orchestrator extends SubsystemBase {
   
   // Subsystem declaration
   private final Drivetrain m_Drivetrain;
@@ -57,7 +54,7 @@ public class OrchestratorV2 extends SubsystemBase {
   private final BooleanSupplier elevatorIsAtClearancePosition;
 
   /** Creates a new OrchestratorV2. */
-  public OrchestratorV2(Drivetrain drivetrain, Elevator elevator, Shooter shooter, Intake intake) 
+  public Orchestrator(Drivetrain drivetrain, Elevator elevator, Shooter shooter, Intake intake) 
   {
     this.m_Drivetrain = drivetrain;
     this.m_Elevator = elevator;
@@ -103,9 +100,9 @@ public class OrchestratorV2 extends SubsystemBase {
       switch (m_RequestedAction) {
         // amp shot is requested
         case AMP_SHOT:
-
           // assuming elevator is down already
 
+          new WaitUntilCommand(elevatorIsAtClearancePosition);
           // set elevator to top position and once that is finished set wrist to go down and spin motors
           new SequentialCommandGroup
           (
@@ -122,7 +119,7 @@ public class OrchestratorV2 extends SubsystemBase {
               new SetShooterMotorsVelocity(m_Shooter, 30, 30)
             ),
             // once wrist is down and shooters are up to speed shoot piece
-            new SetFeederMotorVelocity(m_Shooter, 20)
+            new SetFeederMotorVelocity(m_Shooter, 20).withTimeout(2)
           );
           
           

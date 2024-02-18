@@ -5,11 +5,11 @@
 package frc.robot.commands.orchestrator;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.OrchestratorV2;
-import frc.robot.subsystems.OrchestratorV2.OrchestratorAction;
+import frc.robot.subsystems.Orchestrator;
+import frc.robot.subsystems.Orchestrator.OrchestratorAction;
 
 public class SetTemporaryAction extends Command {
-  private final OrchestratorV2 m_Orchestrator;
+  private final Orchestrator m_Orchestrator;
   private final OrchestratorAction m_Action;
 
   /** Tells the orchestrator to perform the requested action. This action will stop once the controller's button
@@ -18,11 +18,11 @@ public class SetTemporaryAction extends Command {
    * @param orchestrator The orchestrator subsystem
    * @param action The action you want the robot to perform while the button is being pressed
    */
-  public SetTemporaryAction(OrchestratorV2 orchestrator, OrchestratorAction action)
+  public SetTemporaryAction(Orchestrator orchestrator, OrchestratorAction action)
   {
     this.m_Orchestrator = orchestrator;
     this.m_Action = action;
-    
+
     // add requirements to make it so that multiple commands cannot be requested at once
     addRequirements(m_Orchestrator);
   }
