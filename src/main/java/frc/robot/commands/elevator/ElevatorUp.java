@@ -29,7 +29,6 @@ public class ElevatorUp extends SequentialCommandGroup
   {
     addRequirements(elevator, shooter);
 
-    // AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
     addCommands
     (
       new ConditionalCommand

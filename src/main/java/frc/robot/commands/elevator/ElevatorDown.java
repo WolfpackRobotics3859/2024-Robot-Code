@@ -15,8 +15,6 @@ import frc.robot.constants.shooter.ShooterConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
 
-// the grasses are quiet because the trees are listening
-// every day i stray further from sanity
 public class ElevatorDown extends SequentialCommandGroup
 {
   /**
@@ -32,7 +30,6 @@ public class ElevatorDown extends SequentialCommandGroup
     // add subsystem requirements to prevent interrupts
     addRequirements(elevator, shooter);
 
-    // spaghetti code time :3
     addCommands
     (
       new ConditionalCommand
