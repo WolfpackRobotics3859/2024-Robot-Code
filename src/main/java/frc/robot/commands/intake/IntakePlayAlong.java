@@ -13,6 +13,9 @@ public class IntakePlayAlong extends Command
   private final Orchestrator m_Orchestrator;
   private final Intake m_Intake;
 
+  private double m_PreviousWristPosition;
+  private double m_PreviousRollersVelocity;
+
   /** Creates a new IntakePlayAlong. */
   public IntakePlayAlong(Orchestrator orchestrator, Intake intake)
   {
@@ -24,15 +27,27 @@ public class IntakePlayAlong extends Command
   @Override
   public void initialize()
   {
-    // Intentionally Empty
+    // prevent null values
+    m_PreviousWristPosition = 0;
+    m_PreviousRollersVelocity = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute()
   {
-    // feed intake wrist positions and roller velocities here
-    // must make sure to put some basic logic here to prevent redundant motor requests
+    if (m_PreviousWristPosition != m_Orchestrator.m_DesiredIntakeWristPosition)
+    {
+      m_Intake.setWristPosition(m_Orchestrator.m_DesiredIntakeWristPosition);
+    }
+
+    if (m_PreviousRollersVelocity != m_Orchestrator.m_DesiredIntakeRollersVelocity)
+    {
+      m_Intake.setRollersVelocity(m_Orchestrator.m_DesiredIntakeRollersVelocity);
+    }
+
+    m_PreviousWristPosition = m_Orchestrator.m_DesiredIntakeWristPosition;
+    m_PreviousRollersVelocity = m_Orchestrator.m_DesiredIntakeRollersVelocity;
   }
 
   // Called once the command ends or is interrupted.

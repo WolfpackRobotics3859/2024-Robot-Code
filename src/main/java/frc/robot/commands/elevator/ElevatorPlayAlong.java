@@ -12,6 +12,8 @@ public class ElevatorPlayAlong extends Command
 {
   private final Orchestrator m_Orchestrator;
   private final Elevator m_Elevator;
+  
+  private double m_PreviousElevatorPosition;
 
   /** Creates a new ElevatorPlayAlong. */
   public ElevatorPlayAlong(Orchestrator orchestrator, Elevator elevator)
@@ -24,15 +26,21 @@ public class ElevatorPlayAlong extends Command
   @Override
   public void initialize()
   {
-    // Intentionally Empty
+    // prevent null numbers
+    this.m_PreviousElevatorPosition = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute()
   {
-    // feed elevator position numbers here
-    // make sure to add logic to prevent redundant motor requests
+    // if the last position the elevator was told to go to is not the same as the desired position
+    if (this.m_PreviousElevatorPosition != m_Orchestrator.m_DesiredElevatorPosition)
+    {
+      m_Elevator.setElevatorPosition(m_Orchestrator.m_DesiredElevatorPosition);
+    }
+
+    this.m_PreviousElevatorPosition = m_Orchestrator.m_DesiredElevatorPosition;
   }
 
   // Called once the command ends or is interrupted.
