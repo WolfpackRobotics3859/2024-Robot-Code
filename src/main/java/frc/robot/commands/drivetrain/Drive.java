@@ -11,7 +11,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
-//import frc.robot.subsystems.Orchestrator;
 import frc.robot.constants.drivetrain.DrivetrainConstants;
 
 public class Drive extends Command
@@ -23,10 +22,9 @@ public class Drive extends Command
    */
   private Supplier<Double> m_SpeedXSupplier, m_SpeedYSupplier, m_RotationalSpeedSupplier;
   private Drivetrain m_Drivetrain;
-  //private Orchestrator m_Orchestrator;
   
   /**
-   * @brief Sends a field centric request to the given swerve drivetrain with given X speed, Y speed, and rotational speed
+   * Sends a field centric request to the given swerve drivetrain with given X speed, Y speed, and rotational speed
    * @param drivetrain The swerve drivetrain object
    * @param speedX The speed in the X direction
    * @param speedY The speed in the Y direction
@@ -38,7 +36,7 @@ public class Drive extends Command
     this.m_SpeedYSupplier = speedY;
     this.m_RotationalSpeedSupplier = rotationalSpeed;
     this.m_Drivetrain = drivetrain;
-    //this.m_Orchestrator = orchestrator;
+
     addRequirements(drivetrain);
   }
 
@@ -74,7 +72,8 @@ public class Drive extends Command
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished()
+  {
     return false;
   }
 }
