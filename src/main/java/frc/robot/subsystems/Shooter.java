@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
@@ -13,6 +15,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.constants.Hardware;
 import frc.robot.constants.shooter.ShooterConstants;
+import frc.robot.utils.Util;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -157,11 +160,6 @@ public class Shooter extends SubsystemBase
   {
     return m_WristMotor.getPosition();
   }
-  
-  public StatusSignal<Double> getWristMovementError()
-  {
-    return m_WristMotor.getClosedLoopError();
-  }
 
   public boolean getBeamBreak1()
   {
@@ -173,10 +171,9 @@ public class Shooter extends SubsystemBase
     return m_BeamBreak2.get();
   }
 
-  public boolean wristIsAtPosition(double goalPosition, double tolerance)
-  {
-    return (getWristMotorPosition().getValueAsDouble() - tolerance <= goalPosition) && (getWristMotorPosition().getValueAsDouble() + tolerance >= goalPosition);
-  }
+  public BooleanSupplier wristIsAtClearancePosition = () -> Util.epsilonEquals(getWristMotorPosition().getValueAsDouble(), ShooterConstants.WRIST_CLEARANCE_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE);
+  public BooleanSupplier wristIsAtDefaultPosition = () -> Util.epsilonEquals(getWristMotorPosition().getValueAsDouble(), ShooterConstants.WRIST_DEFAULT_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE);
+
   @Override
   public void periodic()
   {

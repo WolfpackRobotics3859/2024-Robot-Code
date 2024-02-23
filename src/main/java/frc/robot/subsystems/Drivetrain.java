@@ -67,8 +67,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
    */
   public Command applyRequest(Supplier<SwerveRequest> requestSupplier)
   {
-    return run(() -> this.setControl(requestSupplier.get()));  
-    
+    return run(() -> this.setControl(requestSupplier.get())); 
   }
 
   public SwerveDrivePoseEstimator getOdometry() {

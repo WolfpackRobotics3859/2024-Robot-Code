@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
@@ -17,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.elevator.ElevatorConstants;
+import frc.robot.utils.Util;
 
 public class Elevator extends SubsystemBase
 {
@@ -24,8 +27,6 @@ public class Elevator extends SubsystemBase
   private final TalonFX m_ElevatorMotor2 = new TalonFX(Hardware.ELEVATOR_MOTOR_2_ID);
   private final CANcoder m_CANCoder = new CANcoder(Hardware.ELEVATOR_CANCODER_ID);
   private final Timer m_timer;
-
-  private double m_ElevatorGoalPosition;
 
   /** Creates a new Elevator. */
   public Elevator()
@@ -37,8 +38,6 @@ public class Elevator extends SubsystemBase
     // Send a request to the second motor to follow the first
     Follower followRequest = new Follower(Hardware.ELEVATOR_MOTOR_1_ID, false);
     m_ElevatorMotor2.setControl(followRequest);
-
-    this.m_ElevatorGoalPosition = 0;
 
     // Start a timer
     this.m_timer = new Timer();
@@ -65,14 +64,6 @@ public class Elevator extends SubsystemBase
     m_ElevatorMotor1.setControl(request);  
   }
 
-  public void setGoalElevatorPosition(double position)
-  {
-    if (position == 0 || position == 1)
-    {
-      this.m_ElevatorGoalPosition = position;
-    }
-  }
-
   public void setBrakeMode(boolean brake)
   {
     if (brake)
@@ -87,16 +78,6 @@ public class Elevator extends SubsystemBase
     }
   }
 
-  public double getElevatorGoalPosition()
-  {
-    return this.m_ElevatorGoalPosition;
-  }
-
-  public StatusSignal<Double> getElevatorMovementError()
-  {
-    return this.m_ElevatorMotor1.getClosedLoopError();
-  }
-
   // Telemetry
 
   /** 
@@ -108,19 +89,19 @@ public class Elevator extends SubsystemBase
     return m_ElevatorMotor1.getPosition();
   }
 
-  /**
-   * @brief Gets the CANcoder's current absolute position.
-   * @return A Status Signal of CANcoder's current absolute position.
-   */
-  public StatusSignal<Double> getCANCoderPosition()
-  {
-    return m_CANCoder.getAbsolutePosition();
-  }
+  // ALL SHOULD PROBABLY BE REMOVED AT SOME POINT
+  // if the elevator is above or below the crossbar
+  public BooleanSupplier elevatorIsAboveBar = () -> Util.inRange(getElevatorPosition().getValueAsDouble(), ElevatorConstants.ELEVATOR_BAR_POSITION, ElevatorConstants.ELEVATOR_MAX_FORWARD_POS);
+  public BooleanSupplier elevatorIsBelowBar = () -> Util.inRange(getElevatorPosition().getValueAsDouble(), ElevatorConstants.ELEVATAOR_MAX_REVERSE_POS, ElevatorConstants.ELEVATOR_BAR_POSITION);
 
-  public boolean isAtPosition(double goalPosition, double tolerance)
-  {
-    return (getElevatorPosition().getValueAsDouble() - tolerance <= goalPosition) && (getElevatorPosition().getValueAsDouble() + tolerance >= goalPosition);
-  }
+  // if the elevator is above the position to begin moving the shooter to clear the bar
+  public BooleanSupplier elevatorIsAboveClearancePosition = () -> getElevatorPosition().getValueAsDouble() > ElevatorConstants.ELEVATOR_BOTTOM_CLEARANCE_POSITION;
+
+  // if the elevator is above the position where the intake must be moved before sending the elevator down
+  public BooleanSupplier elevatorIsAboveIntakeClearancePosition = () -> getElevatorPosition().getValueAsDouble() > ElevatorConstants.ELEVATOR_INTAKE_CLEAR_POSITION;
+
+  // if the elevator is at the top
+  public BooleanSupplier elevatorIsAtTop = () -> Util.epsilonEquals(getElevatorPosition().getValueAsDouble(), ElevatorConstants.ELEVATOR_TOP_POSITION, ElevatorConstants.ELEVATOR_POSITION_TOLERANCE);
 
   @Override
   public void periodic()
@@ -128,7 +109,7 @@ public class Elevator extends SubsystemBase
     if (m_timer.get() > 0.5)
     {
       m_timer.reset();
-      SmartDashboard.putNumber("Elevator position", this.getElevatorPosition().getValue());
+      SmartDashboard.putNumber("Elevator position", this.getElevatorPosition().getValueAsDouble());
     }
   }
 }
