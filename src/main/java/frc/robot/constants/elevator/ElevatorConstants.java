@@ -26,7 +26,7 @@ public class ElevatorConstants
     public static final double ELEVATOR_MAX_FORWARD_POS = .4; // the top limit position of the elevator
     public static final double ELEVATAOR_MAX_REVERSE_POS = 0; // the bottom limit position of the elevator
     public static final double ELEVATOR_BAR_POSITION = 0.2; // the position of the bar on the elevator
-    public static final double ELEVATOR_INTAKE_CLEAR_POSITION = 0.175; // the position at which the intake needs to move to allow the elevator to clear
+    public static final double ELEVATOR_INTAKE_CLEAR_POSITION = 0.16; // the position at which the intake needs to move to allow the elevator to clear
     public static final double ELEVATOR_DOWN_CHECK_POSITION = 0.05; // the position at which to check if the shooter is flat yet when moving the elevator down
     public static final double ELEVATOR_UP_CHECK_POSITION = 0.16; // the position at which to check if the shooter will clear the bar when going up
     public static final double ELEVATOR_BUMPER_SHOT_POSITION = 0.05;
