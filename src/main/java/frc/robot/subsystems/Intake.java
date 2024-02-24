@@ -74,5 +74,7 @@ public class Intake extends SubsystemBase
       m_Timer.reset();
       SmartDashboard.putNumber("Intake Wrist Position", this.getWristPosition().getValueAsDouble());
     }
+
+    SmartDashboard.putData(this);
   }
 }

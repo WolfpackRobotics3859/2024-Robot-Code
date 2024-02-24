@@ -184,5 +184,7 @@ public class Shooter extends SubsystemBase
       SmartDashboard.putBoolean("Beam Break1", this.getBeamBreak1());
       SmartDashboard.putBoolean("Beam Break 2", this.getBeamBreak2());
     }
+
+    SmartDashboard.putData(this);
   }
 }

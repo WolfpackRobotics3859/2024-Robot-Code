@@ -111,5 +111,7 @@ public class Elevator extends SubsystemBase
       m_timer.reset();
       SmartDashboard.putNumber("Elevator position", this.getElevatorPosition().getValueAsDouble());
     }
+
+    SmartDashboard.putData(this);
   }
 }
