@@ -31,7 +31,7 @@ public class BumperShot extends Command
   public void execute()
   {
     // Run the intake function
-    m_Orchestrator.BumberShot();
+    m_Orchestrator.BumperShot();
   }
 
   // Called once the command ends or is interrupted.
