@@ -15,6 +15,8 @@ public class Stow extends Command
   public Stow(Orchestrator orchestrator)
   {
     this.m_Orchestrator = orchestrator;
+
+    addRequirements(m_Orchestrator);
   }
 
   // Called when the command is initially scheduled.

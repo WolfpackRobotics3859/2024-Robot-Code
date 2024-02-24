@@ -7,12 +7,12 @@ package frc.robot.commands.orchestrator;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Orchestrator;
 
-public class IntakeCommand extends Command
+public class Climb extends Command
 {
   private final Orchestrator m_Orchestrator;
 
   /** Creates a new IntakeCommand. */
-  public IntakeCommand(Orchestrator orchestrator)
+  public Climb(Orchestrator orchestrator)
   {
     this.m_Orchestrator = orchestrator;
 
@@ -31,7 +31,7 @@ public class IntakeCommand extends Command
   public void execute()
   {
     // Run the intake function
-    m_Orchestrator.Intake();
+    m_Orchestrator.Climb();
   }
 
   // Called once the command ends or is interrupted.
@@ -45,11 +45,6 @@ public class IntakeCommand extends Command
   @Override
   public boolean isFinished()
   {
-    if (m_Orchestrator.noteStowed)
-    {
-      return true;
-    }
-    
     return false;
   }
 }
