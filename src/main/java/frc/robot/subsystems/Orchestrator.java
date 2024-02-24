@@ -29,6 +29,9 @@ public class Orchestrator extends SubsystemBase
    * Finally, each of the methods pertaining to each state are run within the corresponding state commands,
    * which simply run the method in their execute function in order to update logic checks and get desired motor
    * positions and velocities to send to the subsystems over the playalong commands.
+   * 
+   * States must be DATA DRIVEN. They should not care what the previous state was, just where the robot
+   * currently is based off data and where the robot needs to be, and act on that.
    */
 
   private final Drivetrain m_Drivetrain; // this will be used later once we have auto aiming/pathplanner
@@ -98,99 +101,35 @@ public class Orchestrator extends SubsystemBase
 
   public void Stow()
   {
-    // this should contain logic to decide the positions and velocities of all the components of the 
-    // individual subsystems, handling all conflicts
-
-    /**
-     * check if shooter is above intake -> if so, set desired intake position to be clearing
-     * 
-     * check if elevator is above bar:
-     * - if above bar, set elevator up to top position, then set shooter to clearance, then move down once shooter is cleared
-     * - if elevator is below bar, just send elevator down
-     * - if shooter is below a certain position set back to flat
-    */
-
     // set all wheels to off
     this.m_DesiredShooterMotor1Velocity = 0;
     this.m_DesiredShooterMotor2Velocity = 0;
     this.m_DesiredIntakeRollersVelocity = 0;
     this.m_DesiredShooterFeederVelocity = 0;
 
-    // if elevator is above the position where the intake needs to move
-    if (m_ElevatorPosition > ElevatorConstants.ELEVATOR_INTAKE_CLEAR_POSITION)
-    {
-      // set intake position to the clearance position
-      this.m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_CLEAR_POSITION;
-    }
-    else
-    {
-      this.m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_UP_POSITION;
-    }
-
-    // if elevator is above bar
-    if (m_ElevatorPosition > ElevatorConstants.ELEVATOR_BAR_POSITION)
-    {
-      // if elevator is not at the top position and wrist is not up
-      if (m_ElevatorPosition < ElevatorConstants.ELEVATOR_BAR_POSITION - 0.02 && !Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_CLEARANCE_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
-      {
-        m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
-      }
-
-      // once elevator is up
-      if (Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_TOP_POSITION, ElevatorConstants.ELEVATOR_TOP_POSITION))
-      {
-        // set shooter to clearance position
-        m_DesiredShooterWristPosition = ShooterConstants.WRIST_CLEARANCE_POSITION;
-      }
-
-      // if shooter is at clearance position
-      if (Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_CLEARANCE_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
-      {
-        m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BAR_POSITION - 0.08;
-      }
-    }
-    // if elevator is down
-    else
-    {
-      m_DesiredShooterWristPosition = ShooterConstants.WRIST_DEFAULT_POSITION;
-      // set elevator to bottom position
-      m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BOTTOM_POSITION;
-      // set wrist flat
-    }
+    ElevatorDown();
   }
 
-  // intake logic
   public void Intake()
   {
-    // set intake down
-    m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_DOWN_POSITION;
-
-    // if elevator is above bar
-    if (m_ElevatorPosition > ElevatorConstants.ELEVATOR_BAR_POSITION)
+    // if elevator is not at bottom position
+    if (!Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_BOTTOM_POSITION, ElevatorConstants.ELEVATOR_POSITION_TOLERANCE))
     {
-      // send elevator up
-      m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
-      // once elevator is up
-      if (Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_TOP_POSITION, ElevatorConstants.ELEVATOR_TOP_POSITION))
-      {
-        // send elevator down
-        m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BOTTOM_POSITION;
-      }
+      // send elevator down
+      ElevatorDown();
     }
-    // if elevator is down
     else
     {
-      // set elevator to bottom position
-      m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BOTTOM_POSITION;
-      // set wrist flat
-      m_DesiredShooterWristPosition = ShooterConstants.WRIST_DEFAULT_POSITION;
-      
+      // set intake down 
+      m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_DOWN_POSITION;
+
+      // run rollers
       if (Util.epsilonEquals(m_DesiredShooterWristPosition, ShooterConstants.WRIST_DEFAULT_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
       {
         m_DesiredIntakeRollersVelocity = -30;
         m_DesiredShooterMotor1Velocity = -30;
         m_DesiredShooterMotor2Velocity = -30;
-        m_DesiredShooterFeederVelocity = -20;
+        m_DesiredShooterFeederVelocity = -15;
       }
     }
   }
@@ -256,7 +195,7 @@ public class Orchestrator extends SubsystemBase
     }
   }
 
-  public void BumberShot()
+  public void BumperShot()
   {
     // set shooter wheels to bumper shot speed
     this.m_DesiredShooterMotor1Velocity = ShooterConstants.BUMPER_SHOT_VELOCITY;
@@ -272,7 +211,7 @@ public class Orchestrator extends SubsystemBase
       // send elevator up
       m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
       // once elevator is up
-      if (Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_TOP_POSITION, ElevatorConstants.ELEVATOR_TOP_POSITION))
+      if (Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_TOP_POSITION, ElevatorConstants.ELEVATOR_POSITION_TOLERANCE))
       {
         // send elevator down
         m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BOTTOM_POSITION;
@@ -344,16 +283,108 @@ public class Orchestrator extends SubsystemBase
     }
   }
 
+  // Useful methods for repeated actions
+
+  public void ElevatorDown()
+  {
+    if (m_ElevatorPosition > ElevatorConstants.ELEVATOR_INTAKE_CLEAR_POSITION)
+    {
+      this.m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_CLEAR_POSITION;
+    }
+    else
+    {
+      this.m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_UP_POSITION;
+    }
+
+    // if elevator is above bar
+    if (m_ElevatorPosition > ElevatorConstants.ELEVATOR_BAR_POSITION)
+    {
+      // if shooter is at clearance position, just send elevator down
+      if (Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_CLEARANCE_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
+      {
+        this.m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BAR_POSITION - 0.08;
+      }
+      // otherwise send elevator up first
+      else
+      {
+        this.m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
+
+        // if elevator is up
+        if (Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_TOP_POSITION, ElevatorConstants.ELEVATOR_TOP_POSITION))
+        {
+        // set shooter to clearance position
+        this.m_DesiredShooterWristPosition = ShooterConstants.WRIST_CLEARANCE_POSITION;
+        }
+      }
+    }
+    // if elevator is below the bar
+    else
+    {
+      this.m_DesiredShooterWristPosition = ShooterConstants.WRIST_DEFAULT_POSITION;
+      // set elevator to bottom position
+      this.m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BOTTOM_POSITION;
+      // set wrist flat
+    }
+  }
+
+  public void ElevatorUp()
+  {
+    if (m_ElevatorPosition < ElevatorConstants.ELEVATOR_INTAKE_CLEAR_POSITION + 0.03)
+    {
+      this.m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_CLEAR_POSITION;
+    }
+    else
+    {
+      this.m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_UP_POSITION;
+    }
+
+    // if elevator is below bar
+    if (m_ElevatorPosition < ElevatorConstants.ELEVATOR_BAR_POSITION)
+    {
+      // if elevator is below position
+      if(m_ElevatorPosition < ElevatorConstants.ELEVATOR_BAR_POSITION - 0.06)
+      {
+        // send elevator up to first position
+        m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BAR_POSITION - 0.05;
+      }
+      
+      // if elevator is between positions
+      if (Util.inRange(m_ElevatorPosition, ElevatorConstants.ELEVATOR_BAR_POSITION - 0.08, ElevatorConstants.ELEVATOR_BAR_POSITION + 0.11))
+      {
+        // set shooter up
+        m_DesiredShooterWristPosition = ShooterConstants.WRIST_CLEARANCE_POSITION;
+      }
+
+      if (Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_CLEARANCE_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
+      {
+        m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
+      }
+    } 
+    // if elevator above bar
+    else
+    {
+      m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
+
+      if (Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_TOP_POSITION, ElevatorConstants.ELEVATOR_POSITION_TOLERANCE))
+      {
+        // if elevator is at top position return shooter to default position
+        m_DesiredShooterWristPosition = ShooterConstants.WRIST_DEFAULT_POSITION;
+      }
+    }
+  }
+
   @Override
   public void periodic()
   {
-    // periodic function should be used for updating intake status (whether robot has note) and some logging
-    // periodic should also check if robot is within range of the speaker to determine if the robot should begin aiming at the speaker
-
     // V3 PERIODIC:
     // Periodic should be used for updating odometry values from the subsystems.
     // This should be done via the getters in the subsystems and should do it on a (variable) timer for
     // a reduction in the canbus utilization
+
+    SmartDashboard.putData(this);
+    SmartDashboard.putNumber("Elevator Desired Position", m_DesiredElevatorPosition);
+    SmartDashboard.putNumber("Shooter Wrist Desired Position", m_DesiredShooterWristPosition);
+    SmartDashboard.putNumber("Intake Wrist Desired Position", m_DesiredIntakeWristPosition);
 
     if (m_Timer.get() > m_odometryUpdateFrequency)
     {
@@ -367,13 +398,6 @@ public class Orchestrator extends SubsystemBase
 
       this.m_IntakeWristPosition = m_Intake.getWristPosition().getValueAsDouble();
     }
-
-    SmartDashboard.putData(this);
-    SmartDashboard.putNumber("Elevator Desired Position", m_DesiredElevatorPosition);
-    SmartDashboard.putNumber("Shooter Wrist Desired Position", m_DesiredShooterWristPosition);
-    SmartDashboard.putNumber("Intake Wrist Desired Position", m_DesiredIntakeWristPosition);
-
-    // minor logging only
 
     if (!m_Shooter.getBeamBreak2())
     {
