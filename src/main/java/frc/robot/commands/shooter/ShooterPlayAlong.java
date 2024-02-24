@@ -24,6 +24,8 @@ public class ShooterPlayAlong extends Command
   {
     this.m_Orchestrator = orchestrator;
     this.m_Shooter = shooter;
+
+    addRequirements(m_Shooter);
   }
 
   // Called when the command is initially scheduled.

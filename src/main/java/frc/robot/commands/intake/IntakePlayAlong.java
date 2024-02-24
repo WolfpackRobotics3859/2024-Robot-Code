@@ -21,6 +21,8 @@ public class IntakePlayAlong extends Command
   {
     this.m_Orchestrator = orchestrator;
     this.m_Intake = intake;
+
+    addRequirements(m_Intake);
   }
 
   // Called when the command is initially scheduled.
