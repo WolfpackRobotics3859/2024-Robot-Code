@@ -20,27 +20,28 @@ import frc.robot.constants.Hardware;
 public class ShooterConstants
 {
     // Position Values
-    public static final double WRIST_HANDOFF_POSITION = 0;
-    public static final double WRIST_CLEARANCE_POSITION = 0.95;
+    public static final double WRIST_CLEARANCE_POSITION = .68;
     public static final double WRIST_MAX_DOWN_POSITION = 0.3;
     public static final double WRIST_MAX_UP_POSIION = 1;
-    public static final double WRIST_DEFAULT_POSITION = 0.51;
-    public static final double WRIST_SHOOTING_POSITION = 0.65; // temporary
-    public static final double WRIST_AMP_SHOOTING_POSITION = 0;
+    public static final double WRIST_DEFAULT_POSITION = 0.5;
+    public static final double WRIST_AMP_SHOOTING_POSITION = 0.7;
+
+    // Velocities
+    public static final double BUMPER_SHOT_VELOCITY = 35;
 
     // Wrist values
-    public static final double SHOOTER_WRIST_FEED_FORWARD = 0;
+    public static final double SHOOTER_WRIST_FEED_FORWARD = 0.7;
 
     // Shooter motor configs
-    public static final double SHOOTER_MOTOR_ACCELERATION = 40;
+    public static final double SHOOTER_MOTOR_ACCELERATION = 30;
 
     public static final Slot0Configs SHOOTER_1_GAINS = new Slot0Configs()
-        .withKP(0.010594).withKI(0).withKD(0)
-        .withKS(0.06616).withKV(0.10904).withKA(0.012043);
+        .withKP(0.0025769).withKI(0).withKD(0)
+        .withKS(0.17472).withKV(0.11134).withKA(0.029604);
 
     public static final Slot0Configs SHOOTER_2_GAINS = new Slot0Configs()
-        .withKP(0.0026316).withKI(0).withKD(0)
-        .withKS(0.19959).withKV(0.1108).withKA(0.015865);
+        .withKP(0.011753).withKI(0).withKD(0)
+        .withKS(0.13771).withKV(0.10834).withKA(0.01631);
     
     // Wrist motor configs
     public static final Slot0Configs WRIST_GAINS = new Slot0Configs()
@@ -55,8 +56,8 @@ public class ShooterConstants
 
     // Wrist configs
     public static final MotionMagicConfigs WRIST_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(2)
-        .withMotionMagicAcceleration(5);
+        .withMotionMagicCruiseVelocity(11)
+        .withMotionMagicAcceleration(6);
 
     public static final SoftwareLimitSwitchConfigs WRIST_SOFT_LIMIT_CONFIGS = new SoftwareLimitSwitchConfigs()
         .withForwardSoftLimitEnable(false)
@@ -77,7 +78,7 @@ public class ShooterConstants
     // Wrist CANCoder
     public static final MagnetSensorConfigs WRIST_CANCODER_MAGNET_CONFIGS = new MagnetSensorConfigs()
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
-        .withMagnetOffset(0)
+        .withMagnetOffset(-.4)
         .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1);
 
     // Compile all configs into a single config variable for ease of use
@@ -108,6 +109,7 @@ public class ShooterConstants
     }
 
     // Misc
-    public static final double WRIST_MOVEMENT_TOLERANCE = 0.05;
-    public static final double SHOOTER_VELOCITY_TOLERANCE = 1;
+    public static final double WRIST_MOVEMENT_TOLERANCE = 0.04;
+    public static final double SHOOTER_VELOCITY_TOLERANCE = 3;
+    public static final double WRIST_BUMPER_SHOT_POSITION = 0.67;
 }
