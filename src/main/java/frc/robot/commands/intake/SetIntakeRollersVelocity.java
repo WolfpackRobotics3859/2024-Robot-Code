@@ -5,34 +5,31 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import frc.robot.constants.intake.IntakeConstants;
 import frc.robot.subsystems.Intake;
 import frc.robot.utils.Util;
 
-public class SetIntakeWristPosition extends Command 
+public class SetIntakeRollersVelocity extends Command 
 {
   
-  Intake m_Intake;
-  double m_Position;
+  private final Intake m_Intake;
+  private final double m_Velocity;
 
   /**
-   * @brief Spins the wrist motor towards a given position.
-   * @param shooter The shooter subsystem object.
-   * @param velocity The desired position to send the motor towards, measured in rotations.
+   * @brief Spins the rollers at a given velocity
+   * @param shooter The shooter subsystem.
+   * @param velocity The desired velocity to run the intake at.
   */
-  public SetIntakeWristPosition(Intake intake, double position)
+  public SetIntakeRollersVelocity(Intake intake, double velocity)
   {
     this.m_Intake = intake;
-    this.m_Position = position;
+    this.m_Velocity = velocity;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() 
   {
-    m_Intake.setWristPosition(this.m_Position);
-    new PrintCommand("Intake moving to position").schedule();
+    m_Intake.setRollersVelocity(m_Velocity);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -53,8 +50,7 @@ public class SetIntakeWristPosition extends Command
   @Override
   public boolean isFinished() 
   {
-    // if intake is at position end the command
-    if (Util.epsilonEquals(m_Intake.getWristPosition().getValueAsDouble(), m_Position, IntakeConstants.INTAKE_WRIST_POSITION_TOLERANCE))
+    if (Util.epsilonEquals(m_Intake.getRollerVelocity().getValueAsDouble(), m_Velocity, 2))
     {
       return true;
     }

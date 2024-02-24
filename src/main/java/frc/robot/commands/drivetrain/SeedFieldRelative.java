@@ -21,7 +21,6 @@ public class SeedFieldRelative extends InstantCommand
   public SeedFieldRelative(Drivetrain drivetrain) 
   {
     this.m_Drivetrain = drivetrain;
-    addRequirements(drivetrain);
   }
 
   // Called when the command is initially scheduled.

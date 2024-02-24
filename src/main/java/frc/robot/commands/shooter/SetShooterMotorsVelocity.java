@@ -26,7 +26,6 @@ public class SetShooterMotorsVelocity extends Command
     this.m_Shooter = shooter;
     this.m_Velocity1 = velocity1;
     this.m_Velocity2 = velocity2;
-    addRequirements(shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -59,8 +58,6 @@ public class SetShooterMotorsVelocity extends Command
   @Override
   public boolean isFinished()
   {
-    // if both motors are at proper velocity
-    
     if(Util.epsilonEquals(m_Shooter.getShooterMotorVelocity(MOTOR.MOTOR_1).getValueAsDouble(), m_Velocity1, ShooterConstants.SHOOTER_VELOCITY_TOLERANCE) && Util.epsilonEquals(m_Shooter.getShooterMotorVelocity(MOTOR.MOTOR_2).getValueAsDouble(), m_Velocity2, ShooterConstants.SHOOTER_VELOCITY_TOLERANCE))
     {
       return true;

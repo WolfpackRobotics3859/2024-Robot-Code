@@ -23,7 +23,7 @@ public class SetElevatorPosition extends Command
   {
     this.m_Elevator = elevator;
     this.m_Position = position;
-    addRequirements(elevator);
+
   }
 
   // Called when the command is initially scheduled.

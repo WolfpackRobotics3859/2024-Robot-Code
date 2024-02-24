@@ -7,11 +7,12 @@ package frc.robot.commands.shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.shooter.ShooterConstants.MOTOR;
 import frc.robot.subsystems.Shooter;
+import frc.robot.utils.Util;
 
 public class SetFeederMotorVelocity extends Command
 {
-  Shooter m_Shooter;
-  double m_Velocity;
+  private final Shooter m_Shooter;
+  private final double m_Velocity;
 
   /**
    * @brief Runs the feeder motor at a given velocity.
@@ -42,14 +43,20 @@ public class SetFeederMotorVelocity extends Command
   @Override
   public void end(boolean interrupted)
   {
-    if(interrupted)
-    m_Shooter.setShooterMotorPercent(MOTOR.FEEDER_MOTOR, 0);
+    // empty
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished()
   {
-    return false;
+    if(Util.epsilonEquals(m_Shooter.getShooterMotorVelocity(MOTOR.FEEDER_MOTOR).getValueAsDouble(), m_Velocity, 3))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
 }
