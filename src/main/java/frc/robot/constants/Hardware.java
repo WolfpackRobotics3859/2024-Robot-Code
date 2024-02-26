@@ -32,8 +32,8 @@ public class Hardware
     public static final int WRIST_MOTOR_ID = 13;
     public static final int FEEDER_MOTOR_ID = 16;
     public static final int SHOOTER_WRIST_CANCODER_ID = 6;
-    public static final int BEAM_BREAK_1_ID = 9;
-    public static final int BEAM_BREAK_2_ID = 8;
+    public static final int BEAM_BREAK_1_ID = 8;
+    public static final int BEAM_BREAK_2_ID = 9;
 
     //Intake Motors
     public static final int INTAKE_WRIST_MOTOR_ID = 9;
