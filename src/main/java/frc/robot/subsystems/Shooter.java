@@ -10,11 +10,13 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.constants.Hardware;
 import frc.robot.constants.shooter.ShooterConstants;
+import frc.robot.constants.shooter.ShooterConstants.MOTOR;
 import frc.robot.utils.Util;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
@@ -117,6 +119,13 @@ public class Shooter extends SubsystemBase
     }
   }
 
+  public void setFeederVoltage(double voltage)
+  {
+    VoltageOut request = new VoltageOut(voltage, false, false, false, false);
+
+    m_FeederMotor.setControl(request);
+  }
+
   // Wrist Functions
 
   /**
@@ -180,9 +189,12 @@ public class Shooter extends SubsystemBase
     if (m_timer.get() > 0.5)
     {
       m_timer.reset();
-      SmartDashboard.putNumber("Shooter Wrist position", this.getWristMotorPosition().getValue());
+      SmartDashboard.putNumber("Shooter Wrist position", this.getWristMotorPosition().getValueAsDouble());
       SmartDashboard.putBoolean("Beam Break1", this.getBeamBreak1());
       SmartDashboard.putBoolean("Beam Break 2", this.getBeamBreak2());
+
+      SmartDashboard.putNumber("Shooter Motor 1 Velocity", this.getShooterMotorVelocity(MOTOR.MOTOR_1).getValueAsDouble());
+      SmartDashboard.putNumber("Shooter Motor 2 Velocity", this.getShooterMotorVelocity(MOTOR.MOTOR_2).getValueAsDouble());
     }
 
     SmartDashboard.putData(this);

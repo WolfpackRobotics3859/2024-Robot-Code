@@ -17,7 +17,7 @@ public class ShooterPlayAlong extends Command
   private double m_PreviousWristPosition;
   private double m_PreviousShooter1Velocity;
   private double m_PreviousShooter2Velocity;
-  private double m_PreviousFeederVelocity;
+  private double m_PreviousFeederVoltage;
 
   /** Creates a new ShooterPlayAlong. */
   public ShooterPlayAlong(Orchestrator orchestrator, Shooter shooter)
@@ -36,7 +36,7 @@ public class ShooterPlayAlong extends Command
     m_PreviousWristPosition = 0;
     m_PreviousShooter1Velocity = 0;
     m_PreviousShooter2Velocity = 0;
-    m_PreviousFeederVelocity = 0;
+    m_PreviousFeederVoltage = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -58,15 +58,15 @@ public class ShooterPlayAlong extends Command
       m_Shooter.setMotorVelocity(MOTOR.MOTOR_2, m_Orchestrator.m_DesiredShooterMotor2Velocity);
     }
 
-    if (m_PreviousFeederVelocity != m_Orchestrator.m_DesiredShooterFeederVelocity)
+    if (m_PreviousFeederVoltage != m_Orchestrator.m_DesiredShooterFeederVoltage)
     {
-      m_Shooter.setMotorVelocity(MOTOR.FEEDER_MOTOR, m_Orchestrator.m_DesiredShooterFeederVelocity);
+      m_Shooter.setFeederVoltage(m_Orchestrator.m_DesiredShooterFeederVoltage);
     }
 
     m_PreviousWristPosition = m_Orchestrator.m_DesiredShooterWristPosition;
     m_PreviousShooter1Velocity = m_Orchestrator.m_DesiredShooterMotor1Velocity;
     m_PreviousShooter2Velocity = m_Orchestrator.m_DesiredShooterMotor2Velocity;
-    m_PreviousFeederVelocity = m_Orchestrator.m_DesiredShooterFeederVelocity;
+    m_PreviousFeederVoltage = m_Orchestrator.m_DesiredShooterFeederVoltage;
   }
 
   // Called once the command ends or is interrupted.
