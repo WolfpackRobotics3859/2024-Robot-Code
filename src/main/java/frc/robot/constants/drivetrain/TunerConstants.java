@@ -16,7 +16,7 @@ public class TunerConstants
     // The steer motor uses any SwerveModule.SteerRequestType control request with the
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
     private static final Slot0Configs STEER_GAINS = new Slot0Configs()
-        .withKP(1).withKI(0).withKD(0.05)
+        .withKP(60).withKI(0).withKD(0.05)
         .withKS(0).withKV(1.5).withKA(0);
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
@@ -37,7 +37,7 @@ public class TunerConstants
 
     // Theoretical free speed (m/s) at 12v applied output;
     // This needs to be tuned to your individual robot
-    private static final double SPEED_AT_12_VOLTS_MPS = 5.7;
+    private static final double SPEED_AT_12_VOLTS_MPS = 6;
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
@@ -51,7 +51,7 @@ public class TunerConstants
     private static final boolean INVERT_LEFT_SIDE = false;
     private static final boolean INVERT_RIGHT_SIDE = true;
 
-    private static final String CANBUS_NAME = "";
+    private static final String CANBUS_NAME = "CANivore";
     private static final int PIDGEON_ID = 0;
 
 
@@ -84,7 +84,7 @@ public class TunerConstants
     private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 1;
     private static final int FRONT_LEFT_STEER_MOTOR_ID = 2;
     private static final int FRONT_LEFT_ENCODER_ID = 1;
-    private static final double FRONT_LEFT_ENCODER_OFFSET = -0.126953125;
+    private static final double FRONT_LEFT_ENCODER_OFFSET = -0.129883;
 
     private static final double FRONT_LEFT_X_POS_INCHES = 11.75;
     private static final double FRONT_LEFT_Y_POS_INCHES = 11.75;
@@ -93,7 +93,7 @@ public class TunerConstants
     private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 7;
     private static final int FRONT_RIGHT_STEER_MOTOR_ID = 8;
     private static final int FRONT_RIGHT_ENCODER_ID = 4;
-    private static final double FRONT_RIGHT_ENCODER_OFFSET = 0.0986328125;
+    private static final double FRONT_RIGHT_ENCODER_OFFSET = 0.102295;
 
     private static final double FRONT_RIGHT_X_POS_INCHES = 11.75;
     private static final double FRONT_RIGHT_Y_POS_INCHES = -11.75;
@@ -102,7 +102,7 @@ public class TunerConstants
     private static final int BACK_LEFT_DRIVE_MOTOR_ID = 3;
     private static final int BACK_LEFT_STEER_MOTOR_ID = 4;
     private static final int BACK_LEFT_ENCODER_ID = 2;
-    private static final double BACK_LEFT_ENCODER_OFFSET = 0.209716796875;
+    private static final double BACK_LEFT_ENCODER_OFFSET = 0.214355;
 
     private static final double BACK_LEFT_X_POS_INCHES = -11.75;
     private static final double BACK_LEFT_Y_POS_INCHES = 11.75;
