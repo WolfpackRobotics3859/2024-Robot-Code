@@ -12,6 +12,16 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 /** Add your docs here. */
 public class IntakeConstants
 {
+    // Position Values
+    public static final double INTAKE_DOWN_POSITION = 0;
+    public static final double INTAKE_UP_POSITION = 4.3;
+    public static final double INTAKE_CLEAR_POSITION = 3.1;
+    public static final double INTAKE_BUMPER_SHOT_POSITION = 2.7;
+
+    // Velocities
+    public static final double INTAKE_ROLLERS_VELOCITY = -55;
+    public static final double PURGE_VELOCITY = 45;
+
     public static final Slot0Configs INTAKE_ROLLER_GAINS = new Slot0Configs()
         .withKP(0.089884).withKI(0).withKD(0)
         .withKS(0.49503).withKV(0.11396).withKA(0.0043837);
@@ -32,13 +42,7 @@ public class IntakeConstants
         .withSlot0(INTAKE_ROLLER_GAINS);
 
     public static final double INTAKE_WRIST_FEED_FORWARD = 0.2;
-    public static final double INTAKE_ROLLERS_ACCELERATION = 15;
-
-    // Position Values
-    public static final double INTAKE_DOWN_POSITION = 0;
-    public static final double INTAKE_UP_POSITION = 4.3;
-    public static final double INTAKE_CLEAR_POSITION = 3.2;
-    public static final double INTAKE_BUMPER_SHOT_POSITION = 2.7;
+    public static final double INTAKE_ROLLERS_ACCELERATION = 25;
 
     // Misc
     public static final double INTAKE_WRIST_POSITION_TOLERANCE = 0.2;

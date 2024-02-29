@@ -25,6 +25,7 @@ public class ShooterConstants
     public static final double WRIST_AMP_SHOOTING_POSITION = 0.662598; 
     public static final double WRIST_BUMPER_SHOT_POSITION = 0.67;
     public static final double WRIST_MANUAL_SHOT_POSITION = 0.6;
+    public static final double WRIST_PURGE_POSITION = 0.55;
 
     // Software Limit Values
     public static final double WRIST_MAX_DOWN_POSITION = 0.3;
@@ -33,6 +34,7 @@ public class ShooterConstants
     // Velocities
     public static final double BUMPER_SHOT_VELOCITY = 35;
     public static final double INTAKE_SHOOTERS_VELOCITY = -18;
+    public static final double PURGE_VELOCITY = 20;
 
     // Voltages
     public static final double INTAKE_FEEDER_VOLTAGE = -2.5;
