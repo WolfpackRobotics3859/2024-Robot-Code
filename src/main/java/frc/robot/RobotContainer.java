@@ -176,17 +176,17 @@ public class RobotContainer
     m_secondaryController.x().whileTrue(new DriveWithAngle(m_Drivetrain, // left chain
       () -> -m_primaryController.getLeftY(),
       () -> -m_primaryController.getLeftX(),
-      270.0)); // change angle at some point
+      120.0)); // change angle at some point
 
     m_secondaryController.b().whileTrue(new DriveWithAngle(m_Drivetrain, // right chain
       () -> -m_primaryController.getLeftY(),
       () -> -m_primaryController.getLeftX(),
-      270.0)); // change angle at some point
+      300.0)); // change angle at some point
 
     m_secondaryController.y().whileTrue(new DriveWithAngle(m_Drivetrain, // back chain
       () -> -m_primaryController.getLeftY(),
       () -> -m_primaryController.getLeftX(),
-      270.0)); // change angle at some point
+      180.0)); // change angle at some point
 
     m_secondaryController.a().whileTrue(new SeedFieldRelative(m_Drivetrain));
 
