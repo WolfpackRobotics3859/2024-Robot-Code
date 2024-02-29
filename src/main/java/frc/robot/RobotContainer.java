@@ -29,8 +29,9 @@ import frc.robot.commands.orchestrator.BumperShot;
 import frc.robot.commands.orchestrator.Climb;
 import frc.robot.commands.orchestrator.IntakeCommand;
 import frc.robot.commands.orchestrator.Purge;
-import frc.robot.commands.orchestrator.SpeakerShotDown;
 import frc.robot.commands.orchestrator.Stow;
+import frc.robot.commands.orchestrator.ZeroIntake;
+import frc.robot.commands.orchestrator.ZeroIntakeWithoutMotor;
 import frc.robot.commands.shooter.ShooterPlayAlong;
 
 public class RobotContainer 
@@ -113,6 +114,9 @@ public class RobotContainer
     SmartDashboard.setDefaultNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION);
     SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 6);
     SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 17.5);
+
+    // Zero Intake
+    SmartDashboard.putData(new ZeroIntakeWithoutMotor(m_Intake));
   }
   
   private void configureBindings() 
@@ -159,8 +163,9 @@ public class RobotContainer
 
     // SECONDARY CONTROLLER
     // m_secondaryController.leftBumper() UNDER DEFENSE
-    m_secondaryController.leftTrigger().whileTrue(new Purge(m_Orchestrator));
+    m_secondaryController.leftTrigger().whileTrue(new Purge(m_Orchestrator)); // purge
     m_secondaryController.rightTrigger().whileTrue(new Climb(m_Orchestrator)); // start climb
+    m_secondaryController.leftBumper().onTrue(new ZeroIntake(m_Orchestrator, m_Intake)); // zero intake
 
     m_secondaryController.x().whileTrue(new DriveWithAngle(m_Drivetrain, // left chain
       () -> -m_primaryController.getLeftY(),

@@ -55,6 +55,17 @@ public class Intake extends SubsystemBase
     m_WristMotor.setControl(request);
   }
 
+  public void setWristPercent(double percent)
+  {
+    DutyCycleOut request = new DutyCycleOut(percent, false, false, false, false);
+    m_WristMotor.setControl(request);
+  }
+
+  public void zeroWrist()
+  {
+    m_WristMotor.setPosition(0);
+  }
+
   public StatusSignal<Double> getWristPosition()
   {
     return this.m_WristMotor.getPosition();
