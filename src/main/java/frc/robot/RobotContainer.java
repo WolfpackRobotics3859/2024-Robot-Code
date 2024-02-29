@@ -4,17 +4,32 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.drivetrain.TunerConstants;
+import frc.robot.constants.elevator.ElevatorConstants;
+import frc.robot.constants.shooter.ShooterConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Orchestrator;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.drivetrain.Drive;
+import frc.robot.commands.drivetrain.DriveWithAngle;
+import frc.robot.commands.drivetrain.SeedFieldRelative;
+import frc.robot.commands.elevator.ElevatorPlayAlong;
+import frc.robot.commands.intake.IntakePlayAlong;
+import frc.robot.commands.orchestrator.AmpShot;
+import frc.robot.commands.orchestrator.BumperShot;
+import frc.robot.commands.orchestrator.Climb;
+import frc.robot.commands.orchestrator.IntakeCommand;
+import frc.robot.commands.orchestrator.Purge;
+import frc.robot.commands.orchestrator.SpeakerShotDown;
+import frc.robot.commands.orchestrator.Stow;
+import frc.robot.commands.shooter.ShooterPlayAlong;
 
 public class RobotContainer 
 {
@@ -30,6 +45,7 @@ public class RobotContainer
 
   // Controllers
   private final CommandXboxController m_primaryController = new CommandXboxController(Hardware.PRIMARY_CONTROLLER_PORT);
+  private final CommandXboxController m_secondaryController = new CommandXboxController(Hardware.SECONDARY_CONTROLLER_PORT);
 
   // Getters
   /**
@@ -72,7 +88,7 @@ public class RobotContainer
   {
     return this.m_Orchestrator;
   }
-
+  
   /**
    * Gets the driver controller
    * @return The primary (driver) controller
@@ -85,6 +101,16 @@ public class RobotContainer
   public RobotContainer() 
   {
     configureBindings();
+
+    SmartDashboard.putNumber("Amp Shot Wrist Position", ShooterConstants.WRIST_AMP_SHOOTING_POSITION);
+    SmartDashboard.putNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION);
+    SmartDashboard.putNumber("Amp Shot Motor 1 Velocity", 5);
+    SmartDashboard.putNumber("Amp Shot Motor 2 Velocity", 17.5);
+
+    SmartDashboard.setDefaultNumber("Amp Shot Wrist Position", ShooterConstants.WRIST_AMP_SHOOTING_POSITION);
+    SmartDashboard.setDefaultNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION);
+    SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 6);
+    SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 17.5);
   }
   
   private void configureBindings() 
@@ -95,6 +121,65 @@ public class RobotContainer
                 () -> -m_primaryController.getLeftX(),
                 () -> -m_primaryController.getRightX()
       ));
+
+    // default command
+    m_Orchestrator.setDefaultCommand(new Stow(m_Orchestrator));
+
+    // these should be changed to be able to be killed later for climb or errors
+    m_Shooter.setDefaultCommand(new ShooterPlayAlong(m_Orchestrator, m_Shooter));
+    m_Intake.setDefaultCommand(new IntakePlayAlong(m_Orchestrator, m_Intake));
+    m_Elevator.setDefaultCommand(new ElevatorPlayAlong(m_Orchestrator, m_Elevator, () -> -m_secondaryController.getRightY()));
+
+    // PRIMARY CONTROLLER
+    m_primaryController.leftTrigger().whileTrue(new IntakeCommand(m_Orchestrator).unless(() -> m_Orchestrator.noteStowed));
+    m_primaryController.rightTrigger().whileTrue(new BumperShot(m_Orchestrator).unless(() -> !m_Orchestrator.noteStowed));
+    m_primaryController.rightBumper().whileTrue(new AmpShot(m_Orchestrator).unless(() -> !m_Orchestrator.noteStowed));
+    
+    m_primaryController.a().whileTrue(new DriveWithAngle(m_Drivetrain,
+        () -> -m_primaryController.getLeftY(),
+        () -> -m_primaryController.getLeftX(),
+        180.0));
+
+    m_primaryController.b().whileTrue(new DriveWithAngle(m_Drivetrain,
+        () -> -m_primaryController.getLeftY(),
+        () -> -m_primaryController.getLeftX(),
+        90.0));
+
+    m_primaryController.y().whileTrue(new DriveWithAngle(m_Drivetrain,
+        () -> -m_primaryController.getLeftY(),
+        () -> -m_primaryController.getLeftX(),
+        0.0));
+
+    m_primaryController.x().whileTrue(new DriveWithAngle(m_Drivetrain,
+        () -> -m_primaryController.getLeftY(),
+        () -> -m_primaryController.getLeftX(),
+        270.0));
+
+    // SECONDARY CONTROLLER
+    // m_secondaryController.leftBumper() UNDER DEFENSE
+    m_secondaryController.leftTrigger().whileTrue(new Purge(m_Orchestrator));
+    m_secondaryController.rightTrigger().whileTrue(new Climb(m_Orchestrator)); // start climb
+
+    m_secondaryController.x().whileTrue(new DriveWithAngle(m_Drivetrain, // left chain
+      () -> -m_primaryController.getLeftY(),
+      () -> -m_primaryController.getLeftX(),
+      270.0)); // change angle at some point
+
+    m_secondaryController.b().whileTrue(new DriveWithAngle(m_Drivetrain, // right chain
+      () -> -m_primaryController.getLeftY(),
+      () -> -m_primaryController.getLeftX(),
+      270.0)); // change angle at some point
+
+    m_secondaryController.y().whileTrue(new DriveWithAngle(m_Drivetrain, // back chain
+      () -> -m_primaryController.getLeftY(),
+      () -> -m_primaryController.getLeftX(),
+      270.0)); // change angle at some point
+
+    m_secondaryController.b().whileTrue(new Drive(m_Drivetrain, // jog robot forward
+      () -> -m_primaryController.getLeftY(),
+      () -> 0.0,
+      () -> 0.0
+    ));
   }
 
   public Command getAutonomousCommand() 
@@ -102,3 +187,4 @@ public class RobotContainer
     return Commands.print("No autonomous command configured");
   }
 }
+
