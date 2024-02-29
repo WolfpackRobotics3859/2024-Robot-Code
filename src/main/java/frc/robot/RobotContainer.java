@@ -29,6 +29,8 @@ import frc.robot.commands.orchestrator.BumperShot;
 import frc.robot.commands.orchestrator.Climb;
 import frc.robot.commands.orchestrator.IntakeCommand;
 import frc.robot.commands.orchestrator.Purge;
+import frc.robot.commands.orchestrator.SetElevatorBrake;
+import frc.robot.commands.orchestrator.SetElevatorCoast;
 import frc.robot.commands.orchestrator.Stow;
 import frc.robot.commands.orchestrator.ZeroIntake;
 import frc.robot.commands.orchestrator.ZeroIntakeWithoutMotor;
@@ -116,7 +118,11 @@ public class RobotContainer
     SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 17.5);
 
     // Zero Intake
-    SmartDashboard.putData(new ZeroIntakeWithoutMotor(m_Intake));
+    SmartDashboard.putData("Zero Intake", new ZeroIntakeWithoutMotor(m_Intake));
+
+    // Elevator Brake Mode
+    SmartDashboard.putData("Elevator Brake", new SetElevatorBrake(m_Elevator));
+    SmartDashboard.putData("Elevator Coast", new SetElevatorCoast(m_Elevator));
   }
   
   private void configureBindings() 

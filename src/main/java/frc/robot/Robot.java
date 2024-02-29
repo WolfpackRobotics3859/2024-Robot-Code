@@ -34,7 +34,7 @@ public class Robot extends LoggedRobot
   @Override
   public void disabledInit() 
   {
-    m_robotContainer.getElevator().setBrakeMode(false);
+    // Intentionally Empty
   }
 
   @Override
