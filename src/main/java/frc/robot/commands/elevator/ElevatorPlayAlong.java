@@ -53,13 +53,13 @@ public class ElevatorPlayAlong extends Command
     }
     else
     {
-      if (m_Elevator.getElevatorPosition().getValueAsDouble() > ElevatorConstants.ELEVATOR_CLIMB_SAFE_DOWN)
+      if (m_Elevator.getElevatorPosition().getValueAsDouble() > ElevatorConstants.ELEVATOR_CLIMB_SAFE_DOWN || m_ElevatorPercent.get() >= 0)
       {
         m_Elevator.setElevatorPercent(m_ElevatorPercent.get() * 0.5);
       }
       else
       {
-        m_Elevator.setElevatorPercent(0);
+        m_Elevator.setElevatorBrake();
       }
     }
   }
