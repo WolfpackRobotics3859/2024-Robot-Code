@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.NavigableMap;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -11,29 +13,11 @@ import frc.robot.constants.elevator.ElevatorConstants;
 import frc.robot.constants.intake.IntakeConstants;
 import frc.robot.constants.shooter.ShooterConstants;
 import frc.robot.constants.shooter.ShooterConstants.MOTOR;
+import frc.robot.utils.Maps;
 import frc.robot.utils.Util;
 
 public class Orchestrator extends SubsystemBase
 {
-  /**
-   * FOR V3 ORCHESTRATOR:
-   * V3 should be a completely new framework. All logic is to be done within the orchestrator, with
-   * logic for each state (RobotState) done within it's own function in the orchestrator.
-   * Then, the orchestrator should be updating public numbers based on this logic that correspond to motor
-   * positions and velocities in order to make all the subsystems work together.
-   * 
-   * This data is fed to the subsystems via the PlayAlong commands, which simply set motor positions and velocities
-   * in their execute functions, while performing minimal logic that checks the amount of times we are sending motor
-   * requests over the CAN bus to prevent over-utilization.
-   * 
-   * Finally, each of the methods pertaining to each state are run within the corresponding state commands,
-   * which simply run the method in their execute function in order to update logic checks and get desired motor
-   * positions and velocities to send to the subsystems over the playalong commands.
-   * 
-   * States must be DATA DRIVEN. They should not care what the previous state was, just where the robot
-   * currently is based off data and where the robot needs to be, and act on that.
-   */
-
   private final Drivetrain m_Drivetrain; // this will be used later once we have auto aiming/pathplanner
   private final Elevator m_Elevator;
   private final Shooter m_Shooter;
@@ -42,14 +26,14 @@ public class Orchestrator extends SubsystemBase
   private final Timer m_Timer;
   private double m_odometryUpdateFrequency = 0.1;
 
-  public RobotState m_CurrentState = RobotState.DISABLED; // set robot to be disabled first
   public boolean noteGrabbed = false;
   public boolean noteStowed = false;
   public boolean shotReady = false;
-  public boolean shotRequested = false; // if the robot is being told to actually fire the note once the shot is ready
+  public boolean shotRequested = false;
+  public boolean climbing = false;
 
   /**
-   * 
+   * Creates a new orchestrator subsystem.
    * @param drivetrain The drivetrain subsystem.
    * @param elevator The elevator subsytem.
    * @param shooter The shooter subsystem.
@@ -81,23 +65,62 @@ public class Orchestrator extends SubsystemBase
   public double m_DesiredShooterWristPosition;
   public double m_DesiredShooterMotor1Velocity;
   public double m_DesiredShooterMotor2Velocity;
-  public double m_DesiredShooterFeederVelocity;
+  public double m_DesiredShooterFeederVoltage;
 
   public double m_DesiredIntakeWristPosition;
   public double m_DesiredIntakeRollersVelocity;
 
-  // Getters/Setters (to be deleted)
-  public void setOrchestratorState(RobotState state)
-  {
-    this.m_CurrentState = state;
-  }
-
-  public void setShotReady(boolean ready)
-  {
-    this.shotReady = ready;
-  }
-
   // High Level methods
+
+  public void newStow()
+  {
+    // set all wheels to off
+    this.m_DesiredShooterMotor1Velocity = 0;
+    this.m_DesiredShooterMotor2Velocity = 0;
+    this.m_DesiredShooterFeederVoltage = 0;
+    
+    this.m_DesiredIntakeRollersVelocity = 0;
+
+    // if intake needs to clear
+    if (m_ElevatorPosition > ElevatorConstants.ELEVATOR_INTAKE_CLEAR_POSITION)
+    {
+      // set intake out of the way
+      this.m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_CLEAR_POSITION;
+    }
+    else
+    {
+      // otherwise set to up position
+      this.m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_UP_POSITION;
+    }
+
+    // if elevator is above bar 
+    if (m_ElevatorPosition >= ElevatorConstants.ELEVATOR_BAR_POSITION)
+    {
+      // if shooter is at clearance position set elevator down
+      if(Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_CLEARANCE_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
+      {
+        this.m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BAR_POSITION - 0.12;
+      }
+      else
+      {
+        // set elevator up
+        this.m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
+
+        if (Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_TOP_POSITION, ElevatorConstants.ELEVATOR_POSITION_TOLERANCE))
+        {
+          this.m_DesiredShooterWristPosition = ShooterConstants.WRIST_CLEARANCE_POSITION;
+        }
+      }
+    }
+    // if elevator is below bar
+    else
+    {
+      // set elevator to bottom position
+      this.m_DesiredShooterWristPosition = ShooterConstants.WRIST_DEFAULT_POSITION;
+      // set wrist flat
+      this.m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BOTTOM_POSITION;
+    }
+  }
 
   public void Stow()
   {
@@ -105,13 +128,18 @@ public class Orchestrator extends SubsystemBase
     this.m_DesiredShooterMotor1Velocity = 0;
     this.m_DesiredShooterMotor2Velocity = 0;
     this.m_DesiredIntakeRollersVelocity = 0;
-    this.m_DesiredShooterFeederVelocity = 0;
+    this.m_DesiredShooterFeederVoltage = 0;
 
+    this.climbing = false;
+
+    // set elevator down
     ElevatorDown();
   }
 
   public void Intake()
   {
+    this.climbing = false;
+
     // if elevator is not at bottom position
     if (!Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_BOTTOM_POSITION, ElevatorConstants.ELEVATOR_POSITION_TOLERANCE))
     {
@@ -126,10 +154,10 @@ public class Orchestrator extends SubsystemBase
       // run rollers
       if (Util.epsilonEquals(m_DesiredShooterWristPosition, ShooterConstants.WRIST_DEFAULT_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
       {
-        m_DesiredIntakeRollersVelocity = -30;
-        m_DesiredShooterMotor1Velocity = -30;
-        m_DesiredShooterMotor2Velocity = -30;
-        m_DesiredShooterFeederVelocity = -15;
+        m_DesiredIntakeRollersVelocity = IntakeConstants.INTAKE_ROLLERS_VELOCITY;
+        m_DesiredShooterMotor1Velocity = ShooterConstants.INTAKE_SHOOTERS_VELOCITY;
+        m_DesiredShooterMotor2Velocity = ShooterConstants.INTAKE_SHOOTERS_VELOCITY;
+        m_DesiredShooterFeederVoltage = ShooterConstants.INTAKE_FEEDER_VOLTAGE;
       }
     }
   }
@@ -141,11 +169,59 @@ public class Orchestrator extends SubsystemBase
 
   public void ShootSpeakerDown()
   {
-    // Empty for now
+    this.climbing = false;
+
+    this.m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_DOWN_POSITION;
+    // if elevator is above bar
+    if (m_ElevatorPosition > ElevatorConstants.ELEVATOR_BAR_POSITION)
+    {
+      // if elevator is not at the top position and wrist is not up
+      if (m_ElevatorPosition < ElevatorConstants.ELEVATOR_BAR_POSITION - 0.02 && !Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_CLEARANCE_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
+      {
+        m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
+      }
+
+      // once elevator is up
+      if (Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_TOP_POSITION, ElevatorConstants.ELEVATOR_TOP_POSITION))
+      {
+        // set shooter to clearance position
+        m_DesiredShooterWristPosition = ShooterConstants.WRIST_CLEARANCE_POSITION;
+      }
+
+      // if shooter is at clearance position
+      if (Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_CLEARANCE_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
+      {
+        m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BAR_POSITION - 0.08;
+      }
+    }
+    // if elevator is down
+    else
+    {
+      m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_MANUAL_SHOT_POSITION;
+      // set wrist flat
+      if(Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_MANUAL_SHOT_POSITION, 0.006))
+      {
+        m_DesiredShooterWristPosition = ShooterConstants.WRIST_MANUAL_SHOT_POSITION;
+      }
+
+      if(Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_MANUAL_SHOT_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
+      {
+
+        m_DesiredShooterMotor1Velocity = 45;
+        m_DesiredShooterMotor2Velocity = 45;
+      }
+
+      if(Util.epsilonEquals(m_ShooterMotor2Velocity, 45, ShooterConstants.SHOOTER_VELOCITY_TOLERANCE))
+      {
+        m_DesiredShooterFeederVoltage = ShooterConstants.FEEDER_SHOOTING_VOLTAGE;
+      }
+    }
   }
 
   public void ShootAmp()
   {
+    this.climbing = false;
+
     this.m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_CLEAR_POSITION;
 
     // if elevator is above bar
@@ -173,35 +249,37 @@ public class Orchestrator extends SubsystemBase
     // if elevator is down
     else
     {
-      m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION;
-      // set wrist flat
-      if(Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION, 0.006))
+      // set elevator to amp position
+      m_DesiredElevatorPosition = SmartDashboard.getNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION);
+      // set wrist to shooter position
+      if(Util.epsilonEquals(m_ElevatorPosition, SmartDashboard.getNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION), 0.008))
       {
-        m_DesiredShooterWristPosition = ShooterConstants.WRIST_AMP_SHOOTING_POSITION;
+        m_DesiredShooterWristPosition = SmartDashboard.getNumber("Amp Shot Wrist Position", ShooterConstants.WRIST_AMP_SHOOTING_POSITION);
       }
 
-      if(Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_AMP_SHOOTING_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
+      if(Util.epsilonEquals(m_ShooterWristPosition, SmartDashboard.getNumber("Amp Shot Wrist Position", ShooterConstants.WRIST_AMP_SHOOTING_POSITION), ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
       {
 
-        m_DesiredShooterMotor1Velocity = 12;
-        m_DesiredShooterMotor2Velocity = 19;
+        m_DesiredShooterMotor2Velocity = SmartDashboard.getNumber("Amp Shot Motor 1 Velocity", 6);
+        m_DesiredShooterMotor1Velocity = SmartDashboard.getNumber("Amp Shot Motor 2 Velocity", 17.5);
       }
 
-      if(Util.epsilonEquals(m_ShooterMotor2Velocity, 13, ShooterConstants.SHOOTER_VELOCITY_TOLERANCE))
+      if(Util.epsilonEquals(m_ShooterMotor1Velocity, SmartDashboard.getNumber("Amp Shot Motor 2 Velocity", 17.5), ShooterConstants.SHOOTER_VELOCITY_TOLERANCE))
       {
-        m_DesiredShooterFeederVelocity = 30;
+        m_DesiredShooterFeederVoltage = ShooterConstants.FEEDER_AMP_SHOT_VOLTAGE;
       }
-      
     }
   }
 
   public void BumperShot()
   {
+    this.climbing = false;
+
     // set shooter wheels to bumper shot speed
     this.m_DesiredShooterMotor1Velocity = ShooterConstants.BUMPER_SHOT_VELOCITY;
     this.m_DesiredShooterMotor2Velocity = ShooterConstants.BUMPER_SHOT_VELOCITY;
     this.m_DesiredIntakeRollersVelocity = 0;
-    this.m_DesiredShooterFeederVelocity = 0;
+    this.m_DesiredShooterFeederVoltage = 0;
 
     this.m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_BUMPER_SHOT_POSITION;
 
@@ -234,7 +312,7 @@ public class Orchestrator extends SubsystemBase
           // if shooter motors are at proper velocity
           if (Util.epsilonEquals(m_ShooterMotor1Velocity, ShooterConstants.BUMPER_SHOT_VELOCITY, ShooterConstants.SHOOTER_VELOCITY_TOLERANCE))
           {
-            m_DesiredShooterFeederVelocity = 30;
+            m_DesiredShooterFeederVoltage = ShooterConstants.FEEDER_SHOOTING_VOLTAGE;
           }
         }
       }
@@ -247,18 +325,16 @@ public class Orchestrator extends SubsystemBase
     if (m_ElevatorPosition < ElevatorConstants.ELEVATOR_BAR_POSITION)
     {
       // set intake out of the way
-      m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_CLEAR_POSITION;
+      this.m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_CLEAR_POSITION;
       
-      // if elevator is below position
-      if(m_ElevatorPosition < ElevatorConstants.ELEVATOR_BAR_POSITION - 0.06)
+      if (Util.epsilonEquals(m_IntakeWristPosition, IntakeConstants.INTAKE_CLEAR_POSITION, IntakeConstants.INTAKE_WRIST_POSITION_TOLERANCE))
       {
-        // send elevator up to first position
-        m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BAR_POSITION - 0.05;
+        // if intake is out of way send elevator up to first position
+        this.m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BAR_POSITION - 0.16;
       }
       
-
       // if elevator is between positions
-      if (Util.inRange(m_ElevatorPosition, ElevatorConstants.ELEVATOR_BAR_POSITION - 0.08, ElevatorConstants.ELEVATOR_BAR_POSITION + 0.11))
+      if (Util.inRange(m_ElevatorPosition, ElevatorConstants.ELEVATOR_BAR_POSITION - 0.17, ElevatorConstants.ELEVATOR_BAR_POSITION + 0.1))
       {
         // set shooter up
         m_DesiredShooterWristPosition = ShooterConstants.WRIST_CLEARANCE_POSITION;
@@ -266,21 +342,127 @@ public class Orchestrator extends SubsystemBase
 
       if (Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_CLEARANCE_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
       {
-        m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
+        // send elevator to proper position
+        m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BAR_POSITION + 0.1;
+
+        if (Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_BAR_POSITION + 0.1, ElevatorConstants.ELEVATOR_POSITION_TOLERANCE))
+        {
+          this.climbing = true;
+        }
       }
       
     } 
     // if elevator above bar
     else
     {
-      m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
-
-      if (Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_TOP_POSITION, ElevatorConstants.ELEVATOR_POSITION_TOLERANCE))
+      // if wrist is already at position just send elevator down
+      if (Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_CLEARANCE_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
       {
-        // if elevator is at top position return shooter to default position
-        m_DesiredShooterWristPosition = ShooterConstants.WRIST_DEFAULT_POSITION;
+        this.m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_CLIMB_POSITION;
+        this.m_DesiredShooterWristPosition = ShooterConstants.WRIST_CLEARANCE_POSITION;
+
+        if (Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_CLIMB_POSITION, ElevatorConstants.ELEVATOR_POSITION_TOLERANCE))
+        {
+          // climb is ready to be handed off to operator
+          this.climbing = true;
+        }
+      }
+      else
+      {
+        m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
+
+        if (Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_TOP_POSITION, ElevatorConstants.ELEVATOR_POSITION_TOLERANCE))
+        {
+          // if elevator is at top position set shooter to clearance position
+          m_DesiredShooterWristPosition = ShooterConstants.WRIST_CLEARANCE_POSITION;
+        }
       }
     }
+  }
+
+  public void Purge()
+  {
+    this.climbing = false;
+  
+    // set shooter wheels to bumper shot speed
+    this.m_DesiredShooterMotor1Velocity = ShooterConstants.PURGE_VELOCITY;
+    this.m_DesiredShooterMotor2Velocity = ShooterConstants.PURGE_VELOCITY;
+    this.m_DesiredIntakeRollersVelocity = IntakeConstants.PURGE_VELOCITY;
+    this.m_DesiredShooterFeederVoltage = 0;
+  
+    this.m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_BUMPER_SHOT_POSITION;
+  
+    // if elevator is above bar
+    if (m_ElevatorPosition > ElevatorConstants.ELEVATOR_BAR_POSITION)
+    {
+      // send elevator up
+      m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
+      // once elevator is up
+      if (Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_TOP_POSITION, ElevatorConstants.ELEVATOR_POSITION_TOLERANCE))
+      {
+        // send elevator down
+        m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BOTTOM_POSITION;
+      }
+    }
+    // if elevator is down
+    else
+    {
+      // set elevator to purge position
+      m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_PURGE_POSITION;
+        
+      if(Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_PURGE_POSITION, ElevatorConstants.ELEVATOR_POSITION_TOLERANCE))
+      {
+        // set wrist to purge position
+        m_DesiredShooterWristPosition = ShooterConstants.WRIST_DEFAULT_POSITION;
+  
+        // if wrist is at right position
+        if(Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_DEFAULT_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
+        {
+          // if shooter motors are at proper velocity
+          if (Util.epsilonEquals(m_ShooterMotor1Velocity, ShooterConstants.PURGE_VELOCITY, ShooterConstants.SHOOTER_VELOCITY_TOLERANCE))
+          {
+            m_DesiredShooterFeederVoltage = ShooterConstants.FEEDER_SHOOTING_VOLTAGE;
+          }
+        }
+      }
+    }
+  }
+
+  public void DashboardControl()
+  {
+    this.climbing = false;
+
+    this.m_DesiredElevatorPosition = SmartDashboard.getNumber("Manual Elevator Position", 0);
+    this.m_DesiredShooterWristPosition = SmartDashboard.getNumber("Manual Shooter Position", 0);
+    this.m_DesiredIntakeWristPosition = SmartDashboard.getNumber("Manual Intake Position", 0);
+  }
+
+  public boolean ManualFire()
+  {
+    this.climbing = false;
+
+    m_DesiredShooterMotor1Velocity = SmartDashboard.getNumber("Manual Shooter Roller 1 Velocity", 0);
+    m_DesiredShooterMotor2Velocity = SmartDashboard.getNumber("Manual Shooter Roller 2 Velocity", 0);
+    boolean rollerOneReady = NumberWithinRange(m_DesiredShooterMotor1Velocity, m_ShooterMotor1Velocity, 3);
+    boolean rollerTwoReady = NumberWithinRange(m_DesiredShooterMotor2Velocity, m_ShooterMotor2Velocity, 3);
+    if(rollerOneReady && rollerTwoReady)
+    {
+      m_DesiredShooterFeederVoltage = SmartDashboard.getNumber("Manual Feeder Voltage", 0);
+    }
+    if(!m_Shooter.getBeamBreak1() && !m_Shooter.getBeamBreak2())
+    {
+      m_DesiredShooterMotor1Velocity = 0;
+      m_DesiredShooterMotor2Velocity = 0;
+      m_DesiredShooterFeederVoltage = 0;
+      return true;
+    }
+    return false;
+  }
+
+  /// Here tolerance is a +- from the expectedValue
+  private boolean NumberWithinRange(double expectedValue, double actualValue, double tolerance)
+  {
+    return (expectedValue - tolerance) < actualValue && actualValue < (expectedValue + tolerance);
   }
 
   // Useful methods for repeated actions
@@ -302,7 +484,7 @@ public class Orchestrator extends SubsystemBase
       // if shooter is at clearance position, just send elevator down
       if (Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_CLEARANCE_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
       {
-        this.m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BAR_POSITION - 0.08;
+        this.m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BAR_POSITION - 0.14;
       }
       // otherwise send elevator up first
       else
@@ -342,7 +524,7 @@ public class Orchestrator extends SubsystemBase
     if (m_ElevatorPosition < ElevatorConstants.ELEVATOR_BAR_POSITION)
     {
       // if elevator is below position
-      if(m_ElevatorPosition < ElevatorConstants.ELEVATOR_BAR_POSITION - 0.06)
+      if(m_ElevatorPosition < ElevatorConstants.ELEVATOR_BAR_POSITION - 0.12)
       {
         // send elevator up to first position
         m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BAR_POSITION - 0.05;
@@ -385,6 +567,8 @@ public class Orchestrator extends SubsystemBase
     SmartDashboard.putNumber("Elevator Desired Position", m_DesiredElevatorPosition);
     SmartDashboard.putNumber("Shooter Wrist Desired Position", m_DesiredShooterWristPosition);
     SmartDashboard.putNumber("Intake Wrist Desired Position", m_DesiredIntakeWristPosition);
+    SmartDashboard.putBoolean("Note Grabbed", noteGrabbed);
+    SmartDashboard.putBoolean("Note Stowed", noteStowed);
 
     if (m_Timer.get() > m_odometryUpdateFrequency)
     {
@@ -399,13 +583,32 @@ public class Orchestrator extends SubsystemBase
       this.m_IntakeWristPosition = m_Intake.getWristPosition().getValueAsDouble();
     }
 
-    if (!m_Shooter.getBeamBreak2())
+    // if both beam breaks broken
+    if (!m_Shooter.getBeamBreak1() && !m_Shooter.getBeamBreak2())
     {
+      // note has been grabbed
+      this.noteGrabbed = true;
+      this.noteStowed = false;
+    }
+
+    // if a note has been grabbed and the front beam break is unbroken and second beam break is broken
+    if (noteGrabbed && m_Shooter.getBeamBreak1() && !m_Shooter.getBeamBreak2())
+    {
+      this.noteStowed = true;
+      this.noteGrabbed = false;
+    }
+
+    // if back beam break broken and front is not broken
+    if (m_Shooter.getBeamBreak1() && !m_Shooter.getBeamBreak2())
+    {
+      // note has been grabbed
       this.noteStowed = true;
     }
 
-    if (m_Shooter.getBeamBreak2())
+    // if both beam breaks unbroken set both to false
+    if (m_Shooter.getBeamBreak1() && m_Shooter.getBeamBreak2())
     {
+      this.noteGrabbed = false;
       this.noteStowed = false;
     }
   }
@@ -421,5 +624,79 @@ public class Orchestrator extends SubsystemBase
     INTAKING,
     SWITCHING, // robot is switching between states
     DISABLED,
+  }
+
+  private double getElevatorMaxUpPosition()
+  {
+    NavigableMap<Double, Double> map = Maps.ElevatorToShooter;
+    double returnValue;
+
+    // map contains the key
+    if (map.containsKey(m_ShooterWristPosition))
+    {
+      returnValue = map.get(m_ShooterWristPosition);
+    }
+
+    Double lowerKey = map.lowerKey(m_ShooterWristPosition);
+    Double higherKey = map.higherKey(m_ShooterWristPosition);
+
+    if (lowerKey == null) {
+      returnValue = map.get(higherKey);
+    } else if (higherKey == null) {
+      returnValue = map.get(lowerKey);
+    } else {
+      // key is between two existing keys, find the closest one
+      double lowerDiff = m_ShooterWristPosition - lowerKey;
+      double higherDiff = higherKey - m_ShooterWristPosition;
+
+      returnValue = lowerDiff < higherDiff ? map.get(lowerKey) : map.get(higherKey);
+    }
+
+    // never go above the clearance position
+    if (returnValue >= ShooterConstants.WRIST_CLEARANCE_POSITION)
+    {
+      return ShooterConstants.WRIST_CLEARANCE_POSITION;
+    }
+    else
+    {
+      return returnValue;
+    }
+  }
+
+  private double getShooterWristMaxUpPosition()
+  {
+    NavigableMap<Double, Double> map = Maps.ShooterToElevator;
+    double returnValue;
+    
+    // map contains the key
+    if (map.containsKey(m_ShooterWristPosition))
+    {
+      returnValue = map.get(m_ShooterWristPosition);
+    }
+
+    Double lowerKey = map.lowerKey(m_ShooterWristPosition);
+    Double higherKey = map.higherKey(m_ShooterWristPosition);
+
+    if (lowerKey == null) {
+      returnValue = map.get(higherKey);
+    } else if (higherKey == null) {
+      returnValue = map.get(lowerKey);
+    } else {
+      // key is between two existing keys, find the closest one
+      double lowerDiff = m_ShooterWristPosition - lowerKey;
+      double higherDiff = higherKey - m_ShooterWristPosition;
+
+      returnValue = lowerDiff < higherDiff ? map.get(lowerKey) : map.get(higherKey);
+    }
+
+    // never go above the clearance position
+    if (returnValue >= ShooterConstants.WRIST_CLEARANCE_POSITION)
+    {
+      return ShooterConstants.WRIST_CLEARANCE_POSITION;
+    }
+    else
+    {
+      return returnValue;
+    }
   }
 }
