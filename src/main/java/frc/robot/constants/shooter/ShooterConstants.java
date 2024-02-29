@@ -25,7 +25,7 @@ public class ShooterConstants
     public static final double WRIST_AMP_SHOOTING_POSITION = 0.662598; 
     public static final double WRIST_BUMPER_SHOT_POSITION = 0.67;
     public static final double WRIST_MANUAL_SHOT_POSITION = 0.6;
-    public static final double WRIST_PURGE_POSITION = 0.55;
+    public static final double WRIST_PURGE_POSITION = 0.58;
 
     // Software Limit Values
     public static final double WRIST_MAX_DOWN_POSITION = 0.3;

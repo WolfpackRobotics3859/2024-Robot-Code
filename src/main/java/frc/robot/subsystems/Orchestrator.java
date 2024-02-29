@@ -413,10 +413,10 @@ public class Orchestrator extends SubsystemBase
       if(Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_PURGE_POSITION, ElevatorConstants.ELEVATOR_POSITION_TOLERANCE))
       {
         // set wrist to purge position
-        m_DesiredShooterWristPosition = ShooterConstants.WRIST_DEFAULT_POSITION;
+        m_DesiredShooterWristPosition = ShooterConstants.WRIST_PURGE_POSITION;
   
         // if wrist is at right position
-        if(Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_DEFAULT_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
+        if(Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_PURGE_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
         {
           // if shooter motors are at proper velocity
           if (Util.epsilonEquals(m_ShooterMotor1Velocity, ShooterConstants.PURGE_VELOCITY, ShooterConstants.SHOOTER_VELOCITY_TOLERANCE))
