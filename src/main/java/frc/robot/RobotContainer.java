@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -175,12 +177,19 @@ public class RobotContainer
       () -> -m_primaryController.getLeftX(),
       270.0)); // change angle at some point
 
-    m_secondaryController.b().whileTrue(new Drive(m_Drivetrain, // jog robot forward
-      () -> -m_primaryController.getLeftY(),
-      () -> 0.0,
-      () -> 0.0
-    ));
+    m_secondaryController.a().whileTrue(new SeedFieldRelative(m_Drivetrain));
+
+    //TODO fix these
+    // m_secondaryController.b().whileTrue(new Drive(m_Drivetrain, // jog robot forward
+    //   () -> -m_primaryController.getLeftY(),
+    //   () -> 0.0,
+    //   () -> 0.0
+    // ));
+
+    m_secondaryController.leftBumper().whileTrue(new PathPlannerAuto("Amp Auto"));
   }
+
+  
 
   public Command getAutonomousCommand() 
   {
