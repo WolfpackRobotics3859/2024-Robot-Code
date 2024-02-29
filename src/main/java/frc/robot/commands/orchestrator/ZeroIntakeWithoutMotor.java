@@ -16,6 +16,7 @@ public class ZeroIntakeWithoutMotor extends InstantCommand
     this.m_Intake = intake;
 
     addRequirements(m_Intake);
+    ignoringDisable(true);
   }
 
   // Called when the command is initially scheduled.
