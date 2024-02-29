@@ -10,6 +10,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -62,6 +63,12 @@ public class Elevator extends SubsystemBase
   {
     DutyCycleOut request = new DutyCycleOut(percent, false, false, false, false);
     m_ElevatorMotor1.setControl(request);  
+  }
+
+  public void setElevatorBrake()
+  {
+    StaticBrake request = new StaticBrake();
+    m_ElevatorMotor1.setControl(request);
   }
 
   public void setBrakeMode(boolean brake)
