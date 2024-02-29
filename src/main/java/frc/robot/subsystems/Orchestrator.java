@@ -31,6 +31,7 @@ public class Orchestrator extends SubsystemBase
   public boolean shotReady = false;
   public boolean shotRequested = false;
   public boolean climbing = false;
+  public boolean shooterKill = false;
 
   /**
    * Creates a new orchestrator subsystem.
@@ -610,6 +611,16 @@ public class Orchestrator extends SubsystemBase
     {
       this.noteGrabbed = false;
       this.noteStowed = false;
+    }
+
+    // if we are climbing and the elevator is below a certain position then tell shooter wrist to die
+    if (climbing && m_ElevatorPosition > ElevatorConstants.ELEVATOR_CLIMB_WRIST_KILL_POSITION)
+    {
+      this.shooterKill = true;
+    }
+    else
+    {
+      this.shooterKill = false;
     }
   }
 

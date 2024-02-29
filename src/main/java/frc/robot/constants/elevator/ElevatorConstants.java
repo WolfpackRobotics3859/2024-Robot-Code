@@ -35,6 +35,7 @@ public class ElevatorConstants
     public static final double ELEVATOR_CLIMB_POSITION = ELEVATOR_BAR_POSITION + 0.05;
     public static final double ELEVATOR_PURGE_POSITION = 0.125;
     public static final double ELEVATOR_CLIMB_SAFE_DOWN = 0.2;
+    public static final double ELEVATOR_CLIMB_WRIST_KILL_POSITION = 0.3;
 
     public static final double ELEVATOR_FEED_FORWARD = 0.26; 
 
