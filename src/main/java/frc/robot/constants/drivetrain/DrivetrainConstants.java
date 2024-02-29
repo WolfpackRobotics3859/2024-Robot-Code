@@ -4,6 +4,7 @@ import java.io.UncheckedIOException;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -34,7 +35,6 @@ public class DrivetrainConstants
 
         public static final double AMBIGUITY_THRESHOLD = 0.25;
         
-        public static final Transform3d FORWARD_CAMERA_POSITION = new Transform3d(new Translation3d(Units.inchesToMeters(6.676595), 0.0, Units.inchesToMeters(27.63304)), new Rotation3d(0, -45, 0));
+        public static final Transform3d FORWARD_CAMERA_POSITION = new Transform3d(new Translation3d(Units.inchesToMeters(12.142), Units.inchesToMeters(0.0372), Units.inchesToMeters(16.157)), new Rotation3d(0, Rotation2d.fromDegrees(-10).getDegrees(), 0));
         public static final Transform3d REAR_CAMERA_POSITION = new Transform3d(); //Intentionally Empty until we have a rear cam
-
 }
