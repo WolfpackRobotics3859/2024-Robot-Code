@@ -10,11 +10,13 @@ import frc.robot.subsystems.Orchestrator;
 public class BumperShot extends Command
 {
   private final Orchestrator m_Orchestrator;
+  private final boolean m_IsAuto;
 
   /** Creates a new IntakeCommand. */
-  public BumperShot(Orchestrator orchestrator)
+  public BumperShot(Orchestrator orchestrator, boolean isAuto)
   {
     this.m_Orchestrator = orchestrator;
+    this.m_IsAuto = isAuto;
 
     addRequirements(m_Orchestrator);
   }
@@ -31,7 +33,7 @@ public class BumperShot extends Command
   public void execute()
   {
     // Run the intake function
-    m_Orchestrator.BumperShot();
+    m_Orchestrator.BumperShot(this.m_IsAuto);
   }
 
   // Called once the command ends or is interrupted.
