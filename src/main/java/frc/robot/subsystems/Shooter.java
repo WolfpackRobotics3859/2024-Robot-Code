@@ -48,6 +48,7 @@ public class Shooter extends SubsystemBase
 
     // CANCoder configuration
     m_WristCANCoder.getConfigurator().apply(ShooterConstants.WRIST_CANCODER_CONFIGURATION);
+    SmartDashboard.putData(this);
 
     this.m_timer = new Timer();
     m_timer.start();
@@ -196,7 +197,5 @@ public class Shooter extends SubsystemBase
       SmartDashboard.putNumber("Shooter Motor 1 Velocity", this.getShooterMotorVelocity(MOTOR.MOTOR_1).getValueAsDouble());
       SmartDashboard.putNumber("Shooter Motor 2 Velocity", this.getShooterMotorVelocity(MOTOR.MOTOR_2).getValueAsDouble());
     }
-
-    SmartDashboard.putData(this);
   }
 }

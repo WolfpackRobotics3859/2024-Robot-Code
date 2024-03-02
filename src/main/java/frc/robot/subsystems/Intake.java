@@ -31,6 +31,7 @@ public class Intake extends SubsystemBase
     this.m_WristMotor.getConfigurator().apply(IntakeConstants.INTAKE_WRIST_CONFIGURATION);
 
     this.m_WristMotor.setPosition(0);
+    SmartDashboard.putData(this);
 
     this.m_Timer = new Timer();
     m_Timer.start();
@@ -85,7 +86,5 @@ public class Intake extends SubsystemBase
       m_Timer.reset();
       SmartDashboard.putNumber("Intake Wrist Position", this.getWristPosition().getValueAsDouble());
     }
-
-    SmartDashboard.putData(this);
   }
 }

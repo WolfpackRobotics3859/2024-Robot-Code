@@ -33,7 +33,7 @@ public class Elevator extends SubsystemBase
   public Elevator()
   {
     m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.ELEVATOR_MOTOR_CONFIG);
-
+    SmartDashboard.putData(this);
     m_CANCoder.getConfigurator().apply(ElevatorConstants.ELEVATOR_CANCODER_CONFIGURATION);
     
     // Send a request to the second motor to follow the first
@@ -118,7 +118,5 @@ public class Elevator extends SubsystemBase
       m_timer.reset();
       SmartDashboard.putNumber("Elevator position", this.getElevatorPosition().getValueAsDouble());
     }
-
-    SmartDashboard.putData(this);
   }
 }
