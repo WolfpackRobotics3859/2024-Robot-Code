@@ -7,21 +7,18 @@ package frc.robot.commands.orchestrator;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Orchestrator;
 
 public class ZeroIntake extends Command 
 {
-  private final Orchestrator m_Orchestrator;
   private final Intake m_Intake;
   private final Timer m_Timer;
 
   /** Creates a new ZeroIntake. */
-  public ZeroIntake(Orchestrator orchestrator, Intake intake)
+  public ZeroIntake(Intake intake)
   {
-    this.m_Orchestrator = orchestrator;
     this.m_Intake = intake;
     
-    addRequirements(m_Orchestrator, m_Intake);
+    addRequirements(m_Intake);
     
     this.m_Timer = new Timer();
     m_Timer.start();
@@ -38,7 +35,7 @@ public class ZeroIntake extends Command
   @Override
   public void execute()
   {
-    m_Intake.setWristPercent(0.25);
+    m_Intake.setWristPercent(-0.1);
   }
 
   // Called once the command ends or is interrupted.
@@ -46,19 +43,21 @@ public class ZeroIntake extends Command
   public void end(boolean interrupted)
   {
     m_Intake.zeroWrist();
+    m_Intake.setWristPercent(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished()
   {
-    if (m_Timer.get() > 1.5)
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
+    return false;
+    // if (m_Timer.get() > 4)
+    // {
+    //   return true;
+    // }
+    // else
+    // {
+    //   return false;
+    // }
   }
 }
