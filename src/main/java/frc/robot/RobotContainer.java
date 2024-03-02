@@ -103,14 +103,22 @@ public class RobotContainer
   }
 
   private final SendableChooser<Command> autoSelector = new SendableChooser<>();
+  private final SendableChooser<Double> angleSelector = new SendableChooser<>();
+
   public RobotContainer() 
   {
     // autos
-    autoSelector.setDefaultOption("Drive Back", new DriveBack(m_Orchestrator, m_Drivetrain));
-    autoSelector.addOption("Shoot", new Shoot(m_Orchestrator));
-    autoSelector.addOption("Shoot and Drive Back", new ShootAndDrive(m_Orchestrator, m_Drivetrain));
+    autoSelector.setDefaultOption("Drive Back", new DriveBack(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
+    autoSelector.addOption("Shoot", new Shoot(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
+    autoSelector.addOption("Shoot and Drive Back", new ShootAndDrive(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
+
+    // seed angle chooser
+    angleSelector.setDefaultOption("Front", 180.0);
+    angleSelector.addOption("Left", 300.0);
+    angleSelector.addOption("Right", 240.0);
 
     SmartDashboard.putData(autoSelector);
+    SmartDashboard.putData(angleSelector);
 
     SmartDashboard.putNumber("Amp Shot Wrist Position", ShooterConstants.WRIST_AMP_SHOOTING_POSITION);
     SmartDashboard.putNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION);
@@ -203,7 +211,7 @@ public class RobotContainer
 
   public Command getAutonomousCommand() 
   {
-    return new ShootAndDrive(m_Orchestrator, m_Drivetrain);
+    return autoSelector.getSelected();
   }
 }
 
