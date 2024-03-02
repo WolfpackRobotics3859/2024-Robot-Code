@@ -4,11 +4,10 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.drivetrain.TunerConstants;
@@ -19,6 +18,9 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Orchestrator;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
+import frc.robot.commands.autos.DriveBack;
+import frc.robot.commands.autos.Shoot;
+import frc.robot.commands.autos.ShootAndDrive;
 import frc.robot.commands.drivetrain.Drive;
 import frc.robot.commands.drivetrain.DriveWithAngle;
 import frc.robot.commands.drivetrain.SeedFieldRelative;
@@ -29,11 +31,8 @@ import frc.robot.commands.orchestrator.BumperShot;
 import frc.robot.commands.orchestrator.Climb;
 import frc.robot.commands.orchestrator.IntakeCommand;
 import frc.robot.commands.orchestrator.Purge;
-import frc.robot.commands.orchestrator.SetElevatorBrake;
-import frc.robot.commands.orchestrator.SetElevatorCoast;
 import frc.robot.commands.orchestrator.Stow;
 import frc.robot.commands.orchestrator.ZeroIntake;
-import frc.robot.commands.orchestrator.ZeroIntakeWithoutMotor;
 import frc.robot.commands.shooter.ShooterPlayAlong;
 
 public class RobotContainer 
@@ -103,26 +102,28 @@ public class RobotContainer
     return this.m_primaryController;
   }
 
+  private final SendableChooser<Command> autoSelector = new SendableChooser<>();
   public RobotContainer() 
   {
-    configureBindings();
+    // autos
+    autoSelector.setDefaultOption("Drive Back", new DriveBack(m_Orchestrator, m_Drivetrain));
+    autoSelector.addOption("Shoot", new Shoot(m_Orchestrator));
+    autoSelector.addOption("Shoot and Drive Back", new ShootAndDrive(m_Orchestrator, m_Drivetrain));
+
+    SmartDashboard.putData(autoSelector);
 
     SmartDashboard.putNumber("Amp Shot Wrist Position", ShooterConstants.WRIST_AMP_SHOOTING_POSITION);
     SmartDashboard.putNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION);
     SmartDashboard.putNumber("Amp Shot Motor 1 Velocity", 5);
-    SmartDashboard.putNumber("Amp Shot Motor 2 Velocity", 17.5);
+    SmartDashboard.putNumber("Amp Shot Motor 2 Velocity", 18.25);
 
     SmartDashboard.setDefaultNumber("Amp Shot Wrist Position", ShooterConstants.WRIST_AMP_SHOOTING_POSITION);
     SmartDashboard.setDefaultNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION);
     SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 6);
-    SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 17.5);
+    SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 18.25);
 
-    // Zero Intake
-    SmartDashboard.putData("Zero Intake", new ZeroIntakeWithoutMotor(m_Intake));
-
-    // Elevator Brake Mode
-    SmartDashboard.putData("Elevator Brake", new SetElevatorBrake(m_Elevator));
-    SmartDashboard.putData("Elevator Coast", new SetElevatorCoast(m_Elevator));
+        
+    configureBindings();
   }
   
   private void configureBindings() 
@@ -137,15 +138,15 @@ public class RobotContainer
     // default command
     m_Orchestrator.setDefaultCommand(new Stow(m_Orchestrator));
 
-    // these should be changed to be able to be killed later for climb or errors
+    //TODO these should be changed to be able to be killed later for climb or errors
     m_Shooter.setDefaultCommand(new ShooterPlayAlong(m_Orchestrator, m_Shooter));
     m_Intake.setDefaultCommand(new IntakePlayAlong(m_Orchestrator, m_Intake));
     m_Elevator.setDefaultCommand(new ElevatorPlayAlong(m_Orchestrator, m_Elevator, () -> -m_secondaryController.getRightY()));
 
     // PRIMARY CONTROLLER
     m_primaryController.leftTrigger().whileTrue(new IntakeCommand(m_Orchestrator).unless(() -> m_Orchestrator.noteStowed));
-    m_primaryController.rightTrigger().whileTrue(new BumperShot(m_Orchestrator).unless(() -> !m_Orchestrator.noteStowed));
-    m_primaryController.rightBumper().whileTrue(new AmpShot(m_Orchestrator).unless(() -> !m_Orchestrator.noteStowed));
+    m_primaryController.rightTrigger().whileTrue(new BumperShot(m_Orchestrator, false).unless(() -> !m_Orchestrator.noteStowed));
+    m_primaryController.rightBumper().whileTrue(new AmpShot(m_Orchestrator));
     
     m_primaryController.a().whileTrue(new DriveWithAngle(m_Drivetrain,
         () -> -m_primaryController.getLeftY(),
@@ -171,7 +172,7 @@ public class RobotContainer
     // m_secondaryController.leftBumper() UNDER DEFENSE
     m_secondaryController.leftTrigger().whileTrue(new Purge(m_Orchestrator)); // purge
     m_secondaryController.rightTrigger().whileTrue(new Climb(m_Orchestrator)); // start climb
-    m_secondaryController.leftBumper().onTrue(new ZeroIntake(m_Orchestrator, m_Intake)); // zero intake
+    m_secondaryController.leftBumper().whileTrue(new ZeroIntake(m_Intake)); // zero intake
 
     m_secondaryController.x().whileTrue(new DriveWithAngle(m_Drivetrain, // left chain
       () -> -m_primaryController.getLeftY(),
@@ -197,14 +198,12 @@ public class RobotContainer
     //   () -> 0.0
     // ));
 
-    m_secondaryController.leftBumper().whileTrue(new PathPlannerAuto("Amp Auto"));
+    // m_secondaryController.leftBumper().whileTrue(new PathPlannerAuto("Amp Auto"));
   }
-
-  
 
   public Command getAutonomousCommand() 
   {
-    return Commands.print("No autonomous command configured");
+    return new ShootAndDrive(m_Orchestrator, m_Drivetrain);
   }
 }
 
