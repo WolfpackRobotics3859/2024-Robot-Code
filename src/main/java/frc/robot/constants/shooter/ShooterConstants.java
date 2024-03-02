@@ -21,11 +21,14 @@ public class ShooterConstants
 {
     // Position Values
     public static final double WRIST_CLEARANCE_POSITION = .68;
-    public static final double WRIST_DEFAULT_POSITION = 0.5;
+    public static final double WRIST_DEFAULT_POSITION = 0.49;
     public static final double WRIST_AMP_SHOOTING_POSITION = 0.662598; 
-    public static final double WRIST_BUMPER_SHOT_POSITION = 0.67;
+    public static final double WRIST_BUMPER_SHOT_POSITION = 0.645;
+    public static final double WRIST_AUTO_BUMPER_SHOT_POSITION = 0.635;
     public static final double WRIST_MANUAL_SHOT_POSITION = 0.6;
     public static final double WRIST_PURGE_POSITION = 0.58;
+    public static final double WRIST_AMP_BACK_SHOT_POSITION = 0.52;
+
 
     // Software Limit Values
     public static final double WRIST_MAX_DOWN_POSITION = 0.3;
@@ -58,7 +61,7 @@ public class ShooterConstants
     
     // Wrist motor configs
     public static final Slot0Configs WRIST_GAINS = new Slot0Configs()
-        .withKP(25).withKI(0).withKD(0)
+        .withKP(35).withKI(0).withKD(0)
         .withKS(0).withKV(0).withKA(0)
         .withGravityType(GravityTypeValue.Arm_Cosine);
 
@@ -91,7 +94,7 @@ public class ShooterConstants
     // Wrist CANCoder
     public static final MagnetSensorConfigs WRIST_CANCODER_MAGNET_CONFIGS = new MagnetSensorConfigs()
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
-        .withMagnetOffset(-0.33)
+        .withMagnetOffset(-0.273)
         .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1);
 
     // Compile all configs into a single config variable for ease of use
