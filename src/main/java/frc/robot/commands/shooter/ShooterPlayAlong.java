@@ -5,7 +5,6 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.elevator.ElevatorConstants;
 import frc.robot.constants.shooter.ShooterConstants.MOTOR;
 import frc.robot.subsystems.Orchestrator;
 import frc.robot.subsystems.Shooter;

@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import java.util.NavigableMap;
 
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -46,6 +47,8 @@ public class Orchestrator extends SubsystemBase
     this.m_Elevator = elevator;
     this.m_Shooter = shooter;
     this.m_Intake = intake;
+    
+    SmartDashboard.putData(this);
 
     this.m_Timer = new Timer();
     m_Timer.start();
@@ -272,7 +275,7 @@ public class Orchestrator extends SubsystemBase
     }
   }
 
-  public void BumperShot()
+  public void BumperShot(boolean isAuto)
   {
     this.climbing = false;
 
@@ -305,15 +308,32 @@ public class Orchestrator extends SubsystemBase
       if(Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_BUMPER_SHOT_POSITION, ElevatorConstants.ELEVATOR_POSITION_TOLERANCE))
       {
         // set wrist to bumper shot position
-        m_DesiredShooterWristPosition = ShooterConstants.WRIST_BUMPER_SHOT_POSITION;
-
-        // if wrist is at right position
-        if(Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_BUMPER_SHOT_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
+        if (!isAuto)
         {
-          // if shooter motors are at proper velocity
-          if (Util.epsilonEquals(m_ShooterMotor1Velocity, ShooterConstants.BUMPER_SHOT_VELOCITY, ShooterConstants.SHOOTER_VELOCITY_TOLERANCE))
+          m_DesiredShooterWristPosition = ShooterConstants.WRIST_BUMPER_SHOT_POSITION;
+
+          // if wrist is at right position
+          if(Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_BUMPER_SHOT_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
           {
-            m_DesiredShooterFeederVoltage = ShooterConstants.FEEDER_SHOOTING_VOLTAGE;
+            // if shooter motors are at proper velocity
+            if (Util.epsilonEquals(m_ShooterMotor1Velocity, ShooterConstants.BUMPER_SHOT_VELOCITY, ShooterConstants.SHOOTER_VELOCITY_TOLERANCE))
+            {
+              m_DesiredShooterFeederVoltage = ShooterConstants.FEEDER_SHOOTING_VOLTAGE;
+            }
+          }
+        }
+        else
+        {
+          m_DesiredShooterWristPosition = ShooterConstants.WRIST_AUTO_BUMPER_SHOT_POSITION;
+
+          // if wrist is at right position
+          if(Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_AUTO_BUMPER_SHOT_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
+          {
+            // if shooter motors are at proper velocity
+            if (Util.epsilonEquals(m_ShooterMotor1Velocity, ShooterConstants.BUMPER_SHOT_VELOCITY, ShooterConstants.SHOOTER_VELOCITY_TOLERANCE))
+            {
+              m_DesiredShooterFeederVoltage = ShooterConstants.FEEDER_SHOOTING_VOLTAGE;
+            }
           }
         }
       }
@@ -429,6 +449,40 @@ public class Orchestrator extends SubsystemBase
     }
   }
 
+  public void BackAmpShot()
+  {
+    // if elevator is not at top position
+    if (!Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_TOP_POSITION, ElevatorConstants.ELEVATOR_POSITION_TOLERANCE))
+    {
+      ElevatorUp();
+      if (m_Shooter.getBeamBreak1() && !m_Shooter.getBeamBreak2())
+      {
+        m_DesiredShooterFeederVoltage = 4;
+        m_DesiredShooterMotor1Velocity = 15;
+        m_DesiredShooterMotor2Velocity = 15;
+      }
+      else
+      {
+        m_DesiredShooterFeederVoltage = 0;
+        m_DesiredShooterMotor1Velocity = 0;
+        m_DesiredShooterMotor2Velocity = 0;
+      }
+    }
+    else // elevator is at top position
+    {
+      m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
+
+      m_DesiredShooterWristPosition = ShooterConstants.WRIST_AMP_BACK_SHOT_POSITION;
+
+      if (Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_AMP_BACK_SHOT_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
+      {
+        m_DesiredShooterFeederVoltage = -8;
+        m_DesiredShooterMotor1Velocity = -15;
+        m_DesiredShooterMotor2Velocity = -15;
+      }
+    }
+  }
+
   public void DashboardControl()
   {
     this.climbing = false;
@@ -490,10 +544,10 @@ public class Orchestrator extends SubsystemBase
       // otherwise send elevator up first
       else
       {
-        this.m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
+        this.m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_DOWN_SAFE_POSITION ;
 
         // if elevator is up
-        if (Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_TOP_POSITION, ElevatorConstants.ELEVATOR_TOP_POSITION))
+        if (Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_DOWN_SAFE_POSITION, ElevatorConstants.ELEVATOR_TOP_POSITION))
         {
         // set shooter to clearance position
         this.m_DesiredShooterWristPosition = ShooterConstants.WRIST_CLEARANCE_POSITION;
@@ -512,27 +566,20 @@ public class Orchestrator extends SubsystemBase
 
   public void ElevatorUp()
   {
-    if (m_ElevatorPosition < ElevatorConstants.ELEVATOR_INTAKE_CLEAR_POSITION + 0.03)
-    {
-      this.m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_CLEAR_POSITION;
-    }
-    else
-    {
-      this.m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_UP_POSITION;
-    }
-
     // if elevator is below bar
     if (m_ElevatorPosition < ElevatorConstants.ELEVATOR_BAR_POSITION)
     {
-      // if elevator is below position
-      if(m_ElevatorPosition < ElevatorConstants.ELEVATOR_BAR_POSITION - 0.12)
+      // set intake out of the way
+      this.m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_CLEAR_POSITION;
+      
+      if (Util.epsilonEquals(m_IntakeWristPosition, IntakeConstants.INTAKE_CLEAR_POSITION, IntakeConstants.INTAKE_WRIST_POSITION_TOLERANCE))
       {
-        // send elevator up to first position
-        m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BAR_POSITION - 0.05;
+        // if intake is out of way send elevator up to first position
+        this.m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_BAR_POSITION - 0.16;
       }
       
       // if elevator is between positions
-      if (Util.inRange(m_ElevatorPosition, ElevatorConstants.ELEVATOR_BAR_POSITION - 0.08, ElevatorConstants.ELEVATOR_BAR_POSITION + 0.11))
+      if (Util.inRange(m_ElevatorPosition, ElevatorConstants.ELEVATOR_BAR_POSITION - 0.17, 0.56))
       {
         // set shooter up
         m_DesiredShooterWristPosition = ShooterConstants.WRIST_CLEARANCE_POSITION;
@@ -540,18 +587,28 @@ public class Orchestrator extends SubsystemBase
 
       if (Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_CLEARANCE_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
       {
+        // send elevator to top position
         m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
       }
-    } 
+    }
     // if elevator above bar
     else
     {
-      m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
-
-      if (Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_TOP_POSITION, ElevatorConstants.ELEVATOR_POSITION_TOLERANCE))
+      // if wrist is already at position just send elevator up
+      if (Util.epsilonEquals(m_ShooterWristPosition, ShooterConstants.WRIST_CLEARANCE_POSITION, ShooterConstants.WRIST_MOVEMENT_TOLERANCE))
       {
-        // if elevator is at top position return shooter to default position
-        m_DesiredShooterWristPosition = ShooterConstants.WRIST_DEFAULT_POSITION;
+        this.m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
+        this.m_DesiredShooterWristPosition = ShooterConstants.WRIST_CLEARANCE_POSITION;
+      }
+      else
+      {
+        m_DesiredElevatorPosition = ElevatorConstants.ELEVATOR_TOP_POSITION;
+
+        if (Util.epsilonEquals(m_ElevatorPosition, ElevatorConstants.ELEVATOR_TOP_POSITION, ElevatorConstants.ELEVATOR_POSITION_TOLERANCE))
+        {
+          // if elevator is at top position set shooter to clearance position
+          m_DesiredShooterWristPosition = ShooterConstants.WRIST_CLEARANCE_POSITION;
+        }
       }
     }
   }
@@ -564,18 +621,17 @@ public class Orchestrator extends SubsystemBase
     // This should be done via the getters in the subsystems and should do it on a (variable) timer for
     // a reduction in the canbus utilization
 
-    SmartDashboard.putData(this);
-    SmartDashboard.putNumber("Elevator Desired Position", m_DesiredElevatorPosition);
-    SmartDashboard.putNumber("Shooter Wrist Desired Position", m_DesiredShooterWristPosition);
-    SmartDashboard.putNumber("Intake Wrist Desired Position", m_DesiredIntakeWristPosition);
-    SmartDashboard.putBoolean("Note Grabbed", noteGrabbed);
-    SmartDashboard.putBoolean("Note Stowed", noteStowed);
+    // SmartDashboard.putNumber("Elevator Desired Position", m_DesiredElevatorPosition);
+    // SmartDashboard.putNumber("Shooter Wrist Desired Position", m_DesiredShooterWristPosition);
+    // SmartDashboard.putNumber("Intake Wrist Desired Position", m_DesiredIntakeWristPosition);
+    // SmartDashboard.putBoolean("Note Grabbed", noteGrabbed);
 
     if (m_Timer.get() > m_odometryUpdateFrequency)
     {
       m_Timer.reset();
 
       this.m_ElevatorPosition = m_Elevator.getElevatorPosition().getValueAsDouble();
+      SmartDashboard.putBoolean("Note Stowed", noteStowed);
 
       this.m_ShooterWristPosition = m_Shooter.getWristMotorPosition().getValueAsDouble();
       this.m_ShooterMotor1Velocity = m_Shooter.getShooterMotorVelocity(MOTOR.MOTOR_1).getValueAsDouble();
@@ -585,36 +641,51 @@ public class Orchestrator extends SubsystemBase
     }
 
     // if both beam breaks broken
-    if (!m_Shooter.getBeamBreak1() && !m_Shooter.getBeamBreak2())
-    {
-      // note has been grabbed
-      this.noteGrabbed = true;
-      this.noteStowed = false;
-    }
+    // if (!m_Shooter.getBeamBreak1() && !m_Shooter.getBeamBreak2())
+    // {
+    //   // note has been grabbed
+    //   this.noteGrabbed = true;
+    //   this.noteStowed = false;
+    // }
 
-    // if a note has been grabbed and the front beam break is unbroken and second beam break is broken
-    if (noteGrabbed && m_Shooter.getBeamBreak1() && !m_Shooter.getBeamBreak2())
-    {
-      this.noteStowed = true;
-      this.noteGrabbed = false;
-    }
+    // // if a note has been grabbed and the front beam break is unbroken and second beam break is broken
+    // if (noteGrabbed && m_Shooter.getBeamBreak1() && !m_Shooter.getBeamBreak2())
+    // {
+    //   this.noteStowed = true;
+    //   this.noteGrabbed = false;
+    // }
 
-    // if back beam break broken and front is not broken
+    // // if back beam break broken and front is not broken
+    // if (m_Shooter.getBeamBreak1() && !m_Shooter.getBeamBreak2())
+    // {
+    //   // note has been grabbed
+    //   this.noteStowed = true;
+    // }
+
+    // // if both beam breaks unbroken set both to false
+    // if (m_Shooter.getBeamBreak1() && m_Shooter.getBeamBreak2())
+    // {
+    //   this.noteGrabbed = false;
+    //   this.noteStowed = false;
+    // }
+
+    // if (noteStowed && m_Shooter.getBeamBreak1())
+    // {
+    //   this.noteGrabbed = true;
+    //   this.noteStowed = false;
+    // }
+
     if (m_Shooter.getBeamBreak1() && !m_Shooter.getBeamBreak2())
     {
-      // note has been grabbed
-      this.noteStowed = true;
+      noteStowed = true;
     }
-
-    // if both beam breaks unbroken set both to false
-    if (m_Shooter.getBeamBreak1() && m_Shooter.getBeamBreak2())
+    else
     {
-      this.noteGrabbed = false;
-      this.noteStowed = false;
+      noteStowed = false;
     }
 
     // if we are climbing and the elevator is below a certain position then tell shooter wrist to die
-    if (climbing && m_ElevatorPosition > ElevatorConstants.ELEVATOR_CLIMB_WRIST_KILL_POSITION)
+    if (climbing && m_ElevatorPosition < ElevatorConstants.ELEVATOR_CLIMB_WRIST_KILL_POSITION)
     {
       this.shooterKill = true;
     }
