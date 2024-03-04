@@ -15,7 +15,6 @@ public class ZeroIntakeWithoutMotor extends InstantCommand
   {
     this.m_Intake = intake;
 
-    addRequirements(m_Intake);
     ignoringDisable(true);
   }
 
@@ -24,5 +23,11 @@ public class ZeroIntakeWithoutMotor extends InstantCommand
   public void initialize()
   {
     m_Intake.zeroWrist();
+  }
+
+  @Override
+  public boolean runsWhenDisabled()
+  {
+    return true;
   }
 }

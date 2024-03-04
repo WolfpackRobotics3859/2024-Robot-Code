@@ -7,6 +7,7 @@ package frc.robot.commands.drivetrain;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,11 +16,6 @@ import frc.robot.constants.drivetrain.DrivetrainConstants;
 
 public class Drive extends Command
 {
-  /*
-   * m_SpeedXSupplier - The supplier object for speed in the X direction
-   * m_SpeedYSupplier - The supplier object for speed in the Y direction
-   * m_RotationalSpeedSupplier - The supplier object for rotational speed
-   */
   private Supplier<Double> m_SpeedXSupplier, m_SpeedYSupplier, m_RotationalSpeedSupplier;
   private Drivetrain m_Drivetrain;
   
@@ -51,12 +47,14 @@ public class Drive extends Command
   @Override
   public void execute()
   {
-    final SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric()
-      .withDeadband(DrivetrainConstants.MAX_SPEED * 0.1).withRotationalDeadband(DrivetrainConstants.MAX_ANGULAR_RATE * 0.1)
+    SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric()
+      .withDeadband(DrivetrainConstants.MAX_SPEED * 0.1)
+      .withRotationalDeadband(DrivetrainConstants.MAX_ANGULAR_RATE * 0.1)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+      .withSteerRequestType(SteerRequestType.MotionMagic)
       .withVelocityX(m_SpeedXSupplier.get() * DrivetrainConstants.MAX_SPEED * 0.65)
       .withVelocityY(m_SpeedYSupplier.get() * DrivetrainConstants.MAX_SPEED * 0.65)
-      .withRotationalRate(m_RotationalSpeedSupplier.get() * DrivetrainConstants.MAX_ANGULAR_RATE * 1.2);
+      .withRotationalRate(m_RotationalSpeedSupplier.get() * DrivetrainConstants.MAX_ANGULAR_RATE * 1.4);
 
     m_Drivetrain.setControl(driveRequest);
   }

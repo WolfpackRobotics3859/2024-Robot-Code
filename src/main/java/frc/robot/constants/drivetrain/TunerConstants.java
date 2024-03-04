@@ -11,6 +11,7 @@ import edu.wpi.first.math.util.Units;
 
 public class TunerConstants 
 {
+
     // Both sets of gains need to be tuned to your individual robot.
 
     // The steer motor uses any SwerveModule.SteerRequestType control request with the
@@ -33,7 +34,7 @@ public class TunerConstants
 
     // The stator current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
-    private static final double SLIP_CURRENT_A = 67.0;
+    private static final double SLIP_CURRENT_A = 62.0;
 
     // Theoretical free speed (m/s) at 12v applied output;
     // This needs to be tuned to your individual robot
@@ -75,7 +76,7 @@ public class TunerConstants
             .withSpeedAt12VoltsMps(SPEED_AT_12_VOLTS_MPS)
             .withSteerInertia(STEER_INERTIA)
             .withDriveInertia(DRIVE_INERTIA)
-            .withFeedbackSource(SteerFeedbackType.FusedCANcoder)
+            .withFeedbackSource(SteerFeedbackType.RemoteCANcoder)
             .withCouplingGearRatio(COUPLE_RATIO)
             .withSteerMotorInverted(STEER_MOTOR_REVERSED);
 

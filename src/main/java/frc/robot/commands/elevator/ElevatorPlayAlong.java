@@ -59,7 +59,7 @@ public class ElevatorPlayAlong extends Command
       }
       else
       {
-        m_Elevator.setElevatorBrake();
+        m_Elevator.setElevatorPercent(0);
       }
     }
   }

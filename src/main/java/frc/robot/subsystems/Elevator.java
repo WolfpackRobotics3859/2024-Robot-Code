@@ -65,12 +65,6 @@ public class Elevator extends SubsystemBase
     m_ElevatorMotor1.setControl(request);  
   }
 
-  public void setElevatorBrake()
-  {
-    StaticBrake request = new StaticBrake();
-    m_ElevatorMotor1.setControl(request);
-  }
-
   public void setBrakeMode(boolean brake)
   {
     if (brake)

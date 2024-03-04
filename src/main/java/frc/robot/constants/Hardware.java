@@ -1,7 +1,12 @@
 package frc.robot.constants;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+
 public class Hardware
 {
+    public static final PowerDistribution POWER_DISTRIBUTION_PANEL = new PowerDistribution(1, ModuleType.kRev);
+
     // Controllers
     public static final int PRIMARY_CONTROLLER_PORT = 0;
     public static final int SECONDARY_CONTROLLER_PORT = 1;

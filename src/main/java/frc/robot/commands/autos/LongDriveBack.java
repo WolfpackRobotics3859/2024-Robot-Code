@@ -7,15 +7,14 @@ package frc.robot.commands.autos;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.drivetrain.Drive;
 import frc.robot.commands.drivetrain.SeedFieldRelativeWithAngle;
-import frc.robot.commands.orchestrator.BumperShot;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Orchestrator;
 
-public class ShootAndDrive extends SequentialCommandGroup
+public class LongDriveBack extends SequentialCommandGroup
 {
-  /** Creates a new BasicAuto. */
-  public ShootAndDrive(Orchestrator orchestrator, Drivetrain drivetrain, Double seedAngle)
+  /** Creates a new DriveBack. */
+  public LongDriveBack(Orchestrator orchestrator, Drivetrain drivetrain, Double seedAngle)
   {
-    addCommands(new SeedFieldRelativeWithAngle(drivetrain, seedAngle), new BumperShot(orchestrator, false).withTimeout(5), new Drive(drivetrain, () -> 0.2, () -> 0.0, () -> 0.0).withTimeout(1));
+    addCommands(new SeedFieldRelativeWithAngle(drivetrain, seedAngle), new Drive(drivetrain, () -> 0.2, () -> 0.0, () -> 0.0).withTimeout(3));
   }
 }

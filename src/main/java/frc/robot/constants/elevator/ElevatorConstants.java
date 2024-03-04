@@ -20,8 +20,7 @@ import frc.robot.constants.Hardware;
 public class ElevatorConstants
 {
     // Position Values
-    public static final double ELEVATOR_BOTTOM_POSITION = 0.025
-    ; // the bottom position of the elevator
+    public static final double ELEVATOR_BOTTOM_POSITION = 0.025; // the bottom position of the elevator
     public static final double ELEVATOR_TOP_POSITION = 0.745; // the top position of the elevator
     public static final double ELEVATOR_BOTTOM_CLEARANCE_POSITION = 0.07; // the position at which the shooter can begin to clear the bar
     public static final double ELEVATOR_MAX_FORWARD_POS = .78; // the top limit position of the elevator
@@ -35,7 +34,7 @@ public class ElevatorConstants
     public static final double ELEVATOR_MANUAL_SHOT_POSITION = 0.127;
     public static final double ELEVATOR_CLIMB_POSITION = ELEVATOR_BAR_POSITION + 0.125;
     public static final double ELEVATOR_PURGE_POSITION = 0.125;
-    public static final double ELEVATOR_CLIMB_SAFE_DOWN = 0.2;
+    public static final double ELEVATOR_CLIMB_SAFE_DOWN = 0.185;
     public static final double ELEVATOR_CLIMB_WRIST_KILL_POSITION = 0.45;
     public static final double ELEVATOR_DOWN_SAFE_POSITION = 0.5;
 
@@ -48,8 +47,8 @@ public class ElevatorConstants
         .withKG(0).withGravityType(GravityTypeValue.Elevator_Static);
 
     public static final MotionMagicConfigs MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(5)
-        .withMotionMagicAcceleration(0.35);
+        .withMotionMagicCruiseVelocity(3)
+        .withMotionMagicAcceleration(0.4);
 
     /** Software limits for the elevator */
     public static final SoftwareLimitSwitchConfigs SOFT_LIMIT_CONFIGS = new SoftwareLimitSwitchConfigs()
@@ -70,7 +69,7 @@ public class ElevatorConstants
 
     public static final MagnetSensorConfigs MAGNET_SENSOR_CONFIGS = new MagnetSensorConfigs()
         .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
-        .withMagnetOffset(-0.47)
+        .withMagnetOffset(-0.405)
         .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1);
     
     public static final TalonFXConfiguration ELEVATOR_MOTOR_CONFIG = new TalonFXConfiguration()

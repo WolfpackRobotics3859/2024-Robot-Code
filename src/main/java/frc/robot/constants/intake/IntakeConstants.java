@@ -17,6 +17,7 @@ public class IntakeConstants
     public static final double INTAKE_UP_POSITION = 4.3;
     public static final double INTAKE_CLEAR_POSITION = 3.1;
     public static final double INTAKE_BUMPER_SHOT_POSITION = 2.7;
+    public static final double INTAKE_AMP_SHOT_POSITION = 3.6;
 
     // Velocities
     public static final double INTAKE_ROLLERS_VELOCITY = -55;
@@ -42,7 +43,7 @@ public class IntakeConstants
         .withSlot0(INTAKE_ROLLER_GAINS);
 
     public static final double INTAKE_WRIST_FEED_FORWARD = 0.2;
-    public static final double INTAKE_ROLLERS_ACCELERATION = 25;
+    public static final double INTAKE_ROLLERS_ACCELERATION = 30;
 
     // Misc
     public static final double INTAKE_WRIST_POSITION_TOLERANCE = 0.2;

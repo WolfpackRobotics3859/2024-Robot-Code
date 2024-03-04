@@ -19,6 +19,7 @@ import frc.robot.subsystems.Orchestrator;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.autos.DriveBack;
+import frc.robot.commands.autos.LongDriveBack;
 import frc.robot.commands.autos.Shoot;
 import frc.robot.commands.autos.ShootAndDrive;
 import frc.robot.commands.drivetrain.Drive;
@@ -107,30 +108,19 @@ public class RobotContainer
 
   public RobotContainer() 
   {
-    // autos
-    autoSelector.setDefaultOption("Drive Back", new DriveBack(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
-    autoSelector.addOption("Shoot", new Shoot(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
-    autoSelector.addOption("Shoot and Drive Back", new ShootAndDrive(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
-
     // seed angle chooser
     angleSelector.setDefaultOption("Front", 180.0);
     angleSelector.addOption("Left", 300.0);
     angleSelector.addOption("Right", 240.0);
 
+    autoSelector.setDefaultOption("Drive Back", new DriveBack(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
+    autoSelector.addOption("Shoot", new Shoot(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
+    autoSelector.addOption("Shoot and Drive Back", new ShootAndDrive(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
+    autoSelector.addOption("Long Drive Back", new LongDriveBack(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
+
     SmartDashboard.putData(autoSelector);
     SmartDashboard.putData(angleSelector);
-
-    SmartDashboard.putNumber("Amp Shot Wrist Position", ShooterConstants.WRIST_AMP_SHOOTING_POSITION);
-    SmartDashboard.putNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION);
-    SmartDashboard.putNumber("Amp Shot Motor 1 Velocity", 5);
-    SmartDashboard.putNumber("Amp Shot Motor 2 Velocity", 18.25);
-
-    SmartDashboard.setDefaultNumber("Amp Shot Wrist Position", ShooterConstants.WRIST_AMP_SHOOTING_POSITION);
-    SmartDashboard.setDefaultNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION);
-    SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 6);
-    SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 18.25);
-
-        
+           
     configureBindings();
   }
   
@@ -155,13 +145,14 @@ public class RobotContainer
     m_primaryController.leftTrigger().whileTrue(new IntakeCommand(m_Orchestrator).unless(() -> m_Orchestrator.noteStowed));
     m_primaryController.rightTrigger().whileTrue(new BumperShot(m_Orchestrator, false).unless(() -> !m_Orchestrator.noteStowed));
     m_primaryController.rightBumper().whileTrue(new AmpShot(m_Orchestrator));
+    m_primaryController.leftBumper().onTrue(new SeedFieldRelative(m_Drivetrain));
     
     m_primaryController.a().whileTrue(new DriveWithAngle(m_Drivetrain,
         () -> -m_primaryController.getLeftY(),
         () -> -m_primaryController.getLeftX(),
         180.0));
 
-    m_primaryController.b().whileTrue(new DriveWithAngle(m_Drivetrain,
+    m_primaryController.y().whileTrue(new DriveWithAngle(m_Drivetrain,
         () -> -m_primaryController.getLeftY(),
         () -> -m_primaryController.getLeftX(),
         90.0));
@@ -196,8 +187,6 @@ public class RobotContainer
       () -> -m_primaryController.getLeftY(),
       () -> -m_primaryController.getLeftX(),
       180.0)); // change angle at some point
-
-    m_secondaryController.a().whileTrue(new SeedFieldRelative(m_Drivetrain));
 
     //TODO fix these
     // m_secondaryController.b().whileTrue(new Drive(m_Drivetrain, // jog robot forward

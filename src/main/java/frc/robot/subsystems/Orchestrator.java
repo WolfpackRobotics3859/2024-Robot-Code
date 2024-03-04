@@ -4,9 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.NavigableMap;
-
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,7 +11,6 @@ import frc.robot.constants.elevator.ElevatorConstants;
 import frc.robot.constants.intake.IntakeConstants;
 import frc.robot.constants.shooter.ShooterConstants;
 import frc.robot.constants.shooter.ShooterConstants.MOTOR;
-import frc.robot.utils.Maps;
 import frc.robot.utils.Util;
 
 public class Orchestrator extends SubsystemBase
@@ -226,7 +222,7 @@ public class Orchestrator extends SubsystemBase
   {
     this.climbing = false;
 
-    this.m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_CLEAR_POSITION;
+    this.m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_AMP_SHOT_POSITION;
 
     // if elevator is above bar
     if (m_ElevatorPosition > ElevatorConstants.ELEVATOR_BAR_POSITION)
@@ -253,6 +249,8 @@ public class Orchestrator extends SubsystemBase
     // if elevator is down
     else
     {
+      this.m_DesiredIntakeWristPosition = IntakeConstants.INTAKE_AMP_SHOT_POSITION;
+      
       // set elevator to amp position
       m_DesiredElevatorPosition = SmartDashboard.getNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION);
       // set wrist to shooter position
@@ -631,49 +629,17 @@ public class Orchestrator extends SubsystemBase
       m_Timer.reset();
 
       this.m_ElevatorPosition = m_Elevator.getElevatorPosition().getValueAsDouble();
-      SmartDashboard.putBoolean("Note Stowed", noteStowed);
 
       this.m_ShooterWristPosition = m_Shooter.getWristMotorPosition().getValueAsDouble();
       this.m_ShooterMotor1Velocity = m_Shooter.getShooterMotorVelocity(MOTOR.MOTOR_1).getValueAsDouble();
       this.m_ShooterMotor2Velocity = m_Shooter.getShooterMotorVelocity(MOTOR.MOTOR_2).getValueAsDouble();
 
       this.m_IntakeWristPosition = m_Intake.getWristPosition().getValueAsDouble();
+
+      SmartDashboard.putBoolean("Note Stowed", noteStowed);
+      SmartDashboard.putNumber("Elevator Target Position", m_DesiredElevatorPosition);
+      SmartDashboard.putNumber("Shooter Target Position", m_DesiredShooterWristPosition);
     }
-
-    // if both beam breaks broken
-    // if (!m_Shooter.getBeamBreak1() && !m_Shooter.getBeamBreak2())
-    // {
-    //   // note has been grabbed
-    //   this.noteGrabbed = true;
-    //   this.noteStowed = false;
-    // }
-
-    // // if a note has been grabbed and the front beam break is unbroken and second beam break is broken
-    // if (noteGrabbed && m_Shooter.getBeamBreak1() && !m_Shooter.getBeamBreak2())
-    // {
-    //   this.noteStowed = true;
-    //   this.noteGrabbed = false;
-    // }
-
-    // // if back beam break broken and front is not broken
-    // if (m_Shooter.getBeamBreak1() && !m_Shooter.getBeamBreak2())
-    // {
-    //   // note has been grabbed
-    //   this.noteStowed = true;
-    // }
-
-    // // if both beam breaks unbroken set both to false
-    // if (m_Shooter.getBeamBreak1() && m_Shooter.getBeamBreak2())
-    // {
-    //   this.noteGrabbed = false;
-    //   this.noteStowed = false;
-    // }
-
-    // if (noteStowed && m_Shooter.getBeamBreak1())
-    // {
-    //   this.noteGrabbed = true;
-    //   this.noteStowed = false;
-    // }
 
     if (m_Shooter.getBeamBreak1() && !m_Shooter.getBeamBreak2())
     {
@@ -692,93 +658,6 @@ public class Orchestrator extends SubsystemBase
     else
     {
       this.shooterKill = false;
-    }
-  }
-
-  // keep for now
-  /** An enum containing the various states the robot can be asked to go to. */
-  public enum RobotState
-  {
-    STOW,
-    SHOOTING_AMP,
-    SHOOTING_SPEAKER_DOWN,
-    SHOOTING_SPEAKER_UP, // under defense
-    INTAKING,
-    SWITCHING, // robot is switching between states
-    DISABLED,
-  }
-
-  private double getElevatorMaxUpPosition()
-  {
-    NavigableMap<Double, Double> map = Maps.ElevatorToShooter;
-    double returnValue;
-
-    // map contains the key
-    if (map.containsKey(m_ShooterWristPosition))
-    {
-      returnValue = map.get(m_ShooterWristPosition);
-    }
-
-    Double lowerKey = map.lowerKey(m_ShooterWristPosition);
-    Double higherKey = map.higherKey(m_ShooterWristPosition);
-
-    if (lowerKey == null) {
-      returnValue = map.get(higherKey);
-    } else if (higherKey == null) {
-      returnValue = map.get(lowerKey);
-    } else {
-      // key is between two existing keys, find the closest one
-      double lowerDiff = m_ShooterWristPosition - lowerKey;
-      double higherDiff = higherKey - m_ShooterWristPosition;
-
-      returnValue = lowerDiff < higherDiff ? map.get(lowerKey) : map.get(higherKey);
-    }
-
-    // never go above the clearance position
-    if (returnValue >= ShooterConstants.WRIST_CLEARANCE_POSITION)
-    {
-      return ShooterConstants.WRIST_CLEARANCE_POSITION;
-    }
-    else
-    {
-      return returnValue;
-    }
-  }
-
-  private double getShooterWristMaxUpPosition()
-  {
-    NavigableMap<Double, Double> map = Maps.ShooterToElevator;
-    double returnValue;
-    
-    // map contains the key
-    if (map.containsKey(m_ShooterWristPosition))
-    {
-      returnValue = map.get(m_ShooterWristPosition);
-    }
-
-    Double lowerKey = map.lowerKey(m_ShooterWristPosition);
-    Double higherKey = map.higherKey(m_ShooterWristPosition);
-
-    if (lowerKey == null) {
-      returnValue = map.get(higherKey);
-    } else if (higherKey == null) {
-      returnValue = map.get(lowerKey);
-    } else {
-      // key is between two existing keys, find the closest one
-      double lowerDiff = m_ShooterWristPosition - lowerKey;
-      double higherDiff = higherKey - m_ShooterWristPosition;
-
-      returnValue = lowerDiff < higherDiff ? map.get(lowerKey) : map.get(higherKey);
-    }
-
-    // never go above the clearance position
-    if (returnValue >= ShooterConstants.WRIST_CLEARANCE_POSITION)
-    {
-      return ShooterConstants.WRIST_CLEARANCE_POSITION;
-    }
-    else
-    {
-      return returnValue;
     }
   }
 }

@@ -23,7 +23,8 @@ public class ShooterConstants
     public static final double WRIST_CLEARANCE_POSITION = .68;
     public static final double WRIST_DEFAULT_POSITION = 0.49;
     public static final double WRIST_AMP_SHOOTING_POSITION = 0.662598; 
-    public static final double WRIST_BUMPER_SHOT_POSITION = 0.645;
+    public static final double WRIST_BUMPER_SHOT_POSITION = 0.6525
+    ;
     public static final double WRIST_AUTO_BUMPER_SHOT_POSITION = 0.635;
     public static final double WRIST_MANUAL_SHOT_POSITION = 0.6;
     public static final double WRIST_PURGE_POSITION = 0.58;
@@ -36,11 +37,11 @@ public class ShooterConstants
 
     // Velocities
     public static final double BUMPER_SHOT_VELOCITY = 35;
-    public static final double INTAKE_SHOOTERS_VELOCITY = -18;
+    public static final double INTAKE_SHOOTERS_VELOCITY = -13;
     public static final double PURGE_VELOCITY = 20;
 
     // Voltages
-    public static final double INTAKE_FEEDER_VOLTAGE = -2.5;
+    public static final double INTAKE_FEEDER_VOLTAGE = -1.5;
     public static final double FEEDER_SHOOTING_VOLTAGE = 7;
     public static final double FEEDER_AMP_SHOT_VOLTAGE = 3;
 
@@ -72,7 +73,7 @@ public class ShooterConstants
 
     // Wrist configs
     public static final MotionMagicConfigs WRIST_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(5)
+        .withMotionMagicCruiseVelocity(3)
         .withMotionMagicAcceleration(1);
 
     public static final SoftwareLimitSwitchConfigs WRIST_SOFT_LIMIT_CONFIGS = new SoftwareLimitSwitchConfigs()
@@ -94,7 +95,7 @@ public class ShooterConstants
     // Wrist CANCoder
     public static final MagnetSensorConfigs WRIST_CANCODER_MAGNET_CONFIGS = new MagnetSensorConfigs()
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
-        .withMagnetOffset(-0.273)
+        .withMagnetOffset(-0.25)
         .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1);
 
     // Compile all configs into a single config variable for ease of use

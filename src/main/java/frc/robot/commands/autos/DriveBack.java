@@ -15,6 +15,6 @@ public class DriveBack extends SequentialCommandGroup
   /** Creates a new DriveBack. */
   public DriveBack(Orchestrator orchestrator, Drivetrain drivetrain, Double seedAngle)
   {
-    addCommands(new SeedFieldRelativeWithAngle(drivetrain, seedAngle), new Drive(drivetrain, () -> -0.2, () -> 0.0, () -> 0.0).withTimeout(1));
+    addCommands(new SeedFieldRelativeWithAngle(drivetrain, seedAngle), new Drive(drivetrain, () -> 0.2, () -> 0.0, () -> 0.0).withTimeout(1));
   }
 }

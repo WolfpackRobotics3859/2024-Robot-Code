@@ -7,30 +7,27 @@ package frc.robot.commands.drivetrain;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.constants.drivetrain.DrivetrainConstants;
 
 public class DriveWithAngle extends Command
 {
-  /*
-   * m_SpeedXSupplier - The supplier object for speed in the X direction
-   * m_SpeedYSupplier - The supplier object for speed in the Y direction
-   * m_RotationalSpeedSupplier - The supplier object for rotational speed
-   */
-  private Supplier<Double> m_SpeedXSupplier, m_SpeedYSupplier;
-  private double m_angle;
-  private Drivetrain m_Drivetrain;
+  private final Supplier<Double> m_SpeedXSupplier, m_SpeedYSupplier;
+  private final double m_angle;
+  private final Drivetrain m_Drivetrain;
   
   /**
-   * Sends a field centric request to the given swerve drivetrain with given X speed, Y speed, and rotational speed
+   * Sends a field centric request to the given swerve drivetrain with given X speed, Y speed, and angle to point toward
    * @param drivetrain The swerve drivetrain object
    * @param speedX The speed in the X direction
    * @param speedY The speed in the Y direction
-   * @param rotationalSpeed The rotational speed
+   * @param angle The angle to point the robot toward
    */
   public DriveWithAngle(Drivetrain drivetrain, Supplier<Double> speedX, Supplier<Double> speedY, Double angle) 
   {
@@ -53,14 +50,15 @@ public class DriveWithAngle extends Command
   @Override
   public void execute()
   {
-    final SwerveRequest.FieldCentricFacingAngle driveRequest = new SwerveRequest.FieldCentricFacingAngle()
-      .withDeadband(DrivetrainConstants.MAX_SPEED * 0.1).withRotationalDeadband(DrivetrainConstants.MAX_ANGULAR_RATE * 0.1)
+    SwerveRequest.FieldCentricFacingAngle driveAngledRequest = new SwerveRequest.FieldCentricFacingAngle()
+      .withDeadband(DrivetrainConstants.MAX_SPEED * 0.1)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-      .withVelocityX(m_SpeedXSupplier.get() * DrivetrainConstants.MAX_SPEED * 0.4)
-      .withVelocityY(m_SpeedYSupplier.get() * DrivetrainConstants.MAX_SPEED * 0.4)
+      .withSteerRequestType(SteerRequestType.MotionMagic)
+      .withVelocityX(m_SpeedXSupplier.get() * DrivetrainConstants.MAX_SPEED * 0.65)
+      .withVelocityY(m_SpeedYSupplier.get() * DrivetrainConstants.MAX_SPEED * 0.65)
       .withTargetDirection(Rotation2d.fromDegrees(m_angle));
 
-    m_Drivetrain.setControl(driveRequest);
+    m_Drivetrain.setControl(driveAngledRequest);
   }
 
   // Called once the command ends or is interrupted.
