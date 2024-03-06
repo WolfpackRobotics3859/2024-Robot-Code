@@ -42,7 +42,7 @@ public class ZeroIntake extends Command
   @Override
   public void end(boolean interrupted)
   {
-    m_Intake.zeroWrist();
+    m_Intake.setWristZero();
     m_Intake.setWristPercent(0);
   }
 
