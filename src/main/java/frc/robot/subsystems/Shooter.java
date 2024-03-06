@@ -35,6 +35,8 @@ public class Shooter extends SubsystemBase
   private final Timer m_TelemetryTimer = new Timer();
   private final Timer m_ExtraTelemetryTimer = new Timer();
 
+  private StatusSignal<Double> m_ElevatorSignal;
+
   /**
    * @brief Creates a new Shooter subsystem.
   */
@@ -56,6 +58,11 @@ public class Shooter extends SubsystemBase
       m_ExtraTelemetryTimer.start();
     }
     SmartDashboard.putData(this);
+  }
+
+  public void configureShooter(StatusSignal<Double> elevatorSignal)
+  {
+    this.m_ElevatorSignal = elevatorSignal;
   }
 
   @Override

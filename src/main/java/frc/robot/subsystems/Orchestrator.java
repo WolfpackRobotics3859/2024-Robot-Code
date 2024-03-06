@@ -64,6 +64,9 @@ public class Orchestrator extends SubsystemBase
       m_TelemetryTimer.start();
     }
     SmartDashboard.putData(this);
+
+    m_Elevator.configureElevator(m_Shooter.getPositionSignal());
+    m_Shooter.configureShooter(m_Elevator.getPositionSignal());
   }
 
   @Override
