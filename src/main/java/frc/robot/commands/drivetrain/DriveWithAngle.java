@@ -56,7 +56,7 @@ public class DriveWithAngle extends Command
       .withVelocityY(m_SpeedYSupplier.get() * DriveConstants.MAX_SPEED * 0.4)
       .withTargetDirection(Rotation2d.fromDegrees(m_angle));
 
-    m_Drivetrain.setControl(driveAngledRequest);
+    m_Drivetrain.setControl(driveRequest);
   }
 
   // Called once the command ends or is interrupted.

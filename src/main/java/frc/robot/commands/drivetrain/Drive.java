@@ -47,23 +47,12 @@ public class Drive extends Command
   @Override
   public void execute()
   {
-<<<<<<< HEAD
-    SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric()
-      .withDeadband(DrivetrainConstants.MAX_SPEED * 0.1)
-      .withRotationalDeadband(DrivetrainConstants.MAX_ANGULAR_RATE * 0.1)
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-      .withSteerRequestType(SteerRequestType.MotionMagic)
-      .withVelocityX(m_SpeedXSupplier.get() * DrivetrainConstants.MAX_SPEED * 0.65)
-      .withVelocityY(m_SpeedYSupplier.get() * DrivetrainConstants.MAX_SPEED * 0.65)
-      .withRotationalRate(m_RotationalSpeedSupplier.get() * DrivetrainConstants.MAX_ANGULAR_RATE * 0.7);
-=======
     final SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric()
       .withDeadband(DriveConstants.MAX_SPEED * 0.1).withRotationalDeadband(DriveConstants.MAX_ANGULAR_RATE * 0.1)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
       .withVelocityX(m_SpeedXSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
       .withVelocityY(m_SpeedYSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
       .withRotationalRate(m_RotationalSpeedSupplier.get() * DriveConstants.MAX_ANGULAR_RATE * 1.2);
->>>>>>> 0dfc56ab1df40430152f2a305020a9b6c9ff6f85
 
     m_Drivetrain.setControl(driveRequest);
   }

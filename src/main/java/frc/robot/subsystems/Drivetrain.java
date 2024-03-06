@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -28,61 +29,21 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-<<<<<<< HEAD
-import frc.robot.constants.Hardware;
-import frc.robot.constants.drivetrain.DrivetrainConstants;
-=======
 import frc.robot.commands.drivetrain.Drive;
 import frc.robot.constants.Global;
 import frc.robot.constants.drivetrain.DriveConstants;
->>>>>>> 0dfc56ab1df40430152f2a305020a9b6c9ff6f85
 import frc.robot.constants.drivetrain.TunerConstants;
 
 public class Drivetrain extends SwerveDrivetrain implements Subsystem 
 {
-<<<<<<< HEAD
-  private final PIDController pid = new PIDController(0, 0, 0);
-  private boolean m_odometrySeeded = false;
-  // private PhotonCamera m_photonCamera;
-  // private PhotonPoseEstimator m_photonPoseEstimator;
-  private Timer m_timer;
-=======
   private PhotonCamera m_CameraForward1, m_CameraForward2, m_CameraRear1;
   private PhotonPoseEstimator m_CameraForward1Estimator, m_CameraForward2Estimator, m_CameraRear1Estimator;
   private Timer m_TelemetryTimer = new Timer();
->>>>>>> 0dfc56ab1df40430152f2a305020a9b6c9ff6f85
 
   private final SwerveRequest.ApplyChassisSpeeds m_autoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
   /** 
-<<<<<<< HEAD
-    @brief Configure PathPlanner objects for automatic path following
-  */
-  private void configurePathPlanner()
-  {
-    // Determine the radius of the drivebase from module locations
-    double driveBaseRadius = 0;
-    for (var moduleLocation : m_moduleLocations) 
-    {
-      driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
-    }
-    
-    //Create drivetrain object for pathplanner to use in its calculations
-    AutoBuilder.configureHolonomic(
-      ()->this.getState().Pose,
-      this::seedFieldRelative,
-      this::getCurrentRobotChassisSpeeds,
-      (speeds)->this.setControl(m_autoRequest.withSpeeds(speeds)),
-      new HolonomicPathFollowerConfig(new PIDConstants(7, 0, 0), new PIDConstants(7, 0, 0), TunerConstants.SPEED_AT_12_VOLTS_MPS, driveBaseRadius, new ReplanningConfig()),
-      ()->false,
-      this);
-  }
-
-  /** 
-    Creates a new Drivetrain.
-=======
     @brief Creates a new Drivetrain.
->>>>>>> 0dfc56ab1df40430152f2a305020a9b6c9ff6f85
     @param driveTrainConstants Drivetrain-wide constants for the swerve drive
     @param OdometryUpdateFrequency The frequency to run the odometry loop. If unspecified, this is 250 Hz on CAN FD, and 100 Hz on CAN 2.0
     @param modules Constants for each specific module 
@@ -98,17 +59,8 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     } 
   }
 
-<<<<<<< HEAD
-  /** 
-    Creates a new Drivetrain without specifying the frequency to run the odometry loop.
-    @param driveTrainConstants Drivetrain-wide constants for the swerve drive
-    @param modules Constants for each specific module 
-  */
-  public Drivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules)
-=======
   @Override
   public void periodic()
->>>>>>> 0dfc56ab1df40430152f2a305020a9b6c9ff6f85
   {
     // Check to see if CTRE swerve does this internally and calling it here would be redundant.
     this.m_odometry.update(this.getPigeon2().getRotation2d(), this.m_modulePositions);
