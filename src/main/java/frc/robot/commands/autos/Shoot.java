@@ -6,7 +6,7 @@ package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.drivetrain.SeedFieldRelativeWithAngle;
-import frc.robot.commands.orchestrator.BumperShot;
+// import frc.robot.commands.orchestrator.BumperShot;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Orchestrator;
 
@@ -15,6 +15,6 @@ public class Shoot extends SequentialCommandGroup
   /** Creates a new Shoot. */
   public Shoot(Orchestrator orchestrator, Drivetrain drivetrain, Double seedAngle)
   {
-    addCommands(new SeedFieldRelativeWithAngle(drivetrain, seedAngle), new BumperShot(orchestrator, false).withTimeout(5));
+    // addCommands(new SeedFieldRelativeWithAngle(drivetrain, seedAngle), new BumperShot(orchestrator, false).withTimeout(5));
   }
 }
