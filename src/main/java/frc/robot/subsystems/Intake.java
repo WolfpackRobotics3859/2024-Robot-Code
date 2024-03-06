@@ -7,47 +7,66 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Global;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.intake.IntakeConstants;
-
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 
 public class Intake extends SubsystemBase 
 {
-  /** Creates a new IntakeSubsystem. */
-
   private final TalonFX m_RollerMotor = new TalonFX(Hardware.INTAKE_ROLLER_MOTOR_ID);
   private final TalonFX m_WristMotor = new TalonFX(Hardware.INTAKE_WRIST_MOTOR_ID);
-
-  private final Timer m_Timer;
+  private final Timer m_TelemetryTimer = new Timer();
+  private final Timer m_ExtraTelemetryTimer = new Timer();
 
   public Intake()
   {
     this.m_RollerMotor.getConfigurator().apply(IntakeConstants.INTAKE_ROLLER_CONFIGURATION);
     this.m_WristMotor.getConfigurator().apply(IntakeConstants.INTAKE_WRIST_CONFIGURATION);
 
-    this.m_WristMotor.setPosition(0);
-
-    this.m_Timer = new Timer();
-    m_Timer.start();
+    // Telemetry Configuration
+    if(Global.ENABLE_TELEMETRY)
+    {
+      m_TelemetryTimer.start();
+    }
+    if(Global.ENABLE_EXTRA_TELEMETRY)
+    {
+      m_ExtraTelemetryTimer.start();
+    }
+    SmartDashboard.putData(this);
+    this.setWristZero();
   }
 
-  // remove at some point
-  public void setRollerPercent(double percent)
+  @Override
+  public void periodic()
   {
-    DutyCycleOut request = new DutyCycleOut(percent, false, false, false, false);
-    m_RollerMotor.setControl(request);
+    if(Global.ENABLE_TELEMETRY)
+    {
+      if (m_TelemetryTimer.get() > Global.TELEMETRY_UPDATE_SPEED)
+      {
+        m_TelemetryTimer.reset();
+        SmartDashboard.putNumber("Intake Wrist Position", m_WristMotor.getPosition().getValueAsDouble());
+      }
+    }
+    // if(Global.ENABLE_EXTRA_TELEMETRY)
+    // {
+    //   if(m_ExtraTelemetryTimer.get() > Global.EXTRA_TELEMETRY_UPDATE_SPEED)
+    //   {
+    //    m_ExtraTelemetryTimer.reset();
+    //     // Intentionally Empty
+    //   }
+    // }
   }
 
-  public void setRollersVelocity(double velocity)
+  public void setRollerVoltage(double voltage)
   {
-    MotionMagicVelocityVoltage request = new MotionMagicVelocityVoltage(velocity, IntakeConstants.INTAKE_ROLLERS_ACCELERATION, false, 0, 0, false, false, false);
-    m_RollerMotor.setControl(request);
+    VoltageOut voltageRequest = new VoltageOut(voltage);
+    m_RollerMotor.setControl(voltageRequest);
   }
 
   public void setWristPosition (double position)
@@ -58,33 +77,21 @@ public class Intake extends SubsystemBase
 
   public void setWristPercent(double percent)
   {
-    DutyCycleOut request = new DutyCycleOut(percent, false, false, false, false);
+    DutyCycleOut request = new DutyCycleOut(percent);
     m_WristMotor.setControl(request);
   }
 
-  public void zeroWrist()
+  public void setWristZero()
   {
     m_WristMotor.setPosition(0);
   }
 
-  public StatusSignal<Double> getWristPosition()
+  public StatusSignal<Double> getPositionSignal()
   {
     return this.m_WristMotor.getPosition();
   }
+<<<<<<< HEAD
 
   // remove at some point
   public StatusSignal<Double> getRollerVelocity()
   {
-    return this.m_RollerMotor.getVelocity();
-  }
-
-   @Override
-  public void periodic()
-  {
-    if(m_Timer.get() > 0.5)
-    {
-      m_Timer.reset();
-      SmartDashboard.putNumber("Intake Wrist Position", this.getWristPosition().getValueAsDouble());
-    }
-  }
-}

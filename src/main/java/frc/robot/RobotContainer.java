@@ -25,13 +25,7 @@ import frc.robot.commands.drivetrain.DriveWithAngle;
 import frc.robot.commands.drivetrain.SeedFieldRelative;
 import frc.robot.commands.elevator.ElevatorPlayAlong;
 import frc.robot.commands.intake.IntakePlayAlong;
-import frc.robot.commands.orchestrator.AmpShot;
-import frc.robot.commands.orchestrator.BumperShot;
-import frc.robot.commands.orchestrator.Climb;
-import frc.robot.commands.orchestrator.IntakeCommand;
-import frc.robot.commands.orchestrator.Purge;
-import frc.robot.commands.orchestrator.Stow;
-import frc.robot.commands.orchestrator.ZeroIntake;
+import frc.robot.commands.orchestrator.ManualControl;
 import frc.robot.commands.shooter.ShooterPlayAlong;
 
 public class RobotContainer 
@@ -120,7 +114,19 @@ public class RobotContainer
     SmartDashboard.putData(angleSelector);
            
     configureBindings();
+
+    SmartDashboard.putNumber("Amp Shot Wrist Position", ShooterConstants.WRIST_AMP_SHOOTING_POSITION);
+    SmartDashboard.putNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION);
+    SmartDashboard.putNumber("Amp Shot Motor 1 Velocity", 5);
+    SmartDashboard.putNumber("Amp Shot Motor 2 Velocity", 17.5);
+
+    SmartDashboard.setDefaultNumber("Amp Shot Wrist Position", ShooterConstants.WRIST_AMP_SHOOTING_POSITION);
+    SmartDashboard.setDefaultNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION);
+    SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 6);
+    SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 17.5);
+
   }
+
   
   private void configureBindings() 
   {
@@ -131,20 +137,12 @@ public class RobotContainer
                 () -> -m_primaryController.getRightX()
       ));
 
-    // default command
-    m_Orchestrator.setDefaultCommand(new Stow(m_Orchestrator));
-
-    //TODO these should be changed to be able to be killed later for climb or errors
+    // these should be changed to be able to be killed later for climb or errors
     m_Shooter.setDefaultCommand(new ShooterPlayAlong(m_Orchestrator, m_Shooter));
     m_Intake.setDefaultCommand(new IntakePlayAlong(m_Orchestrator, m_Intake));
-    m_Elevator.setDefaultCommand(new ElevatorPlayAlong(m_Orchestrator, m_Elevator, () -> -m_secondaryController.getRightY()));
+    m_Elevator.setDefaultCommand(new ElevatorPlayAlong(m_Orchestrator, m_Elevator));
+    m_Orchestrator.setDefaultCommand(new ManualControl(m_Orchestrator));
 
-    // PRIMARY CONTROLLER
-    m_primaryController.leftTrigger().whileTrue(new IntakeCommand(m_Orchestrator).unless(() -> m_Orchestrator.noteStowed));
-    m_primaryController.rightTrigger().whileTrue(new BumperShot(m_Orchestrator, false).unless(() -> !m_Orchestrator.noteStowed));
-    m_primaryController.rightBumper().whileTrue(new AmpShot(m_Orchestrator));
-    m_primaryController.leftBumper().onTrue(new SeedFieldRelative(m_Drivetrain));
-    
     m_primaryController.a().whileTrue(new DriveWithAngle(m_Drivetrain,
         () -> -m_primaryController.getLeftY(),
         () -> -m_primaryController.getLeftX(),
@@ -165,12 +163,6 @@ public class RobotContainer
         () -> -m_primaryController.getLeftX(),
         270.0));
 
-    // SECONDARY CONTROLLER
-    // m_secondaryController.leftBumper() UNDER DEFENSE
-    m_secondaryController.leftTrigger().whileTrue(new Purge(m_Orchestrator)); // purge
-    m_secondaryController.rightTrigger().whileTrue(new Climb(m_Orchestrator)); // start climb
-    m_secondaryController.leftBumper().whileTrue(new ZeroIntake(m_Intake)); // zero intake
-
     m_secondaryController.x().whileTrue(new DriveWithAngle(m_Drivetrain, // left chain
       () -> -m_primaryController.getLeftY(),
       () -> -m_primaryController.getLeftX(),
@@ -186,14 +178,7 @@ public class RobotContainer
       () -> -m_primaryController.getLeftX(),
       180.0)); // change angle at some point
 
-    //TODO fix these
-    // m_secondaryController.b().whileTrue(new Drive(m_Drivetrain, // jog robot forward
-    //   () -> -m_primaryController.getLeftY(),
-    //   () -> 0.0,
-    //   () -> 0.0
-    // ));
-
-    // m_secondaryController.leftBumper().whileTrue(new PathPlannerAuto("Amp Auto"));
+    m_secondaryController.a().whileTrue(new SeedFieldRelative(m_Drivetrain));
   }
 
   public Command getAutonomousCommand() 
