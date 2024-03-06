@@ -24,24 +24,38 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+<<<<<<< HEAD
 import frc.robot.constants.Hardware;
 import frc.robot.constants.drivetrain.DrivetrainConstants;
+=======
+import frc.robot.commands.drivetrain.Drive;
+import frc.robot.constants.Global;
+import frc.robot.constants.drivetrain.DriveConstants;
+>>>>>>> 0dfc56ab1df40430152f2a305020a9b6c9ff6f85
 import frc.robot.constants.drivetrain.TunerConstants;
 
 public class Drivetrain extends SwerveDrivetrain implements Subsystem 
 {
+<<<<<<< HEAD
   private final PIDController pid = new PIDController(0, 0, 0);
   private boolean m_odometrySeeded = false;
   // private PhotonCamera m_photonCamera;
   // private PhotonPoseEstimator m_photonPoseEstimator;
   private Timer m_timer;
+=======
+  private PhotonCamera m_CameraForward1, m_CameraForward2, m_CameraRear1;
+  private PhotonPoseEstimator m_CameraForward1Estimator, m_CameraForward2Estimator, m_CameraRear1Estimator;
+  private Timer m_TelemetryTimer = new Timer();
+>>>>>>> 0dfc56ab1df40430152f2a305020a9b6c9ff6f85
 
   private final SwerveRequest.ApplyChassisSpeeds m_autoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
   /** 
+<<<<<<< HEAD
     @brief Configure PathPlanner objects for automatic path following
   */
   private void configurePathPlanner()
@@ -66,6 +80,9 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
 
   /** 
     Creates a new Drivetrain.
+=======
+    @brief Creates a new Drivetrain.
+>>>>>>> 0dfc56ab1df40430152f2a305020a9b6c9ff6f85
     @param driveTrainConstants Drivetrain-wide constants for the swerve drive
     @param OdometryUpdateFrequency The frequency to run the odometry loop. If unspecified, this is 250 Hz on CAN FD, and 100 Hz on CAN 2.0
     @param modules Constants for each specific module 
@@ -73,24 +90,40 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   public Drivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules)
   {
     super(driveTrainConstants, OdometryUpdateFrequency, modules);
+    configurePhotonVision();
+    configurePathPlanner();
+    if(Global.ENABLE_TELEMETRY)
+    {
+      m_TelemetryTimer.start();
+    } 
   }
 
+<<<<<<< HEAD
   /** 
     Creates a new Drivetrain without specifying the frequency to run the odometry loop.
     @param driveTrainConstants Drivetrain-wide constants for the swerve drive
     @param modules Constants for each specific module 
   */
   public Drivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules)
+=======
+  @Override
+  public void periodic()
+>>>>>>> 0dfc56ab1df40430152f2a305020a9b6c9ff6f85
   {
-    super(driveTrainConstants, modules);
-    // Create a photon camera and pose estimator object
-    // m_photonCamera = new PhotonCamera("front_camera");
-    // m_photonPoseEstimator = new PhotonPoseEstimator(DrivetrainConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_photonCamera, DrivetrainConstants.FORWARD_CAMERA_POSITION);
+    // Check to see if CTRE swerve does this internally and calling it here would be redundant.
+    this.m_odometry.update(this.getPigeon2().getRotation2d(), this.m_modulePositions);
+    this.updateVision();
 
-    // Create a timer for less critical tasks such as Smartdashboard updates
-    this.m_timer = new Timer();
-    m_timer.start();
-    configurePathPlanner();
+    if(Global.ENABLE_TELEMETRY)
+    {
+      if(m_TelemetryTimer.get() > Global.TELEMETRY_UPDATE_SPEED)
+      {
+        Logger.recordOutput("robotPose", m_odometry.getEstimatedPosition());
+        Field2d field = new Field2d();
+        field.setRobotPose(this.m_odometry.getEstimatedPosition());
+        SmartDashboard.putData("Field Data", field);
+      }
+    } 
   }
 
   /**
@@ -112,47 +145,77 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     return m_kinematics.toChassisSpeeds(getState().ModuleStates);
   }
 
-  // @Override
-  // public void periodic() 
-  // {
-  //   //Publish pose for advantagescope odometry
-  //   Logger.recordOutput("robotPose", m_odometry.getEstimatedPosition());
+  private void configurePhotonVision()
+  {
+    m_CameraForward1 = new PhotonCamera("CameraForward1");
+    m_CameraForward2 = new PhotonCamera("CameraForward2");
+    m_CameraRear1 = new PhotonCamera("CameraRear1");
+    m_CameraForward1Estimator = new PhotonPoseEstimator(DriveConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_CameraForward1, DriveConstants.CAMERA_POSITIONS.FORWARD_1);
+    m_CameraForward2Estimator = new PhotonPoseEstimator(DriveConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_CameraForward2, DriveConstants.CAMERA_POSITIONS.FORWARD_2);
+    m_CameraRear1Estimator = new PhotonPoseEstimator(DriveConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_CameraRear1, DriveConstants.CAMERA_POSITIONS.REAR_1);
+  }
+  
+  /** 
+    @brief Configure PathPlanner objects for automatic path following
+  */
+  private void configurePathPlanner()
+  {
+    //Determine the radius of the drivebase from module locations
+    double driveBaseRadius = 0;
+    for (var moduleLocation : m_moduleLocations) 
+    {
+      driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
+    }
+    
+    // //Create drivetrain object for pathplanner to use in its calculations
+    // AutoBuilder.configureHolonomic(
+    //   ()->this.getState().Pose,
+    //   this::seedFieldRelative,
+    //   this::getCurrentRobotChassisSpeeds,
+    //   (speeds)->this.setControl(m_autoRequest.withSpeeds(speeds)),
+    //   new HolonomicPathFollowerConfig(new PIDConstants(7, 0, 0), new PIDConstants(7, 0, 0), TunerConstants.SPEED_AT_12_VOLTS_MPS, driveBaseRadius, new ReplanningConfig()),
+    //   ()->false,
+    //   this);
 
-    // Ask Photon for a generated pose
-    // Optional<EstimatedRobotPose> estPose = m_photonPoseEstimator.update();
+  }
 
-    // // Checks if Photon returned a pose
-    // if (!estPose.isEmpty() && m_photonCamera.getLatestResult().getBestTarget().getPoseAmbiguity() < DrivetrainConstants.AMBIGUITY_THRESHOLD)
-    // { 
-    //   // Seeds an initial odometry value from vision system
-    //   if (!m_odometrySeeded)
-    //   {
-    //     // Seed pose
-    //     this.m_odometry.resetPosition(estPose.get().estimatedPose.getRotation().toRotation2d(), m_modulePositions,
-    //         estPose.get().estimatedPose.toPose2d());
-    //     m_odometrySeeded = true;
-    //   } 
-    //   else
-    //   {
-    //     // Add vision to kalman filter
-    //     this.addVisionMeasurement(estPose.get().estimatedPose.toPose2d(), estPose.get().timestampSeconds);
-    //     SmartDashboard.putString("Pose - Vision", estPose.get().estimatedPose.toPose2d().toString());
-    //   }
-    // }
-    // Report robots current pose to smartdashboard every half second
-    // if (m_timer.get() > 0.5)
-    // {
-    //   m_timer.reset();
-    //   SmartDashboard.putString("Pose - Drivetrain", m_odometry.getEstimatedPosition().toString());
-    //   try 
-    //   {
-    //     SmartDashboard.putNumber("Pose Ambuguity", m_photonCamera.getLatestResult().getBestTarget().getPoseAmbiguity());
-    //   } 
-    //   catch(Exception e) 
-    //   {
-    //     //Intenionally Empty
-    //   }
-    //   SmartDashboard.putBoolean("Odometry seeded", m_odometrySeeded);
-    // }
-  // }
+  private void updateVision()
+  {
+    if(m_CameraForward1.isConnected())
+    {
+      Optional<EstimatedRobotPose> pose = this.m_CameraForward1Estimator.update();
+      try
+      {
+        this.m_odometry.addVisionMeasurement(pose.get().estimatedPose.toPose2d(), ModuleCount);
+      }
+      catch(Exception e)
+      {
+        System.out.println("[DRIVE] WARNING: CameraForward1Estimator returning null values.");
+      }
+    }
+    if(m_CameraForward2.isConnected())
+    {
+      Optional<EstimatedRobotPose> pose = this.m_CameraForward2Estimator.update();
+      try
+      {
+        this.m_odometry.addVisionMeasurement(pose.get().estimatedPose.toPose2d(), ModuleCount);
+      }
+      catch(Exception e)
+      {
+        System.out.println("[DRIVE] WARNING: CameraForward2Estimator returning null values.");
+      }
+    }
+    if(m_CameraRear1.isConnected())
+    {
+      Optional<EstimatedRobotPose> pose = this.m_CameraRear1Estimator.update();
+      try
+      {
+        this.m_odometry.addVisionMeasurement(pose.get().estimatedPose.toPose2d(), ModuleCount);
+      }
+      catch(Exception e)
+      {
+        System.out.println("[DRIVE] WARNING: CameraRear1Estimator returning null values.");
+      }
+    }
+  }
 }

@@ -118,7 +118,7 @@ public class Elevator extends SubsystemBase
 
   public boolean isPositionAboveBar(double position)
   {
-    return position > ElevatorConstants.BAR_TOP_CLEAR;
+    return position >= ElevatorConstants.BAR_TOP_CLEAR;
   }
 
   public boolean isBelowBar()

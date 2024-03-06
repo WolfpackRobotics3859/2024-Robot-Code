@@ -33,7 +33,7 @@ import frc.robot.commands.shooter.ShooterPlayAlong;
 public class RobotContainer 
 {
   // Subsystems
-  private final Drivetrain m_Drivetrain = new Drivetrain(TunerConstants.DRIVETRAIN_CONSTANTS, TunerConstants.FRONT_LEFT,
+  private final Drivetrain m_Drivetrain = new Drivetrain(TunerConstants.DRIVETRAIN_CONSTANTS, 250, TunerConstants.FRONT_LEFT,
                       TunerConstants.FRONT_RIGHT, TunerConstants.BACK_LEFT, TunerConstants.BACK_RIGHT);
   private final Elevator m_Elevator = new Elevator();
   private final Shooter m_Shooter = new Shooter();
@@ -139,7 +139,6 @@ public class RobotContainer
                 () -> -m_primaryController.getRightX()
       ));
 
-    // these should be changed to be able to be killed later for climb or errors
     m_Shooter.setDefaultCommand(new ShooterPlayAlong(m_Orchestrator, m_Shooter));
     m_Intake.setDefaultCommand(new IntakePlayAlong(m_Orchestrator, m_Intake));
     m_Elevator.setDefaultCommand(new ElevatorPlayAlong(m_Orchestrator, m_Elevator));
