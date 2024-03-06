@@ -12,7 +12,7 @@ import frc.robot.subsystems.Drivetrain;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SeedFieldRelative extends InstantCommand 
 {
-  private Drivetrain m_Drivetrain;
+  private final Drivetrain m_Drivetrain;
   
   /**
    * @brief Takes the current orientation of the robot and makes it X forward

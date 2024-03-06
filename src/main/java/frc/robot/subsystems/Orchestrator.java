@@ -614,16 +614,6 @@ public class Orchestrator extends SubsystemBase
   @Override
   public void periodic()
   {
-    // V3 PERIODIC:
-    // Periodic should be used for updating odometry values from the subsystems.
-    // This should be done via the getters in the subsystems and should do it on a (variable) timer for
-    // a reduction in the canbus utilization
-
-    // SmartDashboard.putNumber("Elevator Desired Position", m_DesiredElevatorPosition);
-    // SmartDashboard.putNumber("Shooter Wrist Desired Position", m_DesiredShooterWristPosition);
-    // SmartDashboard.putNumber("Intake Wrist Desired Position", m_DesiredIntakeWristPosition);
-    // SmartDashboard.putBoolean("Note Grabbed", noteGrabbed);
-
     if (m_Timer.get() > m_odometryUpdateFrequency)
     {
       m_Timer.reset();

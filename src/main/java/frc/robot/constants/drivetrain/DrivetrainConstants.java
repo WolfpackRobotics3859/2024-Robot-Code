@@ -16,9 +16,9 @@ public class DrivetrainConstants
     public static final double MAX_SPEED = 6;
 
     /** Radians per second */
-    public static final double MAX_ANGULAR_RATE = Math.PI;
+    public static final double MAX_ANGULAR_RATE = Math.PI * 2;
 
-    public static final AprilTagFieldLayout TAG_LAYOUT;
+    public static final AprilTagFieldLayout TAG_LAYOUT; // = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
         
         static 
         {

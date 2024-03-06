@@ -26,29 +26,28 @@ public class Shooter extends SubsystemBase
   private final TalonFX m_ShooterMotor2 = new TalonFX(Hardware.SHOOTER_MOTOR_2_ID);
   private final TalonFX m_WristMotor = new TalonFX(Hardware.WRIST_MOTOR_ID);
   private final TalonFX m_FeederMotor = new TalonFX(Hardware.FEEDER_MOTOR_ID);
+
   private final CANcoder m_WristCANCoder = new CANcoder(Hardware.SHOOTER_WRIST_CANCODER_ID);
+
   private final DigitalInput m_BeamBreak1 = new DigitalInput(Hardware.BEAM_BREAK_1_ID);
   private final DigitalInput m_BeamBreak2 = new DigitalInput(Hardware.BEAM_BREAK_2_ID);
 
-  private final Timer m_timer;
+  private final Timer m_Timer;
 
   /**
    * @brief Creates a new Shooter subsystem.
   */
   public Shooter() 
   {
-    // Motor configuration
     m_ShooterMotor1.getConfigurator().apply(ShooterConstants.SHOOTER_MOTOR_1_CONFIGURATION);
     m_ShooterMotor2.getConfigurator().apply(ShooterConstants.SHOOTER_MOTOR_2_CONFIGURATION);
     m_WristMotor.getConfigurator().apply(ShooterConstants.WRIST_MOTOR_CONFIGURATION);
     m_FeederMotor.getConfigurator().apply(ShooterConstants.FEEDER_GAINS);
 
-    // CANCoder configuration
     m_WristCANCoder.getConfigurator().apply(ShooterConstants.WRIST_CANCODER_CONFIGURATION);
-    SmartDashboard.putData(this);
 
-    this.m_timer = new Timer();
-    m_timer.start();
+    this.m_Timer = new Timer();
+    m_Timer.start();
   }
 
   // Shooter Functions
@@ -181,9 +180,9 @@ public class Shooter extends SubsystemBase
   @Override
   public void periodic()
   {
-    if (m_timer.get() > 0.5)
+    if (m_Timer.get() > 0.5)
     {
-      m_timer.reset();
+      m_Timer.reset();
       SmartDashboard.putNumber("Shooter Wrist position", this.getWristMotorPosition().getValueAsDouble());
       SmartDashboard.putBoolean("Beam Break1", this.getBeamBreak1());
       SmartDashboard.putBoolean("Beam Break 2", this.getBeamBreak2());

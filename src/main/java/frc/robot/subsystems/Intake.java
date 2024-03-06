@@ -23,6 +23,7 @@ public class Intake extends SubsystemBase
 
   private final TalonFX m_RollerMotor = new TalonFX(Hardware.INTAKE_ROLLER_MOTOR_ID);
   private final TalonFX m_WristMotor = new TalonFX(Hardware.INTAKE_WRIST_MOTOR_ID);
+
   private final Timer m_Timer;
 
   public Intake()
@@ -31,7 +32,6 @@ public class Intake extends SubsystemBase
     this.m_WristMotor.getConfigurator().apply(IntakeConstants.INTAKE_WRIST_CONFIGURATION);
 
     this.m_WristMotor.setPosition(0);
-    SmartDashboard.putData(this);
 
     this.m_Timer = new Timer();
     m_Timer.start();

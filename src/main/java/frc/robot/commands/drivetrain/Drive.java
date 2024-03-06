@@ -16,8 +16,8 @@ import frc.robot.constants.drivetrain.DrivetrainConstants;
 
 public class Drive extends Command
 {
-  private Supplier<Double> m_SpeedXSupplier, m_SpeedYSupplier, m_RotationalSpeedSupplier;
-  private Drivetrain m_Drivetrain;
+  private final Supplier<Double> m_SpeedXSupplier, m_SpeedYSupplier, m_RotationalSpeedSupplier;
+  private final Drivetrain m_Drivetrain;
   
   /**
    * Sends a field centric request to the given swerve drivetrain with given X speed, Y speed, and rotational speed
@@ -54,7 +54,7 @@ public class Drive extends Command
       .withSteerRequestType(SteerRequestType.MotionMagic)
       .withVelocityX(m_SpeedXSupplier.get() * DrivetrainConstants.MAX_SPEED * 0.65)
       .withVelocityY(m_SpeedYSupplier.get() * DrivetrainConstants.MAX_SPEED * 0.65)
-      .withRotationalRate(m_RotationalSpeedSupplier.get() * DrivetrainConstants.MAX_ANGULAR_RATE * 1.4);
+      .withRotationalRate(m_RotationalSpeedSupplier.get() * DrivetrainConstants.MAX_ANGULAR_RATE * 0.7);
 
     m_Drivetrain.setControl(driveRequest);
   }
