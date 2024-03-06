@@ -35,11 +35,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
 {
   private final PIDController pid = new PIDController(0, 0, 0);
   private boolean m_odometrySeeded = false;
-<<<<<<< HEAD
-  private PhotonCamera m_photonCamera;
-=======
   // private PhotonCamera m_photonCamera;
->>>>>>> e247dce123fee2f478f47305307fee5f26aaa564
   // private PhotonPoseEstimator m_photonPoseEstimator;
   private Timer m_timer;
 
@@ -88,11 +84,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   {
     super(driveTrainConstants, modules);
     // Create a photon camera and pose estimator object
-<<<<<<< HEAD
-    m_photonCamera = new PhotonCamera("front_camera");
-=======
     // m_photonCamera = new PhotonCamera("front_camera");
->>>>>>> e247dce123fee2f478f47305307fee5f26aaa564
     // m_photonPoseEstimator = new PhotonPoseEstimator(DrivetrainConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_photonCamera, DrivetrainConstants.FORWARD_CAMERA_POSITION);
 
     // Create a timer for less critical tasks such as Smartdashboard updates
@@ -126,11 +118,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   //   //Publish pose for advantagescope odometry
   //   Logger.recordOutput("robotPose", m_odometry.getEstimatedPosition());
 
-<<<<<<< HEAD
-    // // Ask Photon for a generated pose
-=======
     // Ask Photon for a generated pose
->>>>>>> e247dce123fee2f478f47305307fee5f26aaa564
     // Optional<EstimatedRobotPose> estPose = m_photonPoseEstimator.update();
 
     // // Checks if Photon returned a pose
@@ -140,32 +128,18 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     //   if (!m_odometrySeeded)
     //   {
     //     // Seed pose
-<<<<<<< HEAD
-    //     //this.m_odometry.resetPosition(estPose.get().estimatedPose.getRotation().toRotation2d(), m_modulePositions,
-    //     //    estPose.get().estimatedPose.toPose2d());
-    //     //m_odometrySeeded = true;
-=======
     //     this.m_odometry.resetPosition(estPose.get().estimatedPose.getRotation().toRotation2d(), m_modulePositions,
     //         estPose.get().estimatedPose.toPose2d());
     //     m_odometrySeeded = true;
->>>>>>> e247dce123fee2f478f47305307fee5f26aaa564
     //   } 
     //   else
     //   {
     //     // Add vision to kalman filter
-<<<<<<< HEAD
-    //     //this.addVisionMeasurement(estPose.get().estimatedPose.toPose2d(), estPose.get().timestampSeconds);
-    //     SmartDashboard.putString("Pose - Vision", estPose.get().estimatedPose.toPose2d().toString());
-    //   }
-    // }
-    // // Report robots current pose to smartdashboard every half second
-=======
     //     this.addVisionMeasurement(estPose.get().estimatedPose.toPose2d(), estPose.get().timestampSeconds);
     //     SmartDashboard.putString("Pose - Vision", estPose.get().estimatedPose.toPose2d().toString());
     //   }
     // }
     // Report robots current pose to smartdashboard every half second
->>>>>>> e247dce123fee2f478f47305307fee5f26aaa564
     // if (m_timer.get() > 0.5)
     // {
     //   m_timer.reset();
@@ -180,9 +154,5 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     //   }
     //   SmartDashboard.putBoolean("Odometry seeded", m_odometrySeeded);
     // }
-<<<<<<< HEAD
-  }
-=======
   // }
->>>>>>> e247dce123fee2f478f47305307fee5f26aaa564
 }

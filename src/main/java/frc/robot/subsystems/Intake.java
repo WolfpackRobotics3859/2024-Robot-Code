@@ -90,8 +90,4 @@ public class Intake extends SubsystemBase
   {
     return this.m_WristMotor.getPosition();
   }
-<<<<<<< HEAD
-
-  // remove at some point
-  public StatusSignal<Double> getRollerVelocity()
-  {
+}
