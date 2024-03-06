@@ -15,17 +15,13 @@ public class ElevatorPlayAlong extends Command
 {
   private final Orchestrator m_Orchestrator;
   private final Elevator m_Elevator;
-  private final Supplier<Double> m_ElevatorPercent;
   
-  private double m_PreviousElevatorPosition;
+  private double m_PreviousElevatorPosition = 0;
 
-  /** Creates a new ElevatorPlayAlong. */
-  public ElevatorPlayAlong(Orchestrator orchestrator, Elevator elevator, Supplier<Double> elevatorPercent)
+  public ElevatorPlayAlong(Orchestrator orchestrator, Elevator elevator)
   {
     this.m_Orchestrator = orchestrator;
     this.m_Elevator = elevator;
-    this.m_ElevatorPercent = elevatorPercent;
-
     addRequirements(m_Elevator);
   }
 
@@ -33,34 +29,18 @@ public class ElevatorPlayAlong extends Command
   @Override
   public void initialize()
   {
-    // prevent null numbers
-    this.m_PreviousElevatorPosition = 0;
+    // Intentionally Empty
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute()
   {
-    if (!m_Orchestrator.climbing)
+    double goalPosition = this.m_Orchestrator.getElevatorPosition();
+    if(goalPosition != m_PreviousElevatorPosition)
     {
-      // if the last position the elevator was told to go to is not the same as the desired position
-      if (this.m_PreviousElevatorPosition != m_Orchestrator.m_DesiredElevatorPosition)
-      {
-        m_Elevator.setElevatorPosition(m_Orchestrator.m_DesiredElevatorPosition);
-      }
-
-      this.m_PreviousElevatorPosition = m_Orchestrator.m_DesiredElevatorPosition;
-    }
-    else
-    {
-      if (m_Elevator.getElevatorPosition().getValueAsDouble() > ElevatorConstants.ELEVATOR_CLIMB_SAFE_DOWN || m_ElevatorPercent.get() >= 0)
-      {
-        m_Elevator.setElevatorPercent(m_ElevatorPercent.get() * 0.5);
-      }
-      else
-      {
-        m_Elevator.setElevatorBrake();
-      }
+      m_PreviousElevatorPosition = goalPosition;
+      this.m_Elevator.elevatorRequest(ElevatorConstants.MODE.POSITION, goalPosition);
     }
   }
 

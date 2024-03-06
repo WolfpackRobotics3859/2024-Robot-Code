@@ -19,6 +19,10 @@ import frc.robot.constants.Hardware;
 
 public class ElevatorConstants
 {
+    public static final double BAR_TOP_CLEAR = 0.5; // The first position where the shooter can freely rotate again above the crossbar.
+    public static final double BAR_BOTTOM_CLEAR = 0.4; // The first position where the shooter can freely rotate again below the crossbar.
+    public static final double CLOSED_LOOP_ERROR_TOLERANCE = 0.05;
+
     // Position Values
     public static final double ELEVATOR_BOTTOM_POSITION = 0.04; // the bottom position of the elevator
     public static final double ELEVATOR_TOP_POSITION = 0.74; // the top position of the elevator
@@ -81,6 +85,16 @@ public class ElevatorConstants
     public static final CANcoderConfiguration ELEVATOR_CANCODER_CONFIGURATION = new CANcoderConfiguration()
         .withMagnetSensor(MAGNET_SENSOR_CONFIGS);
 
-    // Misc
     public static final double ELEVATOR_POSITION_TOLERANCE = 0.004;
+
+    /**
+     * @brief The modes available for controlling the elevator.
+     */
+    public static enum MODE
+    {
+        PERCENT,
+        VOLTAGE,
+        POSITION,
+        BRAKE
+    }
 }

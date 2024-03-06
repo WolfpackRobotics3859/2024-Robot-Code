@@ -13,10 +13,9 @@ public class IntakePlayAlong extends Command
   private final Orchestrator m_Orchestrator;
   private final Intake m_Intake;
 
-  private double m_PreviousWristPosition;
-  private double m_PreviousRollersVelocity;
+  private double m_PreviousWristPosition = 0;
+  private double m_PreviousRollersVoltage = 0;
 
-  /** Creates a new IntakePlayAlong. */
   public IntakePlayAlong(Orchestrator orchestrator, Intake intake)
   {
     this.m_Orchestrator = orchestrator;
@@ -29,32 +28,33 @@ public class IntakePlayAlong extends Command
   @Override
   public void initialize()
   {
-    // prevent null values
-    m_PreviousWristPosition = 0;
-    m_PreviousRollersVelocity = 0;
+    // Intentionally Empty
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute()
   {
-    if (m_PreviousWristPosition != m_Orchestrator.m_DesiredIntakeWristPosition)
+    double wristPosition = m_Orchestrator.getIntakePosition();
+    double rollerVoltage = m_Orchestrator.getIntakeRollersVoltage();
+    if(wristPosition != m_PreviousWristPosition)
     {
-      m_Intake.setWristPosition(m_Orchestrator.m_DesiredIntakeWristPosition);
+      m_Intake.setWristPosition(wristPosition);
+      m_PreviousWristPosition = wristPosition;
     }
-
-    if (m_PreviousRollersVelocity != m_Orchestrator.m_DesiredIntakeRollersVelocity)
+    if(rollerVoltage != m_PreviousRollersVoltage)
     {
-      m_Intake.setRollersVelocity(m_Orchestrator.m_DesiredIntakeRollersVelocity);
+      m_Intake.setRollerVoltage(rollerVoltage);
+      m_PreviousRollersVoltage = rollerVoltage;
     }
-
-    m_PreviousWristPosition = m_Orchestrator.m_DesiredIntakeWristPosition;
-    m_PreviousRollersVelocity = m_Orchestrator.m_DesiredIntakeRollersVelocity;
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted)
+  {
+    // Intentionally Empty
+  }
 
   // Returns true when the command should end.
   @Override

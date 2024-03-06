@@ -7,44 +7,37 @@ package frc.robot.commands.orchestrator;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Orchestrator;
 
-public class BumperShot extends Command
+public class ManualControl extends Command 
 {
-  private final Orchestrator m_Orchestrator;
-
-  /** Creates a new IntakeCommand. */
-  public BumperShot(Orchestrator orchestrator)
+  private Orchestrator m_Orchestrator;
+  public ManualControl(Orchestrator orchestrator) 
   {
-    this.m_Orchestrator = orchestrator;
-
+    m_Orchestrator = orchestrator;
     addRequirements(m_Orchestrator);
   }
 
-  // Called when the command is initially scheduled.
   @Override
-  public void initialize()
+  public void initialize() 
   {
     // Intentionally Empty
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute()
+  public void execute() 
   {
-    // Run the intake function
-    m_Orchestrator.BumperShot();
+    m_Orchestrator.manualControl();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted)
+  public void end(boolean interrupted) 
   {
     // Intentionally Empty
   }
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished()
-  {
+  public boolean isFinished() {
     return false;
   }
 }

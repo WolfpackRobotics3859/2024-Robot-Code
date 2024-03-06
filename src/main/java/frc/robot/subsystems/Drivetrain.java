@@ -33,8 +33,8 @@ import frc.robot.constants.drivetrain.TunerConstants;
 public class Drivetrain extends SwerveDrivetrain implements Subsystem 
 {
   private boolean m_odometrySeeded = false;
-  private PhotonCamera m_photonCamera;
-  private PhotonPoseEstimator m_photonPoseEstimator;
+  // private PhotonCamera m_photonCamera;
+  // private PhotonPoseEstimator m_photonPoseEstimator;
   private Timer m_timer;
 
   private final SwerveRequest.ApplyChassisSpeeds m_autoRequest = new SwerveRequest.ApplyChassisSpeeds();
@@ -83,8 +83,8 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   {
     super(driveTrainConstants, modules);
     // Create a photon camera and pose estimator object
-    m_photonCamera = new PhotonCamera("front_camera");
-    m_photonPoseEstimator = new PhotonPoseEstimator(DrivetrainConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_photonCamera, DrivetrainConstants.FORWARD_CAMERA_POSITION);
+    // m_photonCamera = new PhotonCamera("front_camera");
+    // m_photonPoseEstimator = new PhotonPoseEstimator(DrivetrainConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_photonCamera, DrivetrainConstants.FORWARD_CAMERA_POSITION);
 
     // Create a timer for less critical tasks such as Smartdashboard updates
     this.m_timer = new Timer();
@@ -111,47 +111,47 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     return m_kinematics.toChassisSpeeds(getState().ModuleStates);
   }
 
-  @Override
-  public void periodic() 
-  {
-    //Publish pose for advantagescope odometry
-    Logger.recordOutput("robotPose", m_odometry.getEstimatedPosition());
+  // @Override
+  // public void periodic() 
+  // {
+  //   //Publish pose for advantagescope odometry
+  //   Logger.recordOutput("robotPose", m_odometry.getEstimatedPosition());
 
     // Ask Photon for a generated pose
-    Optional<EstimatedRobotPose> estPose = m_photonPoseEstimator.update();
+    // Optional<EstimatedRobotPose> estPose = m_photonPoseEstimator.update();
 
-    // Checks if Photon returned a pose
-    if (!estPose.isEmpty() && m_photonCamera.getLatestResult().getBestTarget().getPoseAmbiguity() < DrivetrainConstants.AMBIGUITY_THRESHOLD)
-    { 
-      // Seeds an initial odometry value from vision system
-      if (!m_odometrySeeded)
-      {
-        // Seed pose
-        this.m_odometry.resetPosition(estPose.get().estimatedPose.getRotation().toRotation2d(), m_modulePositions,
-            estPose.get().estimatedPose.toPose2d());
-        m_odometrySeeded = true;
-      } 
-      else
-      {
-        // Add vision to kalman filter
-        this.addVisionMeasurement(estPose.get().estimatedPose.toPose2d(), estPose.get().timestampSeconds);
-        SmartDashboard.putString("Pose - Vision", estPose.get().estimatedPose.toPose2d().toString());
-      }
-    }
+    // // Checks if Photon returned a pose
+    // if (!estPose.isEmpty() && m_photonCamera.getLatestResult().getBestTarget().getPoseAmbiguity() < DrivetrainConstants.AMBIGUITY_THRESHOLD)
+    // { 
+    //   // Seeds an initial odometry value from vision system
+    //   if (!m_odometrySeeded)
+    //   {
+    //     // Seed pose
+    //     this.m_odometry.resetPosition(estPose.get().estimatedPose.getRotation().toRotation2d(), m_modulePositions,
+    //         estPose.get().estimatedPose.toPose2d());
+    //     m_odometrySeeded = true;
+    //   } 
+    //   else
+    //   {
+    //     // Add vision to kalman filter
+    //     this.addVisionMeasurement(estPose.get().estimatedPose.toPose2d(), estPose.get().timestampSeconds);
+    //     SmartDashboard.putString("Pose - Vision", estPose.get().estimatedPose.toPose2d().toString());
+    //   }
+    // }
     // Report robots current pose to smartdashboard every half second
-    if (m_timer.get() > 0.5)
-    {
-      m_timer.reset();
-      SmartDashboard.putString("Pose - Drivetrain", m_odometry.getEstimatedPosition().toString());
-      try 
-      {
-        SmartDashboard.putNumber("Pose Ambuguity", m_photonCamera.getLatestResult().getBestTarget().getPoseAmbiguity());
-      } 
-      catch(Exception e) 
-      {
-        //Intenionally Empty
-      }
-      SmartDashboard.putBoolean("Odometry seeded", m_odometrySeeded);
-    }
-  }
+    // if (m_timer.get() > 0.5)
+    // {
+    //   m_timer.reset();
+    //   SmartDashboard.putString("Pose - Drivetrain", m_odometry.getEstimatedPosition().toString());
+    //   try 
+    //   {
+    //     SmartDashboard.putNumber("Pose Ambuguity", m_photonCamera.getLatestResult().getBestTarget().getPoseAmbiguity());
+    //   } 
+    //   catch(Exception e) 
+    //   {
+    //     //Intenionally Empty
+    //   }
+    //   SmartDashboard.putBoolean("Odometry seeded", m_odometrySeeded);
+    // }
+  // }
 }

@@ -121,6 +121,17 @@ public class ShooterConstants
         FEEDER_MOTOR
     }
 
+    public enum MODE
+    {
+        VELOCITY,
+        PERCENT,
+        VOLTAGE,
+        BRAKE,
+        POSITION
+    }
+
+    public static final double VELOCITY_CLOSED_LOOP_ERROR_TOLERANCE = 1;
+
     // Misc
     public static final double WRIST_MOVEMENT_TOLERANCE = 0.04;
     public static final double SHOOTER_VELOCITY_TOLERANCE = 3;

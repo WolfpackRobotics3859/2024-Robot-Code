@@ -5,20 +5,19 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.elevator.ElevatorConstants;
-import frc.robot.constants.shooter.ShooterConstants.MOTOR;
 import frc.robot.subsystems.Orchestrator;
 import frc.robot.subsystems.Shooter;
+import frc.robot.constants.shooter.ShooterConstants;
 
 public class ShooterPlayAlong extends Command
 {
   private final Shooter m_Shooter;
   private final Orchestrator m_Orchestrator;
 
-  private double m_PreviousWristPosition;
-  private double m_PreviousShooter1Velocity;
-  private double m_PreviousShooter2Velocity;
-  private double m_PreviousFeederVoltage;
+  private double m_PreviousWristPosition = 0;
+  private double m_PreviousShooter1Velocity = 0;
+  private double m_PreviousShooter2Velocity = 0;
+  private double m_PreviousFeederVoltage = 0;
 
   /** Creates a new ShooterPlayAlong. */
   public ShooterPlayAlong(Orchestrator orchestrator, Shooter shooter)
@@ -29,64 +28,51 @@ public class ShooterPlayAlong extends Command
     addRequirements(m_Shooter);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize()
   {
-    // prevent null values
-    m_PreviousWristPosition = 0;
-    m_PreviousShooter1Velocity = 0;
-    m_PreviousShooter2Velocity = 0;
-    m_PreviousFeederVoltage = 0;
+    // Intentionally Empty
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute()
   { 
-    if (!m_Orchestrator.shooterKill)
+    double wristPosition = m_Orchestrator.getShooterAngle();
+    double shooter1Velocity = m_Orchestrator.getShooterTopRollerVelocity();
+    double shooter2Velocity = m_Orchestrator.getShooterBottomRollerVelocity();
+    double feederVoltage = m_Orchestrator.getShooterFeederVoltage();
+
+    if(wristPosition != m_PreviousWristPosition)
     {
-      if (m_PreviousWristPosition != m_Orchestrator.m_DesiredShooterWristPosition)
-      {
-        m_Shooter.setWristPosition(m_Orchestrator.m_DesiredShooterWristPosition);
-      }
-
-      if (m_PreviousShooter1Velocity != m_Orchestrator.m_DesiredShooterMotor1Velocity)
-      {
-        m_Shooter.setMotorVelocity(MOTOR.MOTOR_1, m_Orchestrator.m_DesiredShooterMotor1Velocity);
-      }
-
-      if (m_PreviousShooter2Velocity != m_Orchestrator.m_DesiredShooterMotor2Velocity)
-      {
-        m_Shooter.setMotorVelocity(MOTOR.MOTOR_2, m_Orchestrator.m_DesiredShooterMotor2Velocity);
-      }
-
-      if (m_PreviousFeederVoltage != m_Orchestrator.m_DesiredShooterFeederVoltage)
-      {
-        m_Shooter.setFeederVoltage(m_Orchestrator.m_DesiredShooterFeederVoltage);
-      }
-    
-      m_PreviousWristPosition = m_Orchestrator.m_DesiredShooterWristPosition;
-      m_PreviousShooter1Velocity = m_Orchestrator.m_DesiredShooterMotor1Velocity;
-      m_PreviousShooter2Velocity = m_Orchestrator.m_DesiredShooterMotor2Velocity;
-      m_PreviousFeederVoltage = m_Orchestrator.m_DesiredShooterFeederVoltage;
+      m_Shooter.setMotor(ShooterConstants.MOTOR.WRIST_MOTOR, ShooterConstants.MODE.POSITION, wristPosition);
+      m_PreviousWristPosition = wristPosition;
     }
-    else
+    if(shooter1Velocity != m_PreviousShooter1Velocity)
     {
-      m_Shooter.setShooterMotorPercent(MOTOR.WRIST_MOTOR, 0);
+      m_Shooter.setMotor(ShooterConstants.MOTOR.MOTOR_1, ShooterConstants.MODE.VELOCITY, shooter1Velocity);
+      m_PreviousShooter1Velocity = shooter1Velocity;
+    }
+    if(shooter2Velocity != m_PreviousShooter2Velocity)
+    {
+      m_Shooter.setMotor(ShooterConstants.MOTOR.MOTOR_2, ShooterConstants.MODE.VELOCITY, shooter2Velocity);
+      m_PreviousShooter2Velocity = shooter2Velocity;
+    }
+    if(feederVoltage != m_PreviousFeederVoltage)
+    {
+      m_Shooter.setMotor(ShooterConstants.MOTOR.FEEDER_MOTOR, ShooterConstants.MODE.VOLTAGE, feederVoltage);
+      m_PreviousFeederVoltage = feederVoltage;
     }
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted)
   {
     // Intentionally Empty
   }
 
-  // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished() 
+  {
     return false;
   }
 }
