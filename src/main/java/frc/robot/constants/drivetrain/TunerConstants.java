@@ -33,7 +33,7 @@ public class TunerConstants
 
     // The stator current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
-    private static final double SLIP_CURRENT_A = 300.0;
+    private static final double SLIP_CURRENT_A = 60.0;
 
     // Theoretical free speed (m/s) at 12v applied output;
     // This needs to be tuned to your individual robot

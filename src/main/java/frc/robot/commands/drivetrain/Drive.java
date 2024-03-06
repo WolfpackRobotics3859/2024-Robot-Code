@@ -11,7 +11,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.constants.drivetrain.DrivetrainConstants;
+import frc.robot.constants.drivetrain.DriveConstants;
 
 public class Drive extends Command
 {
@@ -52,11 +52,11 @@ public class Drive extends Command
   public void execute()
   {
     final SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric()
-      .withDeadband(DrivetrainConstants.MAX_SPEED * 0.1).withRotationalDeadband(DrivetrainConstants.MAX_ANGULAR_RATE * 0.1)
+      .withDeadband(DriveConstants.MAX_SPEED * 0.1).withRotationalDeadband(DriveConstants.MAX_ANGULAR_RATE * 0.1)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-      .withVelocityX(m_SpeedXSupplier.get() * DrivetrainConstants.MAX_SPEED * 0.65)
-      .withVelocityY(m_SpeedYSupplier.get() * DrivetrainConstants.MAX_SPEED * 0.65)
-      .withRotationalRate(m_RotationalSpeedSupplier.get() * DrivetrainConstants.MAX_ANGULAR_RATE * 1.2);
+      .withVelocityX(m_SpeedXSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
+      .withVelocityY(m_SpeedYSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
+      .withRotationalRate(m_RotationalSpeedSupplier.get() * DriveConstants.MAX_ANGULAR_RATE * 1.2);
 
     m_Drivetrain.setControl(driveRequest);
   }

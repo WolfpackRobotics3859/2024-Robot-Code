@@ -30,7 +30,7 @@ public class Orchestrator extends SubsystemBase
   private double m_IntakeRollersVoltage = 0;
   private double m_ElevatorPosition = 0;
 
-  private boolean m_IgnoreNotePosition = false;
+  private boolean m_FreshCommand = true;
 
   private StatusSignal<Double> m_ElevatorPositionSignal;
 
@@ -130,6 +130,11 @@ public class Orchestrator extends SubsystemBase
     return this.m_IntakeRollersVoltage;
   }
 
+  public void freshenOrchestrator()
+  {
+    this.m_FreshCommand = true;
+  }
+
   public void manualControl()
   {
     m_ShooterTopRollerVelocity = SmartDashboard.getNumber("[Manual] Top Roller Velocity", 0);
@@ -214,9 +219,12 @@ public class Orchestrator extends SubsystemBase
     {
       return true;
     }
-    if(m_Shooter.hasNoteRearPosition())
+    if(this.m_FreshCommand)
     {
-
+      if(m_Shooter.hasNoteRearPosition())
+      {
+        
+      }
     }
     return false;
   }
