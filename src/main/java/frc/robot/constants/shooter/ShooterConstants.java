@@ -131,6 +131,7 @@ public class ShooterConstants
     }
 
     public static final double VELOCITY_CLOSED_LOOP_ERROR_TOLERANCE = 1;
+    public static final double POSITION_CLOSED_LOOP_ERROR_TOLERANCE = 0.03;
 
     // Misc
     public static final double WRIST_MOVEMENT_TOLERANCE = 0.04;

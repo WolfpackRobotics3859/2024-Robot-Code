@@ -120,7 +120,6 @@ public class RobotContainer
                 () -> -m_primaryController.getRightX()
       ));
 
-    // these should be changed to be able to be killed later for climb or errors
     m_Shooter.setDefaultCommand(new ShooterPlayAlong(m_Orchestrator, m_Shooter));
     m_Intake.setDefaultCommand(new IntakePlayAlong(m_Orchestrator, m_Intake));
     m_Elevator.setDefaultCommand(new ElevatorPlayAlong(m_Orchestrator, m_Elevator));

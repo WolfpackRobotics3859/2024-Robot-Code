@@ -4,10 +4,12 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Global;
+import frc.robot.constants.Positions;
 import frc.robot.constants.elevator.ElevatorConstants;
 import frc.robot.constants.shooter.ShooterConstants;
 
@@ -26,8 +28,11 @@ public class Orchestrator extends SubsystemBase
   private double m_ShooterAngle = 0;
   private double m_IntakePosition = 0;
   private double m_IntakeRollersVoltage = 0;
-  private ElevatorConstants.MODE m_ElevatorControlMode = ElevatorConstants.MODE.BRAKE;
   private double m_ElevatorPosition = 0;
+
+  private boolean m_IgnoreNotePosition = false;
+
+  private StatusSignal<Double> m_ElevatorPositionSignal;
 
   /**
    * Creates a new orchestrator subsystem.
@@ -43,6 +48,8 @@ public class Orchestrator extends SubsystemBase
     this.m_Shooter = shooter;
     this.m_Intake = intake;
     this.Setup();
+
+    m_ElevatorPositionSignal = m_Elevator.getPositionSignal();
 
     SmartDashboard.setDefaultNumber("[Manual] Top Roller Velocity", 0);
     SmartDashboard.setDefaultNumber("[Manual] Bottom Roller Velocity", 0);
@@ -113,11 +120,6 @@ public class Orchestrator extends SubsystemBase
     return this.m_ElevatorPosition;
   }
 
-  public ElevatorConstants.MODE getElevatorControlMode()
-  {
-    return this.m_ElevatorControlMode;
-  }
-
   public double getIntakePosition()
   {
     return this.m_IntakePosition;
@@ -140,35 +142,152 @@ public class Orchestrator extends SubsystemBase
     m_IntakeRollersVoltage = SmartDashboard.getNumber("[Manual] Intake Voltage", 0);
   }
 
+  // Should include the ability to kill motors once robot is safely stowed.
+  public void stow()
+  {
+    if(elevatorDown())
+    {
+      m_ElevatorPosition = Positions.STOW.ELEVATOR_POSITION;
+      m_ShooterAngle = Positions.STOW.SHOOTER_WRIST_ANGLE;
+      m_ShooterTopRollerVelocity = Positions.INTAKING.SHOOTER_ROLLER_1_VELOCITY;
+      m_ShooterBottomRollerVelocity = Positions.INTAKING.SHOOTER_ROLLER_2_VELOCITY;
+      m_ShooterFeederVoltage = Positions.INTAKING.SHOOTER_FEEDER_VOLTAGE;
+      m_IntakePosition = Positions.INTAKING.INTAKE_WRIST_POSITION;
+      m_IntakeRollersVoltage = Positions.INTAKING.INTAKE_ROLLER_VOLTAGE;
+    }
+  }
+
   public void intake()
   {
-    // Intentionally Empty
+    if(m_Shooter.hasNoteRearPosition())
+    {
+      m_ShooterTopRollerVelocity = 0;
+      m_ShooterBottomRollerVelocity = 0;
+      m_ShooterFeederVoltage = 0;
+      m_IntakeRollersVoltage = 0;
+      return;
+    }
+    if(elevatorDown())
+    {
+      m_ElevatorPosition = Positions.INTAKING.ELEVATOR_POSITION;
+      m_ShooterAngle = Positions.INTAKING.SHOOTER_WRIST_ANGLE;
+      m_ShooterTopRollerVelocity = Positions.INTAKING.SHOOTER_ROLLER_1_VELOCITY;
+      m_ShooterBottomRollerVelocity = Positions.INTAKING.SHOOTER_ROLLER_2_VELOCITY;
+      m_ShooterFeederVoltage = Positions.INTAKING.SHOOTER_FEEDER_VOLTAGE;
+      m_IntakePosition = Positions.INTAKING.INTAKE_WRIST_POSITION;
+      m_IntakeRollersVoltage = Positions.INTAKING.INTAKE_ROLLER_VOLTAGE;
+    }
   }
 
-  public void shootLow()
+  // If no vision data is available, this will default to bumper shot.
+  // If the user is outside of range, this will do nothing.
+  // Returns true when no note is detected anymore.
+  public boolean shootLow()
   {
     // Intentionally Empty
+    if(elevatorDown())
+    {
+      // Empty for now.
+    }
+    return false;
   }
 
-  public void elevatorUp()
+  // If no vision data is available, this will default to bumper shot.
+  // If the user is outside of range, this will do nothing
+  // Returns true when no note is detected anymore.
+  public boolean shootHigh()
+  {
+    // Empty for now.
+    if(elevatorUp())
+    {
+      // Empty for now.
+    }
+    return false;
+  }
+
+  // If no vision data is available, this will revert to a basic command that shoots amp when all positions are met.
+  // Returns true when no note is detected anymore.
+  // Need a way to track....
+  public boolean shootAmp()
+  {
+    if(m_Shooter.shooterClear())
+    {
+      return true;
+    }
+    if(m_Shooter.hasNoteRearPosition())
+    {
+
+    }
+    return false;
+  }
+
+  public void purge()
+  {
+    // Empty for now.
+  }
+
+  public boolean elevatorUp()
   {
     if(m_Elevator.isAboveBar())
     {
-      return;
+      return true;
     }
     else if(m_Elevator.isBelowBar())
     {
-      m_ShooterAngle = ShooterConstants.WRIST_CLEARANCE_POSITION;
-      m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
+      if(m_ShooterAngle != ShooterConstants.WRIST_CLEARANCE_POSITION)
+      {
+        m_ElevatorPosition = ElevatorConstants.BAR_BOTTOM_CLEAR - 0.01;
+        m_ShooterAngle = ShooterConstants.WRIST_CLEARANCE_POSITION;
+      }
+      if(m_Shooter.inPosition())
+      {
+        m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
+      }
     }
     else
     {
+      if(m_ShooterAngle != ShooterConstants.WRIST_CLEARANCE_POSITION)
+      {
+        if(m_ElevatorPositionSignal.getValueAsDouble() <= ElevatorConstants.BAR)
+        {
+          m_ElevatorPosition = ElevatorConstants.BAR_BOTTOM_CLEAR - 0.01;
+          m_ShooterAngle = ShooterConstants.WRIST_CLEARANCE_POSITION;
+        }
+      }
       m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
     }
+    return false;
   }
 
-  public void elevatorDown()
+  public boolean elevatorDown()
   {
-
+    if(m_Elevator.isBelowBar())
+    {
+      return true;
+    }
+    else if(m_Elevator.isAboveBar())
+    {
+      if(m_ShooterAngle != ShooterConstants.WRIST_CLEARANCE_POSITION)
+      {
+        m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
+        m_ShooterAngle = ShooterConstants.WRIST_CLEARANCE_POSITION;
+      }
+      if(m_Shooter.inPosition())
+      {
+        m_ElevatorPosition = ElevatorConstants.BAR_BOTTOM_CLEAR - 0.01;
+      }
+    }
+    else
+    {
+      if(m_ShooterAngle != ShooterConstants.WRIST_CLEARANCE_POSITION)
+      {
+        if(m_ElevatorPositionSignal.getValueAsDouble() >= ElevatorConstants.BAR)
+        {
+          m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
+        }
+      }
+      m_ElevatorPosition = ElevatorConstants.BAR_BOTTOM_CLEAR - 0.01;
+    }
+    return false;
   }
 }

@@ -19,8 +19,9 @@ import frc.robot.constants.Hardware;
 
 public class ElevatorConstants
 {
-    public static final double BAR_TOP_CLEAR = 0.5; // The first position where the shooter can freely rotate again above the crossbar.
-    public static final double BAR_BOTTOM_CLEAR = 0.4; // The first position where the shooter can freely rotate again below the crossbar.
+    public static final double BAR = 0.5;
+    public static final double BAR_TOP_CLEAR = 0.53; // The first position where the shooter can freely rotate again above the crossbar.
+    public static final double BAR_BOTTOM_CLEAR = 0.48; // The first position where the shooter can freely rotate again below the crossbar.
     public static final double CLOSED_LOOP_ERROR_TOLERANCE = 0.05;
 
     // Position Values
