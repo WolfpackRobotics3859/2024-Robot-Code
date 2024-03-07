@@ -21,7 +21,6 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
@@ -29,7 +28,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.commands.drivetrain.Drive;
 import frc.robot.constants.Global;
 import frc.robot.constants.drivetrain.DriveConstants;
 import frc.robot.constants.drivetrain.TunerConstants;
@@ -38,7 +36,9 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
 {
   private PhotonCamera m_CameraForward1, m_CameraForward2, m_CameraRear1;
   private PhotonPoseEstimator m_CameraForward1Estimator, m_CameraForward2Estimator, m_CameraRear1Estimator;
-  private Timer m_TelemetryTimer = new Timer();
+  private final Field2d m_Field = new Field2d();
+
+  private final Timer m_TelemetryTimer = new Timer();
 
   private final SwerveRequest.ApplyChassisSpeeds m_autoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
@@ -62,8 +62,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   @Override
   public void periodic()
   {
-    // Check to see if CTRE swerve does this internally and calling it here would be redundant.
-    this.m_odometry.update(this.getPigeon2().getRotation2d(), this.m_modulePositions);
     this.updateVision();
 
     if(Global.ENABLE_TELEMETRY)
@@ -71,9 +69,9 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
       if(m_TelemetryTimer.get() > Global.TELEMETRY_UPDATE_SPEED)
       {
         Logger.recordOutput("robotPose", m_odometry.getEstimatedPosition());
-        Field2d field = new Field2d();
-        field.setRobotPose(this.m_odometry.getEstimatedPosition());
-        SmartDashboard.putData("Field Data", field);
+        m_Field.setRobotPose(this.m_odometry.getEstimatedPosition());
+        SmartDashboard.putData("Field Data", m_Field);
+        m_TelemetryTimer.reset();
       }
     } 
   }
@@ -88,7 +86,8 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     return run(() -> this.setControl(requestSupplier.get())); 
   }
 
-  public SwerveDrivePoseEstimator getOdometry() {
+  public SwerveDrivePoseEstimator getOdometry()
+  {
     return m_odometry;
   }
 

@@ -8,6 +8,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.drivetrain.TunerConstants;
@@ -107,26 +108,16 @@ public class RobotContainer
     angleSelector.addOption("Left", 300.0);
     angleSelector.addOption("Right", 240.0);
 
-    autoSelector.setDefaultOption("Drive Back", new DriveBack(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
+    autoSelector.setDefaultOption("None", new PrintCommand("No auto selected."));
+    autoSelector.addOption("Drive Back", new DriveBack(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
     autoSelector.addOption("Shoot", new Shoot(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
     autoSelector.addOption("Shoot and Drive Back", new ShootAndDrive(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
     autoSelector.addOption("Long Drive Back", new LongDriveBack(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
 
-    SmartDashboard.putData(autoSelector);
-    SmartDashboard.putData(angleSelector);
+    SmartDashboard.putData("Auto", autoSelector);
+    SmartDashboard.putData("Start Angle", angleSelector);
            
     configureBindings();
-
-    SmartDashboard.putNumber("Amp Shot Wrist Position", ShooterConstants.WRIST_AMP_SHOOTING_POSITION);
-    SmartDashboard.putNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION);
-    SmartDashboard.putNumber("Amp Shot Motor 1 Velocity", 5);
-    SmartDashboard.putNumber("Amp Shot Motor 2 Velocity", 17.5);
-
-    SmartDashboard.setDefaultNumber("Amp Shot Wrist Position", ShooterConstants.WRIST_AMP_SHOOTING_POSITION);
-    SmartDashboard.setDefaultNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION);
-    SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 6);
-    SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 17.5);
-
   }
 
   
