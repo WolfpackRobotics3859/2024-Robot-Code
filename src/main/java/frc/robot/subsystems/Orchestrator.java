@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,6 +34,7 @@ public class Orchestrator extends SubsystemBase
   private boolean m_FreshCommand = true;
 
   private StatusSignal<Double> m_ElevatorPositionSignal;
+  private StatusSignal<Double> m_ShooterPositionSignal;
 
   /**
    * Creates a new orchestrator subsystem.
@@ -50,6 +52,7 @@ public class Orchestrator extends SubsystemBase
     this.Setup();
 
     m_ElevatorPositionSignal = m_Elevator.getPositionSignal();
+    m_ShooterPositionSignal = m_Shooter.getPositionSignal();
 
     SmartDashboard.setDefaultNumber("[Manual] Top Roller Velocity", 0);
     SmartDashboard.setDefaultNumber("[Manual] Bottom Roller Velocity", 0);
@@ -79,14 +82,15 @@ public class Orchestrator extends SubsystemBase
   @Override
   public void periodic()
   {
-    // if(Global.ENABLE_TELEMETRY)
-    // {
-    //   if(m_TelemetryTimer.get() > Global.TELEMETRY_UPDATE_SPEED)
-    //   {
-    //     // Intentionally Empty
-    //     m_TelemetryTimer.reset();
-    //   }
-    // }
+    if(Global.ENABLE_TELEMETRY)
+    {
+      if(m_TelemetryTimer.get() > Global.TELEMETRY_UPDATE_SPEED)
+      {
+        // refresh signals
+        BaseStatusSignal.refreshAll(m_ElevatorPositionSignal, m_ShooterPositionSignal);
+        m_TelemetryTimer.reset();
+      }
+    }
 
     // if(Global.ENABLE_EXTRA_TELEMETRY)
     // {
@@ -141,8 +145,7 @@ public class Orchestrator extends SubsystemBase
   public void manualControl()
   {
     m_ShooterTopRollerVelocity = SmartDashboard.getNumber("[Manual] Top Roller Velocity", 0);
-    m_ShooterBottomRollerVelocity = SmartDashboard.getNumber("[Manual] Top Roller Velocity", 0);
-    // m_ShooterBottomRollerVelocity = SmartDashboard.getNumber("[Manual] Bottom Roller Velocity", 0);
+    m_ShooterBottomRollerVelocity = SmartDashboard.getNumber("[Manual] Bottom Roller Velocity", 0);
     m_ShooterFeederVoltage = SmartDashboard.getNumber("[Manual] Feeder Roller Voltage", 0);
     m_ShooterAngle = SmartDashboard.getNumber("[Manual] Shooter Angle", 0);
     m_ElevatorPosition = SmartDashboard.getNumber("[Manual] Elevator Position", 0.65);
