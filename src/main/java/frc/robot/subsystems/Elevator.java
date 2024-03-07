@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
@@ -12,7 +11,6 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.DeviceIdentifier;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -133,7 +131,7 @@ public class Elevator extends SubsystemBase
 
   public boolean isInPosition()
   {
-    return this.m_ElevatorMotor1.getClosedLoopError().getValueAsDouble() < ElevatorConstants.CLOSED_LOOP_ERROR_TOLERANCE;
+    return Math.abs(this.m_ElevatorMotor1.getClosedLoopError().getValueAsDouble()) < ElevatorConstants.CLOSED_LOOP_ERROR_TOLERANCE;
   }
 
   /**

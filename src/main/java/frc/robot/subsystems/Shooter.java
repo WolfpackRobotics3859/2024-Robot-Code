@@ -139,7 +139,7 @@ public class Shooter extends SubsystemBase
 
   public boolean inPosition()
   {
-    return m_WristMotor.getClosedLoopError().getValueAsDouble() < ShooterConstants.POSITION_CLOSED_LOOP_ERROR_TOLERANCE;
+    return Math.abs(m_WristMotor.getClosedLoopError().getValueAsDouble()) < ShooterConstants.POSITION_CLOSED_LOOP_ERROR_TOLERANCE;
   }
 
   /**
@@ -280,11 +280,11 @@ public class Shooter extends SubsystemBase
 
   private boolean motor1Ready()
   {
-    return m_ShooterMotor1.getClosedLoopError().getValueAsDouble() < ShooterConstants.VELOCITY_CLOSED_LOOP_ERROR_TOLERANCE;
+    return Math.abs(m_ShooterMotor1.getClosedLoopError().getValueAsDouble()) < ShooterConstants.VELOCITY_CLOSED_LOOP_ERROR_TOLERANCE;
   }
 
   private boolean motor2Ready()
   {
-    return m_ShooterMotor1.getClosedLoopError().getValueAsDouble() < ShooterConstants.VELOCITY_CLOSED_LOOP_ERROR_TOLERANCE;
+    return Math.abs(m_ShooterMotor1.getClosedLoopError().getValueAsDouble()) < ShooterConstants.VELOCITY_CLOSED_LOOP_ERROR_TOLERANCE;
   }
 }
