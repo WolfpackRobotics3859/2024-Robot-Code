@@ -19,17 +19,17 @@ import frc.robot.constants.Hardware;
 
 public class ElevatorConstants
 {
-    public static final double BAR = 0.5;
-    public static final double BAR_TOP_CLEAR = 0.53; // The first position where the shooter can freely rotate again above the crossbar.
-    public static final double BAR_BOTTOM_CLEAR = 0.48; // The first position where the shooter can freely rotate again below the crossbar.
+    public static final double BAR = 0.488;
+    public static final double BAR_TOP_CLEAR = 0.655; // The first position where the shooter can freely rotate again above the crossbar.
+    public static final double BAR_BOTTOM_CLEAR = 0.372; // The first position where the shooter can freely rotate again below the crossbar.
     public static final double CLOSED_LOOP_ERROR_TOLERANCE = 0.05;
 
     // Position Values
     public static final double ELEVATOR_BOTTOM_POSITION = 0.025; // the bottom position of the elevator
     public static final double ELEVATOR_TOP_POSITION = 0.745; // the top position of the elevator
     public static final double ELEVATOR_BOTTOM_CLEARANCE_POSITION = 0.07; // the position at which the shooter can begin to clear the bar
-    public static final double ELEVATOR_MAX_FORWARD_POS = .78; // the top limit position of the elevator
-    public static final double ELEVATAOR_MAX_REVERSE_POS = 0.004; // the bottom limit position of the elevator
+    public static final double ELEVATOR_MAX_FORWARD_POS = .82; // the top limit position of the elevator
+    public static final double ELEVATAOR_MAX_REVERSE_POS = 0.09; // the bottom limit position of the elevator
     public static final double ELEVATOR_BAR_POSITION = 0.453; // the position of the bar on the elevator
     public static final double ELEVATOR_INTAKE_CLEAR_POSITION = 0.2; // the position at which the intake needs to move to allow the elevator to clear
     public static final double ELEVATOR_DOWN_CHECK_POSITION = 0.05; // the position at which to check if the shooter is flat yet when moving the elevator down
@@ -52,8 +52,8 @@ public class ElevatorConstants
         .withKG(0).withGravityType(GravityTypeValue.Elevator_Static);
 
     public static final MotionMagicConfigs MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(3)
-        .withMotionMagicAcceleration(0.4);
+        .withMotionMagicCruiseVelocity(1)
+        .withMotionMagicAcceleration(0.3);
 
     /** Software limits for the elevator */
     public static final SoftwareLimitSwitchConfigs SOFT_LIMIT_CONFIGS = new SoftwareLimitSwitchConfigs()
@@ -74,7 +74,7 @@ public class ElevatorConstants
 
     public static final MagnetSensorConfigs MAGNET_SENSOR_CONFIGS = new MagnetSensorConfigs()
         .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
-        .withMagnetOffset(-0.405)
+        .withMagnetOffset(-0.507)
         .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1);
     
     public static final TalonFXConfiguration ELEVATOR_MOTOR_CONFIG = new TalonFXConfiguration()

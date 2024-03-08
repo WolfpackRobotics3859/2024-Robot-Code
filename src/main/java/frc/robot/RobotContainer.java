@@ -28,7 +28,9 @@ import frc.robot.commands.drivetrain.DriveWithAngle;
 import frc.robot.commands.drivetrain.SeedFieldRelative;
 import frc.robot.commands.elevator.ElevatorPlayAlong;
 import frc.robot.commands.intake.IntakePlayAlong;
+import frc.robot.commands.orchestrator.AmpShot;
 import frc.robot.commands.orchestrator.ManualControl;
+import frc.robot.commands.orchestrator.Stow;
 import frc.robot.commands.shooter.ShooterPlayAlong;
 
 public class RobotContainer 
@@ -118,9 +120,18 @@ public class RobotContainer
     SmartDashboard.putData("Start Angle", angleSelector);
            
     configureBindings();
+
+    SmartDashboard.putNumber("Amp Shot Wrist Position", ShooterConstants.WRIST_AMP_SHOOTING_POSITION);
+    SmartDashboard.putNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION);
+    SmartDashboard.putNumber("Amp Shot Motor 1 Velocity", 5);
+    SmartDashboard.putNumber("Amp Shot Motor 2 Velocity", 17.5);
+
+    SmartDashboard.setDefaultNumber("Amp Shot Wrist Position", ShooterConstants.WRIST_AMP_SHOOTING_POSITION);
+    SmartDashboard.setDefaultNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION);
+    SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 6);
+    SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 17.5);
   }
 
-  
   private void configureBindings() 
   {
     m_Drivetrain.setDefaultCommand(
@@ -130,10 +141,12 @@ public class RobotContainer
                 () -> -m_primaryController.getRightX()
       ));
 
+    
+
     m_Shooter.setDefaultCommand(new ShooterPlayAlong(m_Orchestrator, m_Shooter));
     m_Intake.setDefaultCommand(new IntakePlayAlong(m_Orchestrator, m_Intake));
     m_Elevator.setDefaultCommand(new ElevatorPlayAlong(m_Orchestrator, m_Elevator));
-    m_Orchestrator.setDefaultCommand(new ManualControl(m_Orchestrator));
+    m_Orchestrator.setDefaultCommand(new Stow(m_Orchestrator));
 
     m_primaryController.a().whileTrue(new DriveWithAngle(m_Drivetrain,
         () -> -m_primaryController.getLeftY(),
@@ -171,6 +184,8 @@ public class RobotContainer
       180.0)); // change angle at some point
 
     m_secondaryController.a().whileTrue(new SeedFieldRelative(m_Drivetrain));
+
+    m_primaryController.a().whileTrue(new AmpShot(m_Orchestrator));
   }
 
   public Command getAutonomousCommand() 

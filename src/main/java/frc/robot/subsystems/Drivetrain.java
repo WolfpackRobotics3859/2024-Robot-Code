@@ -36,9 +36,14 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
 {
   private PhotonCamera m_CameraForward1, m_CameraForward2, m_CameraRear1;
   private PhotonPoseEstimator m_CameraForward1Estimator, m_CameraForward2Estimator, m_CameraRear1Estimator;
+<<<<<<< HEAD
   private final Field2d m_Field = new Field2d();
 
   private final Timer m_TelemetryTimer = new Timer();
+=======
+  private Timer m_TelemetryTimer = new Timer();
+  Field2d m_Field_Odometry = new Field2d();
+>>>>>>> 1b2a423d25c9bd655d4e996916bb9b2c0911e7de
 
   private final SwerveRequest.ApplyChassisSpeeds m_autoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
@@ -62,16 +67,26 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   @Override
   public void periodic()
   {
+<<<<<<< HEAD
     this.updateVision();
+=======
+    // Check to see if CTRE swerve does this internally and calling it here would be redundant.
+    // this.updateVision();
+>>>>>>> 1b2a423d25c9bd655d4e996916bb9b2c0911e7de
 
     if(Global.ENABLE_TELEMETRY)
     {
       if(m_TelemetryTimer.get() > Global.TELEMETRY_UPDATE_SPEED)
       {
         Logger.recordOutput("robotPose", m_odometry.getEstimatedPosition());
+<<<<<<< HEAD
         m_Field.setRobotPose(this.m_odometry.getEstimatedPosition());
         SmartDashboard.putData("Field Data", m_Field);
         m_TelemetryTimer.reset();
+=======
+        m_Field_Odometry.setRobotPose(this.m_odometry.getEstimatedPosition());
+        SmartDashboard.putData("Field Data", m_Field_Odometry);
+>>>>>>> 1b2a423d25c9bd655d4e996916bb9b2c0911e7de
       }
     } 
   }
@@ -141,7 +156,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
       }
       catch(Exception e)
       {
-        System.out.println("[DRIVE] WARNING: CameraForward1Estimator returning null values.");
+        // System.out.println("[DRIVE] WARNING: CameraForward1Estimator returning null values.");
       }
     }
     if(m_CameraForward2.isConnected())
@@ -153,7 +168,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
       }
       catch(Exception e)
       {
-        System.out.println("[DRIVE] WARNING: CameraForward2Estimator returning null values.");
+        // System.out.println("[DRIVE] WARNING: CameraForward2Estimator returning null values.");
       }
     }
     if(m_CameraRear1.isConnected())
@@ -165,7 +180,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
       }
       catch(Exception e)
       {
-        System.out.println("[DRIVE] WARNING: CameraRear1Estimator returning null values.");
+        // System.out.println("[DRIVE] WARNING: CameraRear1Estimator returning null values.");
       }
     }
   }
