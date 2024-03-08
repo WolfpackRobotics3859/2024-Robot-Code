@@ -137,9 +137,11 @@ public class Shooter extends SubsystemBase
     return m_BeamBreak2.get();
   }
 
-  public boolean inPosition()
+  public boolean inPosition(double assignedPosition)
   {
-    return  Math.abs(m_WristMotor.getClosedLoopError().getValueAsDouble()) < ShooterConstants.POSITION_CLOSED_LOOP_ERROR_TOLERANCE;
+    System.out.println("Closed Loop Shooter Error " + m_WristMotor.getClosedLoopError().getValueAsDouble());
+    // return Math.abs(m_WristMotor.getClosedLoopError().getValueAsDouble()) < ShooterConstants.POSITION_CLOSED_LOOP_ERROR_TOLERANCE;
+    return Math.abs(m_WristMotor.getPosition().getValueAsDouble() - assignedPosition) <  ShooterConstants.POSITION_CLOSED_LOOP_ERROR_TOLERANCE;
   }
 
   /**

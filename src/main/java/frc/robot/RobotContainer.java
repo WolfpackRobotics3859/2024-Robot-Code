@@ -29,6 +29,7 @@ import frc.robot.commands.drivetrain.SeedFieldRelative;
 import frc.robot.commands.elevator.ElevatorPlayAlong;
 import frc.robot.commands.intake.IntakePlayAlong;
 import frc.robot.commands.orchestrator.AmpShot;
+import frc.robot.commands.orchestrator.IWantANote;
 import frc.robot.commands.orchestrator.ManualControl;
 import frc.robot.commands.orchestrator.Stow;
 import frc.robot.commands.shooter.ShooterPlayAlong;
@@ -186,6 +187,7 @@ public class RobotContainer
     m_secondaryController.a().whileTrue(new SeedFieldRelative(m_Drivetrain));
 
     m_primaryController.a().whileTrue(new AmpShot(m_Orchestrator));
+    m_primaryController.b().whileTrue(new IWantANote(m_Orchestrator));
   }
 
   public Command getAutonomousCommand() 

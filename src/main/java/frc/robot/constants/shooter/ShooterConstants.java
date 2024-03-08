@@ -20,7 +20,7 @@ import frc.robot.constants.Hardware;
 public class ShooterConstants
 {
     // Position Values
-    public static final double WRIST_CLEARANCE_POSITION = .69;
+    public static final double WRIST_CLEARANCE_POSITION = .68;
     public static final double WRIST_DEFAULT_POSITION = 0.5;
     public static final double WRIST_AMP_SHOOTING_POSITION = 0.662598; 
     public static final double WRIST_BUMPER_SHOT_POSITION = 0.6525
@@ -135,7 +135,7 @@ public class ShooterConstants
     }
 
     public static final double VELOCITY_CLOSED_LOOP_ERROR_TOLERANCE = 1;
-    public static final double POSITION_CLOSED_LOOP_ERROR_TOLERANCE = 0.03;
+    public static final double POSITION_CLOSED_LOOP_ERROR_TOLERANCE = 0.04;
 
     // Misc
     public static final double WRIST_MOVEMENT_TOLERANCE = 0.04;

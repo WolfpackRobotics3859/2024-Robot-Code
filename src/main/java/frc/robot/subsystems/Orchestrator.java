@@ -161,21 +161,21 @@ public class Orchestrator extends SubsystemBase
   // Should include the ability to kill motors once robot is safely stowed.
   public void stow()
   {
+    m_ShooterTopRollerVelocity = Positions.STOW.SHOOTER_ROLLER_1_VELOCITY;
+    m_ShooterBottomRollerVelocity = Positions.STOW.SHOOTER_ROLLER_2_VELOCITY;
+    m_ShooterFeederVoltage = Positions.STOW.SHOOTER_FEEDER_VOLTAGE;
+    m_IntakeRollersVoltage = Positions.STOW.INTAKE_ROLLER_VOLTAGE;
     if(elevatorDown())
     {
       m_ElevatorPosition = Positions.STOW.ELEVATOR_POSITION;
       m_ShooterAngle = Positions.STOW.SHOOTER_WRIST_ANGLE;
-      m_ShooterTopRollerVelocity = Positions.STOW.SHOOTER_ROLLER_1_VELOCITY;
-      m_ShooterBottomRollerVelocity = Positions.STOW.SHOOTER_ROLLER_2_VELOCITY;
-      m_ShooterFeederVoltage = Positions.STOW.SHOOTER_FEEDER_VOLTAGE;
       m_IntakePosition = Positions.STOW.INTAKE_WRIST_POSITION;
-      m_IntakeRollersVoltage = Positions.STOW.INTAKE_ROLLER_VOLTAGE;
     }
   }
 
   public void intake()
   {
-    if(m_Shooter.hasNoteRearPosition())
+    if(!m_Shooter.hasNoteRearPosition())
     {
       m_ShooterTopRollerVelocity = 0;
       m_ShooterBottomRollerVelocity = 0;
@@ -231,18 +231,20 @@ public class Orchestrator extends SubsystemBase
   // Need a way to track....
   public boolean shootAmp()
   {
-    
     if(m_Shooter.shooterClear())
     {
       return true;
     }
     if(elevatorUp())
     {
-      m_ElevatorPosition = Positions.AMP.ELEVATOR_POSITION;
       m_ShooterAngle = Positions.AMP.SHOOTER_WRIST_ANGLE;
       m_IntakePosition = Positions.AMP.INTAKE_WRIST_POSITION;
       m_IntakeRollersVoltage = Positions.AMP.INTAKE_ROLLER_VOLTAGE;
-      if(m_Elevator.isInPosition() && m_Shooter.inPosition())
+      if(m_Shooter.inPosition(m_ShooterAngle))
+      {
+        m_ElevatorPosition = Positions.AMP.ELEVATOR_POSITION;
+      }
+      if(m_Elevator.isInPosition(m_ElevatorPosition) && m_Shooter.inPosition(m_ShooterAngle))
       {
         m_ShooterTopRollerVelocity = Positions.AMP.SHOOTER_ROLLER_1_VELOCITY;
         m_ShooterBottomRollerVelocity = Positions.AMP.SHOOTER_ROLLER_2_VELOCITY;
@@ -270,7 +272,7 @@ public class Orchestrator extends SubsystemBase
         m_ElevatorPosition = ElevatorConstants.BAR_BOTTOM_CLEAR - 0.01;
         m_ShooterAngle = ShooterConstants.WRIST_CLEARANCE_POSITION;
       }
-      if(m_Shooter.inPosition())
+      if(m_Shooter.inPosition(m_ShooterAngle))
       {
         m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
       }
@@ -284,8 +286,11 @@ public class Orchestrator extends SubsystemBase
           m_ElevatorPosition = ElevatorConstants.BAR_BOTTOM_CLEAR - 0.01;
           m_ShooterAngle = ShooterConstants.WRIST_CLEARANCE_POSITION;
         }
+        else
+        {
+          m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
+        }
       }
-      m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
     }
     return false;
   }
@@ -303,7 +308,7 @@ public class Orchestrator extends SubsystemBase
         m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
         m_ShooterAngle = ShooterConstants.WRIST_CLEARANCE_POSITION;
       }
-      if(m_Shooter.inPosition())
+      if(m_Shooter.inPosition(this.m_ShooterAngle))
       {
         m_ElevatorPosition = ElevatorConstants.BAR_BOTTOM_CLEAR - 0.01;
       }
@@ -312,12 +317,16 @@ public class Orchestrator extends SubsystemBase
     {
       if(m_ShooterAngle != ShooterConstants.WRIST_CLEARANCE_POSITION)
       {
+        m_ElevatorPositionSignal.refresh();
         if(m_ElevatorPositionSignal.getValueAsDouble() >= ElevatorConstants.BAR)
         {
           m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
         }
+        else
+        {
+          m_ElevatorPosition = ElevatorConstants.BAR_BOTTOM_CLEAR - 0.01;
+        }
       }
-      m_ElevatorPosition = ElevatorConstants.BAR_BOTTOM_CLEAR - 0.01;
     }
     return false;
   }

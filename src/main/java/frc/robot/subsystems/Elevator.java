@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Global;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.elevator.ElevatorConstants;
+import frc.robot.constants.shooter.ShooterConstants;
 
 public class Elevator extends SubsystemBase
 {
@@ -129,9 +130,9 @@ public class Elevator extends SubsystemBase
     return position < ElevatorConstants.BAR_BOTTOM_CLEAR;
   }
 
-  public boolean isInPosition()
+  public boolean isInPosition(double position)
   {
-    return Math.abs(this.m_ElevatorMotor1.getClosedLoopError().getValueAsDouble()) < ElevatorConstants.CLOSED_LOOP_ERROR_TOLERANCE;
+    return Math.abs(m_ElevatorMotor1.getPosition().getValueAsDouble() - position) <  ElevatorConstants.CLOSED_LOOP_ERROR_TOLERANCE;
   }
 
   /**
