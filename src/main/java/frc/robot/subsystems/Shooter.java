@@ -133,7 +133,7 @@ public class Shooter extends SubsystemBase
 
   public boolean inPosition()
   {
-    return m_WristMotor.getClosedLoopError().getValueAsDouble() < ShooterConstants.POSITION_CLOSED_LOOP_ERROR_TOLERANCE;
+    return  Math.abs(m_WristMotor.getClosedLoopError().getValueAsDouble()) < ShooterConstants.POSITION_CLOSED_LOOP_ERROR_TOLERANCE;
   }
 
   /**

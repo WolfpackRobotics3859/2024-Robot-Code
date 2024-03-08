@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import javax.swing.text.Position;
+
 import com.ctre.phoenix6.StatusSignal;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -141,7 +143,7 @@ public class Orchestrator extends SubsystemBase
     m_ShooterBottomRollerVelocity = SmartDashboard.getNumber("[Manual] Top Roller Velocity", 0);
     // m_ShooterBottomRollerVelocity = SmartDashboard.getNumber("[Manual] Bottom Roller Velocity", 0);
     m_ShooterFeederVoltage = SmartDashboard.getNumber("[Manual] Feeder Roller Voltage", 0);
-    m_ShooterAngle = SmartDashboard.getNumber("[Manual] Shooter Angle", 0);
+    m_ShooterAngle = SmartDashboard.getNumber("[Manual] Shooter Angle", 0.45);
     m_ElevatorPosition = SmartDashboard.getNumber("[Manual] Elevator Position", 0.65);
     m_IntakePosition = SmartDashboard.getNumber("[Manual] Intake Position", 0.5);
     m_IntakeRollersVoltage = SmartDashboard.getNumber("[Manual] Intake Voltage", 0);
@@ -154,11 +156,11 @@ public class Orchestrator extends SubsystemBase
     {
       m_ElevatorPosition = Positions.STOW.ELEVATOR_POSITION;
       m_ShooterAngle = Positions.STOW.SHOOTER_WRIST_ANGLE;
-      m_ShooterTopRollerVelocity = Positions.INTAKING.SHOOTER_ROLLER_1_VELOCITY;
-      m_ShooterBottomRollerVelocity = Positions.INTAKING.SHOOTER_ROLLER_2_VELOCITY;
-      m_ShooterFeederVoltage = Positions.INTAKING.SHOOTER_FEEDER_VOLTAGE;
-      m_IntakePosition = Positions.INTAKING.INTAKE_WRIST_POSITION;
-      m_IntakeRollersVoltage = Positions.INTAKING.INTAKE_ROLLER_VOLTAGE;
+      m_ShooterTopRollerVelocity = Positions.STOW.SHOOTER_ROLLER_1_VELOCITY;
+      m_ShooterBottomRollerVelocity = Positions.STOW.SHOOTER_ROLLER_2_VELOCITY;
+      m_ShooterFeederVoltage = Positions.STOW.SHOOTER_FEEDER_VOLTAGE;
+      m_IntakePosition = Positions.STOW.INTAKE_WRIST_POSITION;
+      m_IntakeRollersVoltage = Positions.STOW.INTAKE_ROLLER_VOLTAGE;
     }
   }
 
@@ -192,7 +194,13 @@ public class Orchestrator extends SubsystemBase
     // Intentionally Empty
     if(elevatorDown())
     {
-      // Empty for now.
+      m_ElevatorPosition = Positions.INTAKING.ELEVATOR_POSITION;
+      m_ShooterAngle = Positions.INTAKING.SHOOTER_WRIST_ANGLE;
+      m_ShooterTopRollerVelocity = Positions.INTAKING.SHOOTER_ROLLER_1_VELOCITY;
+      m_ShooterBottomRollerVelocity = Positions.INTAKING.SHOOTER_ROLLER_2_VELOCITY;
+      m_ShooterFeederVoltage = Positions.INTAKING.SHOOTER_FEEDER_VOLTAGE;
+      m_IntakePosition = Positions.INTAKING.INTAKE_WRIST_POSITION;
+      m_IntakeRollersVoltage = Positions.INTAKING.INTAKE_ROLLER_VOLTAGE;
     }
     return false;
   }
@@ -205,7 +213,6 @@ public class Orchestrator extends SubsystemBase
     // Empty for now.
     if(elevatorUp())
     {
-      // Empty for now.
     }
     return false;
   }
@@ -215,15 +222,22 @@ public class Orchestrator extends SubsystemBase
   // Need a way to track....
   public boolean shootAmp()
   {
+    
     if(m_Shooter.shooterClear())
     {
       return true;
     }
-    if(this.m_FreshCommand)
+    if(elevatorUp())
     {
-      if(m_Shooter.hasNoteRearPosition())
+      m_ElevatorPosition = Positions.AMP.ELEVATOR_POSITION;
+      m_ShooterAngle = Positions.AMP.SHOOTER_WRIST_ANGLE;
+      m_IntakePosition = Positions.AMP.INTAKE_WRIST_POSITION;
+      m_IntakeRollersVoltage = Positions.AMP.INTAKE_ROLLER_VOLTAGE;
+      if(m_Elevator.isInPosition() && m_Shooter.inPosition())
       {
-        
+        m_ShooterTopRollerVelocity = Positions.AMP.SHOOTER_ROLLER_1_VELOCITY;
+        m_ShooterBottomRollerVelocity = Positions.AMP.SHOOTER_ROLLER_2_VELOCITY;
+        m_ShooterFeederVoltage = Positions.AMP.SHOOTER_FEEDER_VOLTAGE;
       }
     }
     return false;

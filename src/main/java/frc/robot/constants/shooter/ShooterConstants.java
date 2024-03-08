@@ -20,7 +20,7 @@ import frc.robot.constants.Hardware;
 public class ShooterConstants
 {
     // Position Values
-    public static final double WRIST_CLEARANCE_POSITION = .68;
+    public static final double WRIST_CLEARANCE_POSITION = .69;
     public static final double WRIST_DEFAULT_POSITION = 0.5;
     public static final double WRIST_AMP_SHOOTING_POSITION = 0.662598; 
     public static final double WRIST_BUMPER_SHOT_POSITION = 0.67;
@@ -91,7 +91,7 @@ public class ShooterConstants
     // Wrist CANCoder
     public static final MagnetSensorConfigs WRIST_CANCODER_MAGNET_CONFIGS = new MagnetSensorConfigs()
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
-        .withMagnetOffset(-0.33)
+        .withMagnetOffset(-0.25)
         .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1);
 
     // Compile all configs into a single config variable for ease of use

@@ -123,7 +123,7 @@ public class Elevator extends SubsystemBase
 
   public boolean isInPosition()
   {
-    return this.m_ElevatorMotor1.getClosedLoopError().getValueAsDouble() < ElevatorConstants.CLOSED_LOOP_ERROR_TOLERANCE;
+    return Math.abs(this.m_ElevatorMotor1.getClosedLoopError().getValueAsDouble()) < ElevatorConstants.CLOSED_LOOP_ERROR_TOLERANCE;
   }
 
   /**
