@@ -35,6 +35,7 @@ public class Orchestrator extends SubsystemBase
 
   private StatusSignal<Double> m_ElevatorPositionSignal;
   private StatusSignal<Double> m_ShooterPositionSignal;
+  private StatusSignal<Double> m_IntakePositionSignal;
 
   /**
    * Creates a new orchestrator subsystem.
@@ -53,6 +54,7 @@ public class Orchestrator extends SubsystemBase
 
     m_ElevatorPositionSignal = m_Elevator.getPositionSignal();
     m_ShooterPositionSignal = m_Shooter.getPositionSignal();
+    m_IntakePositionSignal = m_Intake.getPositionSignal();
 
     SmartDashboard.setDefaultNumber("[Manual] Top Roller Velocity", 0);
     SmartDashboard.setDefaultNumber("[Manual] Bottom Roller Velocity", 0);
@@ -87,7 +89,7 @@ public class Orchestrator extends SubsystemBase
       if(m_TelemetryTimer.get() > Global.TELEMETRY_UPDATE_SPEED)
       {
         // refresh signals
-        BaseStatusSignal.refreshAll(m_ElevatorPositionSignal, m_ShooterPositionSignal);
+        BaseStatusSignal.refreshAll(m_ElevatorPositionSignal, m_ShooterPositionSignal, m_IntakePositionSignal);
         m_TelemetryTimer.reset();
       }
     }
@@ -102,6 +104,7 @@ public class Orchestrator extends SubsystemBase
     // }
   }
 
+  // subsystem getters
   public double getShooterTopRollerVelocity()
   {
     return this.m_ShooterTopRollerVelocity;
@@ -142,6 +145,7 @@ public class Orchestrator extends SubsystemBase
     this.m_FreshCommand = true;
   }
 
+  // control methods
   public void manualControl()
   {
     m_ShooterTopRollerVelocity = SmartDashboard.getNumber("[Manual] Top Roller Velocity", 0);
@@ -160,11 +164,11 @@ public class Orchestrator extends SubsystemBase
     {
       m_ElevatorPosition = Positions.STOW.ELEVATOR_POSITION;
       m_ShooterAngle = Positions.STOW.SHOOTER_WRIST_ANGLE;
-      m_ShooterTopRollerVelocity = Positions.INTAKING.SHOOTER_ROLLER_1_VELOCITY;
-      m_ShooterBottomRollerVelocity = Positions.INTAKING.SHOOTER_ROLLER_2_VELOCITY;
-      m_ShooterFeederVoltage = Positions.INTAKING.SHOOTER_FEEDER_VOLTAGE;
-      m_IntakePosition = Positions.INTAKING.INTAKE_WRIST_POSITION;
-      m_IntakeRollersVoltage = Positions.INTAKING.INTAKE_ROLLER_VOLTAGE;
+      m_ShooterTopRollerVelocity = Positions.STOW.SHOOTER_ROLLER_1_VELOCITY;
+      m_ShooterBottomRollerVelocity = Positions.STOW.SHOOTER_ROLLER_2_VELOCITY;
+      m_ShooterFeederVoltage = Positions.STOW.SHOOTER_FEEDER_VOLTAGE;
+      m_IntakePosition = Positions.STOW.INTAKE_WRIST_POSITION;
+      m_IntakeRollersVoltage = Positions.STOW.INTAKE_ROLLER_VOLTAGE;
     }
   }
 
@@ -303,5 +307,21 @@ public class Orchestrator extends SubsystemBase
       m_ElevatorPosition = ElevatorConstants.BAR_BOTTOM_CLEAR - 0.01;
     }
     return false;
+  }
+
+  public void noteForward()
+  {
+    if (!m_Shooter.hasNoteForwardPosition())
+    {
+      m_ShooterFeederVoltage = 3;
+      m_ShooterBottomRollerVelocity = 10;
+      m_ShooterTopRollerVelocity = 10;
+    }
+    else
+    {
+      m_ShooterFeederVoltage = 0;
+      m_ShooterBottomRollerVelocity = 0;
+      m_ShooterTopRollerVelocity = 0;
+    }
   }
 }
