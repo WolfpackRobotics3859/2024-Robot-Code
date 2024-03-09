@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Global;
 import frc.robot.constants.Positions;
 import frc.robot.constants.elevator.ElevatorConstants;
+import frc.robot.constants.intake.IntakeConstants;
 import frc.robot.constants.shooter.ShooterConstants;
 
 public class Orchestrator extends SubsystemBase
@@ -162,26 +163,39 @@ public class Orchestrator extends SubsystemBase
   // Should include the ability to kill motors once robot is safely stowed.
   public void stow()
   {
-    m_ShooterTopRollerVelocity = Positions.STOW.SHOOTER_ROLLER_1_VELOCITY;
-    m_ShooterBottomRollerVelocity = Positions.STOW.SHOOTER_ROLLER_2_VELOCITY;
-    m_ShooterFeederVoltage = Positions.STOW.SHOOTER_FEEDER_VOLTAGE;
     m_IntakeRollersVoltage = Positions.STOW.INTAKE_ROLLER_VOLTAGE;
+
+    if (!m_Shooter.noteCentered())
+    {
+      noteToMiddle();
+    }
+    else
+    {
+      m_ShooterTopRollerVelocity = Positions.STOW.SHOOTER_ROLLER_1_VELOCITY;
+      m_ShooterBottomRollerVelocity = Positions.STOW.SHOOTER_ROLLER_2_VELOCITY;
+      m_ShooterFeederVoltage = Positions.STOW.SHOOTER_FEEDER_VOLTAGE;
+    }
+
     if(elevatorDown())
     {
       m_ElevatorPosition = Positions.STOW.ELEVATOR_POSITION;
       m_ShooterAngle = Positions.STOW.SHOOTER_WRIST_ANGLE;
-      m_IntakePosition = Positions.STOW.INTAKE_WRIST_POSITION;
+      if (m_Elevator.isInPosition(m_ElevatorPosition) && m_Shooter.inPosition(m_ShooterAngle))
+      {
+        m_IntakePosition = Positions.STOW.INTAKE_WRIST_POSITION;
+      }
     }
   }
 
   public void intake()
   {
-    if(!m_Shooter.hasNoteRearPosition())
+    if(m_Shooter.hasNoteRearPosition())
     {
       m_ShooterTopRollerVelocity = 0;
       m_ShooterBottomRollerVelocity = 0;
       m_ShooterFeederVoltage = 0;
       m_IntakeRollersVoltage = 0;
+      stow();
       return;
     }
     if(elevatorDown())
@@ -234,6 +248,7 @@ public class Orchestrator extends SubsystemBase
   {
     if(m_Shooter.shooterClear())
     {
+      stow();
       return true;
     }
     if(elevatorUp())
@@ -245,13 +260,31 @@ public class Orchestrator extends SubsystemBase
       {
         m_ElevatorPosition = Positions.AMP.ELEVATOR_POSITION;
       }
-      if(m_Elevator.isInPosition(m_ElevatorPosition) && m_Shooter.inPosition(m_ShooterAngle))
+      if(m_Elevator.isInPosition(m_ElevatorPosition) && m_Shooter.inPosition(m_ShooterAngle) && !m_FreshCommand)
       {
         m_ShooterTopRollerVelocity = Positions.AMP.SHOOTER_ROLLER_1_VELOCITY;
         m_ShooterBottomRollerVelocity = Positions.AMP.SHOOTER_ROLLER_2_VELOCITY;
         m_ShooterFeederVoltage = Positions.AMP.SHOOTER_FEEDER_VOLTAGE;
       }
     }
+
+    // if note is forward
+    if (m_Shooter.hasNoteForwardPosition() && m_FreshCommand)
+    {
+      // command is no longer fresh
+      this.m_FreshCommand = false;
+      m_ShooterFeederVoltage = 0;
+      m_ShooterBottomRollerVelocity = 0;
+      m_ShooterTopRollerVelocity = 0;
+    }
+
+    // if command is fresh (just started)
+    if (this.m_FreshCommand && (m_Elevator.isAboveBar() || m_Shooter.inPosition(ShooterConstants.WRIST_CLEARANCE_POSITION)))
+    {
+      // move note forward
+      noteForward();
+    }
+
     return false;
   }
 
@@ -268,6 +301,7 @@ public class Orchestrator extends SubsystemBase
     }
     else if(m_Elevator.isBelowBar())
     {
+      m_IntakePosition = IntakeConstants.INTAKE_CLEARANCE_POSITION;
       if(m_ShooterAngle != ShooterConstants.WRIST_CLEARANCE_POSITION)
       {
         m_ElevatorPosition = ElevatorConstants.BAR_BOTTOM_CLEAR - 0.01;
@@ -304,6 +338,7 @@ public class Orchestrator extends SubsystemBase
     }
     else if(m_Elevator.isAboveBar())
     {
+      m_IntakePosition = IntakeConstants.INTAKE_CLEARANCE_POSITION;
       if(m_ShooterAngle != ShooterConstants.WRIST_CLEARANCE_POSITION)
       {
         m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
@@ -334,13 +369,33 @@ public class Orchestrator extends SubsystemBase
 
   public void noteForward()
   {
-    if (!m_Shooter.hasNoteForwardPosition())
+      m_ShooterFeederVoltage = 1.5;
+      m_ShooterBottomRollerVelocity = 5;
+      m_ShooterTopRollerVelocity = 5;
+  }
+
+  public void noteBackward()
+  {
+    // if not is not in the rear position
+    m_ShooterFeederVoltage = -2.5;
+    m_ShooterBottomRollerVelocity = -5;
+    m_ShooterTopRollerVelocity = -5;
+  }
+
+  public void noteToMiddle()
+  {
+    // if note forward
+    if(m_Shooter.hasNoteForwardPosition())
     {
-      m_ShooterFeederVoltage = 3;
-      m_ShooterBottomRollerVelocity = 10;
-      m_ShooterTopRollerVelocity = 10;
+      noteBackward();
     }
-    else
+    // if not backward
+    else if (m_Shooter.hasNoteRearPosition())
+    {
+      noteForward();
+    }
+    // if note is in the middle or not present
+    else if (m_Shooter.noteCentered() || m_Shooter.shooterClear())
     {
       m_ShooterFeederVoltage = 0;
       m_ShooterBottomRollerVelocity = 0;

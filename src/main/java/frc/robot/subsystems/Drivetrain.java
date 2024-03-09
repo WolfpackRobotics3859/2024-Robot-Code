@@ -17,6 +17,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.commands.PathfindHolonomic;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -117,7 +119,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
       driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
     }
     
-    //Create drivetrain object for pathplanner to use in its calculations
+    // Create drivetrain object for pathplanner to use in its calculations
     AutoBuilder.configureHolonomic(
       ()->this.getState().Pose,
       this::seedFieldRelative,
@@ -126,13 +128,16 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
       new HolonomicPathFollowerConfig(new PIDConstants(7, 0, 0), new PIDConstants(7, 0, 0), TunerConstants.SPEED_AT_12_VOLTS_MPS, driveBaseRadius, new ReplanningConfig()),
       ()->false,
       this);
-
   }
 
-  public void auto()
-  {
-    
-  }
+  // public Command getAutoPath(String pathName)
+  // {
+  //   return new PathPlannerAuto(pathName);
+  // }
+
+  // public Command autoPathBuilder = new AutoBuilder().pathfindToPose
+  // (null, null, ModuleCount, 0
+  // );
 
   private void updateVision()
   {

@@ -7,15 +7,14 @@ package frc.robot.commands.orchestrator;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Orchestrator;
 
-public class AmpShot extends Command 
+public class ShootLow extends Command 
 {
   private Orchestrator m_Orchestrator;
   /** Creates a new AmpShot. */
-  public AmpShot(Orchestrator orchestrator) 
+  public ShootLow(Orchestrator orchestrator) 
   {
     this.m_Orchestrator = orchestrator;
     addRequirements(m_Orchestrator);
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -29,16 +28,20 @@ public class AmpShot extends Command
   @Override
   public void execute() 
   {
-    m_Orchestrator.shootAmp();
+    m_Orchestrator.shootLow();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted)
+  {
+
+  }
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished()
+  {
     return false;
   }
 }

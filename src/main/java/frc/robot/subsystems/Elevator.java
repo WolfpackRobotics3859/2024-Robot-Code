@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Global;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.elevator.ElevatorConstants;
-import frc.robot.constants.shooter.ShooterConstants;
 
 public class Elevator extends SubsystemBase
 {
@@ -34,6 +33,7 @@ public class Elevator extends SubsystemBase
   public Elevator()
   {
     m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.ELEVATOR_MOTOR_CONFIG);
+    m_ElevatorMotor2.getConfigurator().apply(ElevatorConstants.CURRENT_LIMITS_CONFIGS);
     Follower followRequest = new Follower(Hardware.ELEVATOR_MOTOR_1_ID, false);
     m_ElevatorMotor2.setControl(followRequest);
     m_CANCoder.getConfigurator().apply(ElevatorConstants.ELEVATOR_CANCODER_CONFIGURATION);

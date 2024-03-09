@@ -12,8 +12,6 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.drivetrain.TunerConstants;
-import frc.robot.constants.elevator.ElevatorConstants;
-import frc.robot.constants.shooter.ShooterConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Orchestrator;
@@ -121,16 +119,6 @@ public class RobotContainer
     SmartDashboard.putData("Start Angle", angleSelector);
            
     configureBindings();
-
-    SmartDashboard.putNumber("Amp Shot Wrist Position", ShooterConstants.WRIST_AMP_SHOOTING_POSITION);
-    SmartDashboard.putNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION);
-    SmartDashboard.putNumber("Amp Shot Motor 1 Velocity", 5);
-    SmartDashboard.putNumber("Amp Shot Motor 2 Velocity", 17.5);
-
-    SmartDashboard.setDefaultNumber("Amp Shot Wrist Position", ShooterConstants.WRIST_AMP_SHOOTING_POSITION);
-    SmartDashboard.setDefaultNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION);
-    SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 6);
-    SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 17.5);
   }
 
   private void configureBindings() 
@@ -142,32 +130,30 @@ public class RobotContainer
                 () -> -m_primaryController.getRightX()
       ));
 
-    
-
     m_Shooter.setDefaultCommand(new ShooterPlayAlong(m_Orchestrator, m_Shooter));
     m_Intake.setDefaultCommand(new IntakePlayAlong(m_Orchestrator, m_Intake));
     m_Elevator.setDefaultCommand(new ElevatorPlayAlong(m_Orchestrator, m_Elevator));
     m_Orchestrator.setDefaultCommand(new Stow(m_Orchestrator));
 
-    m_primaryController.a().whileTrue(new DriveWithAngle(m_Drivetrain,
-        () -> -m_primaryController.getLeftY(),
-        () -> -m_primaryController.getLeftX(),
-        180.0));
+    // m_primaryController.a().whileTrue(new DriveWithAngle(m_Drivetrain,
+    //     () -> -m_primaryController.getLeftY(),
+    //     () -> -m_primaryController.getLeftX(),
+    //     180.0));
 
-    m_primaryController.y().whileTrue(new DriveWithAngle(m_Drivetrain,
-        () -> -m_primaryController.getLeftY(),
-        () -> -m_primaryController.getLeftX(),
-        90.0));
+    // m_primaryController.y().whileTrue(new DriveWithAngle(m_Drivetrain,
+    //     () -> -m_primaryController.getLeftY(),
+    //     () -> -m_primaryController.getLeftX(),
+    //     90.0));
 
-    m_primaryController.y().whileTrue(new DriveWithAngle(m_Drivetrain,
-        () -> -m_primaryController.getLeftY(),
-        () -> -m_primaryController.getLeftX(),
-        0.0));
+    // m_primaryController.y().whileTrue(new DriveWithAngle(m_Drivetrain,
+    //     () -> -m_primaryController.getLeftY(),
+    //     () -> -m_primaryController.getLeftX(),
+    //     0.0));
 
-    m_primaryController.x().whileTrue(new DriveWithAngle(m_Drivetrain,
-        () -> -m_primaryController.getLeftY(),
-        () -> -m_primaryController.getLeftX(),
-        270.0));
+    // m_primaryController.x().whileTrue(new DriveWithAngle(m_Drivetrain,
+    //     () -> -m_primaryController.getLeftY(),
+    //     () -> -m_primaryController.getLeftX(),
+    //     270.0));
 
     m_secondaryController.x().whileTrue(new DriveWithAngle(m_Drivetrain, // left chain
       () -> -m_primaryController.getLeftY(),

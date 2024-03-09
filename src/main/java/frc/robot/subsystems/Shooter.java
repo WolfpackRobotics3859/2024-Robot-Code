@@ -106,27 +106,28 @@ public class Shooter extends SubsystemBase
     }
   }
 
+  // Beam Break Logic
   public boolean hasNoteRearPosition()
-  {
-    return !m_BeamBreak1.get() && m_BeamBreak2.get();
-  }
-
-  public boolean hasNoteForwardPosition()
   {
     return m_BeamBreak1.get() && !m_BeamBreak2.get();
   }
 
+  public boolean hasNoteForwardPosition()
+  {
+    return !m_BeamBreak1.get() && m_BeamBreak2.get();
+  }
+
   public boolean shooterClear()
   {
-    return !m_BeamBreak1.get() && !m_BeamBreak2.get();
+    return m_BeamBreak1.get() && m_BeamBreak2.get();
   }
 
-
-  public boolean getShooterReady()
+  public boolean noteCentered()
   {
-    return this.motor1Ready() && this.motor2Ready();
+    return !this.getBeamBreak1() && !this.getBeamBreak2();
   }
 
+  // Beam Break Getters
   public boolean getBeamBreak1()
   {
     return m_BeamBreak1.get();
@@ -137,9 +138,15 @@ public class Shooter extends SubsystemBase
     return m_BeamBreak2.get();
   }
 
+  // Shooter getters
+  public boolean getShooterReady()
+  {
+    return this.motor1Ready() && this.motor2Ready();
+  }
+
   public boolean inPosition(double assignedPosition)
   {
-    System.out.println("Closed Loop Shooter Error " + m_WristMotor.getClosedLoopError().getValueAsDouble());
+    // System.out.println("Closed Loop Shooter Error " + m_WristMotor.getClosedLoopError().getValueAsDouble());
     // return Math.abs(m_WristMotor.getClosedLoopError().getValueAsDouble()) < ShooterConstants.POSITION_CLOSED_LOOP_ERROR_TOLERANCE;
     return Math.abs(m_WristMotor.getPosition().getValueAsDouble() - assignedPosition) <  ShooterConstants.POSITION_CLOSED_LOOP_ERROR_TOLERANCE;
   }
