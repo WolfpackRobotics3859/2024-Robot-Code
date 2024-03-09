@@ -5,6 +5,8 @@
 package frc.robot;
 
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,12 +37,12 @@ public class RobotContainer
   // Subsystems
   private final Drivetrain m_Drivetrain = new Drivetrain(TunerConstants.DRIVETRAIN_CONSTANTS, 250, TunerConstants.FRONT_LEFT,
                       TunerConstants.FRONT_RIGHT, TunerConstants.BACK_LEFT, TunerConstants.BACK_RIGHT);
-  private final Elevator m_Elevator = new Elevator();
-  private final Shooter m_Shooter = new Shooter();
-  private final Intake m_Intake = new Intake();
+  //private final Elevator m_Elevator = new Elevator();
+  //private final Shooter m_Shooter = new Shooter();
+  //private final Intake m_Intake = new Intake();
 
   // Orchestrator
-  private final Orchestrator m_Orchestrator = new Orchestrator(m_Drivetrain, m_Elevator, m_Shooter, m_Intake);
+  //private final Orchestrator m_Orchestrator = new Orchestrator(m_Drivetrain, m_Elevator, m_Shooter, m_Intake);
 
   // Controllers
   private final CommandXboxController m_primaryController = new CommandXboxController(Hardware.PRIMARY_CONTROLLER_PORT);
@@ -55,20 +57,21 @@ public class RobotContainer
   {
     return this.m_Drivetrain;
   }
-
+/*
   /**
    * @brief Gets the elevator subsystem.
    * @return The elevator object
-   */
+   
   public Elevator getElevator()
   {
     return this.m_Elevator;
-  }
+  } 
+  
 
   /**
    * @brief Gets the shooter subsystem.
    * @return The shooter object
-   */
+   
   public Shooter getShooter()
   {
     return this.m_Shooter;
@@ -77,7 +80,7 @@ public class RobotContainer
   /**
    * @brief Gets the intake subsystem.
    * @return The intake object
-   */
+   
   public Intake getIntake()
   {
     return this.m_Intake;
@@ -87,7 +90,7 @@ public class RobotContainer
   {
     return this.m_Orchestrator;
   }
-  
+  */
   /**
    * Gets the driver controller
    * @return The primary (driver) controller
@@ -107,10 +110,10 @@ public class RobotContainer
     angleSelector.addOption("Left", 300.0);
     angleSelector.addOption("Right", 240.0);
 
-    autoSelector.setDefaultOption("Drive Back", new DriveBack(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
-    autoSelector.addOption("Shoot", new Shoot(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
-    autoSelector.addOption("Shoot and Drive Back", new ShootAndDrive(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
-    autoSelector.addOption("Long Drive Back", new LongDriveBack(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
+    //autoSelector.setDefaultOption("Drive Back", new DriveBack(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
+    //autoSelector.addOption("Shoot", new Shoot(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
+    //autoSelector.addOption("Shoot and Drive Back", new ShootAndDrive(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
+    //autoSelector.addOption("Long Drive Back", new LongDriveBack(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
 
     SmartDashboard.putData(autoSelector);
     SmartDashboard.putData(angleSelector);
@@ -139,10 +142,10 @@ public class RobotContainer
                 () -> -m_primaryController.getRightX()
       ));
 
-    m_Shooter.setDefaultCommand(new ShooterPlayAlong(m_Orchestrator, m_Shooter));
-    m_Intake.setDefaultCommand(new IntakePlayAlong(m_Orchestrator, m_Intake));
-    m_Elevator.setDefaultCommand(new ElevatorPlayAlong(m_Orchestrator, m_Elevator));
-    m_Orchestrator.setDefaultCommand(new ManualControl(m_Orchestrator));
+    //m_Shooter.setDefaultCommand(new ShooterPlayAlong(m_Orchestrator, m_Shooter));
+    //m_Intake.setDefaultCommand(new IntakePlayAlong(m_Orchestrator, m_Intake));
+    //m_Elevator.setDefaultCommand(new ElevatorPlayAlong(m_Orchestrator, m_Elevator));
+    //m_Orchestrator.setDefaultCommand(new ManualControl(m_Orchestrator));
 
     m_primaryController.a().whileTrue(new DriveWithAngle(m_Drivetrain,
         () -> -m_primaryController.getLeftY(),
@@ -180,6 +183,9 @@ public class RobotContainer
       180.0)); // change angle at some point
 
     m_secondaryController.a().whileTrue(new SeedFieldRelative(m_Drivetrain));
+
+    //TODO Testing remove
+    SmartDashboard.putData(new PathPlannerAuto("Amp Auto"));
   }
 
   public Command getAutonomousCommand() 
