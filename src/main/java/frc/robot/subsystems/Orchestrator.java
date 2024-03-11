@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import javax.swing.text.Position;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import edu.wpi.first.wpilibj.Timer;
@@ -215,16 +213,28 @@ public class Orchestrator extends SubsystemBase
   // Returns true when no note is detected anymore.
   public boolean shootLow()
   {
+    if (m_Shooter.shooterClear())
+    {
+      return true;
+    }
     // Intentionally Empty
     if(elevatorDown())
     {
-      m_ElevatorPosition = Positions.INTAKING.ELEVATOR_POSITION;
-      m_ShooterAngle = Positions.INTAKING.SHOOTER_WRIST_ANGLE;
-      m_ShooterTopRollerVelocity = Positions.INTAKING.SHOOTER_ROLLER_1_VELOCITY;
-      m_ShooterBottomRollerVelocity = Positions.INTAKING.SHOOTER_ROLLER_2_VELOCITY;
-      m_ShooterFeederVoltage = Positions.INTAKING.SHOOTER_FEEDER_VOLTAGE;
-      m_IntakePosition = Positions.INTAKING.INTAKE_WRIST_POSITION;
-      m_IntakeRollersVoltage = Positions.INTAKING.INTAKE_ROLLER_VOLTAGE;
+      // set to bumper shot
+      m_ElevatorPosition = Positions.LOW_BUMPER_SHOT.ELEVATOR_POSITION;
+      m_ShooterTopRollerVelocity = Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_1_VELOCITY;
+      m_ShooterBottomRollerVelocity = Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_2_VELOCITY;
+      m_IntakePosition = Positions.LOW_BUMPER_SHOT.INTAKE_WRIST_POSITION;
+      m_IntakeRollersVoltage = Positions.LOW_BUMPER_SHOT.INTAKE_ROLLER_VOLTAGE;
+
+      if (m_Elevator.isInPosition(m_ElevatorPosition))
+      {
+        m_ShooterAngle = Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE;
+        if (m_Shooter.inPosition(m_ShooterAngle))
+        {
+          m_ShooterFeederVoltage = Positions.INTAKING.SHOOTER_FEEDER_VOLTAGE;
+        }
+      }
     }
     return false;
   }

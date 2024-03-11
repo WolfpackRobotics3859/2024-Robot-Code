@@ -16,6 +16,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindHolonomic;
@@ -26,6 +28,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,7 +44,9 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   private Timer m_TelemetryTimer = new Timer();
   Field2d m_Field_Odometry = new Field2d();
 
-  private final SwerveRequest.ApplyChassisSpeeds m_autoRequest = new SwerveRequest.ApplyChassisSpeeds();
+  private final SwerveRequest.ApplyChassisSpeeds m_autoRequest = new SwerveRequest.ApplyChassisSpeeds()
+    .withDriveRequestType(DriveRequestType.Velocity)
+    .withSteerRequestType(SteerRequestType.MotionMagic);
 
   /** 
     @brief Creates a new Drivetrain.
@@ -63,7 +68,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   @Override
   public void periodic()
   {
-    // Check to see if CTRE swerve does this internally and calling it here would be redundant.
     this.updateVision();
 
     if(Global.ENABLE_TELEMETRY)

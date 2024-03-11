@@ -7,6 +7,7 @@ package frc.robot.commands.drivetrain;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -49,11 +50,13 @@ public class Drive extends Command
     final SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric()
       .withDeadband(DriveConstants.MAX_SPEED * 0.1).withRotationalDeadband(DriveConstants.MAX_ANGULAR_RATE * 0.1)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+      .withSteerRequestType(SteerRequestType.MotionMagic)
       .withVelocityX(m_SpeedXSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
       .withVelocityY(m_SpeedYSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
       .withRotationalRate(m_RotationalSpeedSupplier.get() * DriveConstants.MAX_ANGULAR_RATE * 1.2);
 
-    m_Drivetrain.setControl(driveRequest);
+    m_Drivetrain.setControl(driveRequest);;
+
   }
 
   // Called once the command ends or is interrupted.

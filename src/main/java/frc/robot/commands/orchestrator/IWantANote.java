@@ -4,10 +4,7 @@
 
 package frc.robot.commands.orchestrator;
 
-import com.ctre.phoenix6.Orchestra;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Orchestrator;
 
 public class IWantANote extends Command {

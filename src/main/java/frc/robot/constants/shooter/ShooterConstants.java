@@ -15,6 +15,9 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Units;
 import frc.robot.constants.Hardware;
 
 public class ShooterConstants
@@ -134,8 +137,14 @@ public class ShooterConstants
         POSITION
     }
 
+    // Tolerances
     public static final double VELOCITY_CLOSED_LOOP_ERROR_TOLERANCE = 1;
     public static final double POSITION_CLOSED_LOOP_ERROR_TOLERANCE = 0.04;
+
+    // Shooting positions
+    // TODO fix these values
+    public static final Measure<Distance> MIN_SHOOTING_DISTANCE = Units.Meters.of(0);
+    public static final Measure<Distance> MAX_SHOOTING_DISTANCE = Units.Meters.of(8);
 
     // Misc
     public static final double WRIST_MOVEMENT_TOLERANCE = 0.04;

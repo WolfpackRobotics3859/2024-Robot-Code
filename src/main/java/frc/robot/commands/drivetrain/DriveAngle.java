@@ -7,6 +7,7 @@ package frc.robot.commands.drivetrain;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,10 +15,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.constants.drivetrain.DriveConstants;
 
-public class DriveWithAngle extends Command
+public class DriveAngle extends Command
 {
-  private final Supplier<Double> m_SpeedXSupplier, m_SpeedYSupplier;
-  private final double m_angle;
+  private final Supplier<Double> m_SpeedXSupplier, m_SpeedYSupplier, m_angleSupplier;
   private final Drivetrain m_Drivetrain;
   
   /**
@@ -27,11 +27,11 @@ public class DriveWithAngle extends Command
    * @param speedY The speed in the Y direction
    * @param angle The angle to point the robot toward
    */
-  public DriveWithAngle(Drivetrain drivetrain, Supplier<Double> speedX, Supplier<Double> speedY, Double angle) 
+  public DriveAngle(Drivetrain drivetrain, Supplier<Double> speedX, Supplier<Double> speedY, Supplier<Double> angle) 
   {
     this.m_SpeedXSupplier = speedX;
     this.m_SpeedYSupplier = speedY;
-    this.m_angle = angle;
+    this.m_angleSupplier = angle;
     this.m_Drivetrain = drivetrain;
 
     addRequirements(drivetrain);
@@ -48,12 +48,19 @@ public class DriveWithAngle extends Command
   @Override
   public void execute()
   {
+    // create request
     final SwerveRequest.FieldCentricFacingAngle driveRequest = new SwerveRequest.FieldCentricFacingAngle()
       .withDeadband(DriveConstants.MAX_SPEED * 0.1).withRotationalDeadband(DriveConstants.MAX_ANGULAR_RATE * 0.1)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-      .withVelocityX(m_SpeedXSupplier.get() * DriveConstants.MAX_SPEED * 0.4)
-      .withVelocityY(m_SpeedYSupplier.get() * DriveConstants.MAX_SPEED * 0.4)
-      .withTargetDirection(Rotation2d.fromDegrees(m_angle));
+      .withSteerRequestType(SteerRequestType.MotionMagic)
+      .withVelocityX(m_SpeedXSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
+      .withVelocityY(m_SpeedYSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
+      .withTargetDirection(Rotation2d.fromDegrees(m_angleSupplier.get()));
+
+    // configure PID controller
+    // TODO: tune these numbers
+    driveRequest.HeadingController.setPID(0.01, 0.001, 0);
+    driveRequest.HeadingController.setTolerance(0.5);
 
     m_Drivetrain.setControl(driveRequest);
   }

@@ -5,6 +5,7 @@
 package frc.robot;
 
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,12 +18,13 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Orchestrator;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
+import frc.robot.utils.ShuffleboardManager;
 import frc.robot.commands.autos.DriveBack;
 import frc.robot.commands.autos.LongDriveBack;
 import frc.robot.commands.autos.Shoot;
 import frc.robot.commands.autos.ShootAndDrive;
 import frc.robot.commands.drivetrain.Drive;
-import frc.robot.commands.drivetrain.DriveWithAngle;
+import frc.robot.commands.drivetrain.DriveAngle;
 import frc.robot.commands.drivetrain.SeedFieldRelative;
 import frc.robot.commands.elevator.ElevatorPlayAlong;
 import frc.robot.commands.intake.IntakePlayAlong;
@@ -47,6 +49,9 @@ public class RobotContainer
   // Controllers
   private final CommandXboxController m_primaryController = new CommandXboxController(Hardware.PRIMARY_CONTROLLER_PORT);
   private final CommandXboxController m_secondaryController = new CommandXboxController(Hardware.SECONDARY_CONTROLLER_PORT);
+
+  // Shuffleboard
+  private final ShuffleboardManager m_ShuffleboardManager = new ShuffleboardManager(m_Orchestrator, m_Drivetrain);
 
   // Getters
   /**
@@ -155,20 +160,20 @@ public class RobotContainer
     //     () -> -m_primaryController.getLeftX(),
     //     270.0));
 
-    m_secondaryController.x().whileTrue(new DriveWithAngle(m_Drivetrain, // left chain
+    m_secondaryController.x().whileTrue(new DriveAngle(m_Drivetrain, // left chain
       () -> -m_primaryController.getLeftY(),
       () -> -m_primaryController.getLeftX(),
-      120.0)); // change angle at some point
+      () -> 120.0)); // change angle at some point
 
-    m_secondaryController.b().whileTrue(new DriveWithAngle(m_Drivetrain, // right chain
+    m_secondaryController.b().whileTrue(new DriveAngle(m_Drivetrain, // right chain
       () -> -m_primaryController.getLeftY(),
       () -> -m_primaryController.getLeftX(),
-      300.0)); // change angle at some point
+      () -> 300.0)); // change angle at some point
 
-    m_secondaryController.y().whileTrue(new DriveWithAngle(m_Drivetrain, // back chain
+    m_secondaryController.y().whileTrue(new DriveAngle(m_Drivetrain, // back chain
       () -> -m_primaryController.getLeftY(),
       () -> -m_primaryController.getLeftX(),
-      180.0)); // change angle at some point
+      () -> 180.0)); // change angle at some point
 
     m_secondaryController.a().whileTrue(new SeedFieldRelative(m_Drivetrain));
 
@@ -178,7 +183,7 @@ public class RobotContainer
 
   public Command getAutonomousCommand() 
   {
-    return autoSelector.getSelected();
+    return m_ShuffleboardManager.getAutoCommand();
   }
 }
 

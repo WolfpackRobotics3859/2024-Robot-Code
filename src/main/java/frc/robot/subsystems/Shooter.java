@@ -12,11 +12,23 @@ import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import frc.robot.Robot;
 import frc.robot.constants.Global;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.shooter.ShooterConstants;
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.hal.AllianceStationID;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -158,6 +170,21 @@ public class Shooter extends SubsystemBase
   public StatusSignal<Double> getPositionSignal()
   {
     return m_WristMotor.getPosition();
+  }
+
+  /**
+   * Finds the distance between the robot and one of the speakers, depending on the current alliance color of the robot. If none given, robot will aim at blue speaker.
+   * @param robotPose The current pose of the robot
+   * @param targetTag The AprilTag object of the target
+   * @return The distance in meters (clamped to be within set distances)
+   */
+  public Measure<Distance> getSpeakerDistance(Pose2d robotPose, AprilTag targetTag)
+  {
+    return Units.Meters.of(MathUtil.clamp(
+      robotPose.getTranslation().getDistance(targetTag.pose.toPose2d().getTranslation()),
+      ShooterConstants.MIN_SHOOTING_DISTANCE.in(Units.Meters),
+      ShooterConstants.MAX_SHOOTING_DISTANCE.in(Units.Meters)
+    ));
   }
 
   /**
