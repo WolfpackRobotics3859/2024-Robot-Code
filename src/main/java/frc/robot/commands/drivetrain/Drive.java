@@ -40,23 +40,54 @@ public class Drive extends Command
   @Override
   public void initialize() 
   {
-    // Intentionally Empty
+    m_Drivetrain.setRobotAligned(false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute()
   {
-    final SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric()
-      .withDeadband(DriveConstants.MAX_SPEED * 0.1).withRotationalDeadband(DriveConstants.MAX_ANGULAR_RATE * 0.1)
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-      .withSteerRequestType(SteerRequestType.MotionMagic)
-      .withVelocityX(m_SpeedXSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
-      .withVelocityY(m_SpeedYSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
-      .withRotationalRate(m_RotationalSpeedSupplier.get() * DriveConstants.MAX_ANGULAR_RATE * 1.2);
+    // if drivetrain is supposed to be aligned to speaker
+    if (m_Drivetrain.getAligned())
+    {
+      SwerveRequest.FieldCentricFacingAngle alignRequest = new SwerveRequest.FieldCentricFacingAngle()
+        .withDeadband(DriveConstants.MAX_SPEED * 0.1).withRotationalDeadband(DriveConstants.MAX_ANGULAR_RATE * 0.1)
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+        .withSteerRequestType(SteerRequestType.MotionMagic)
+        .withVelocityX(m_SpeedXSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
+        .withVelocityY(m_SpeedYSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
+        .withTargetDirection(m_Drivetrain.getAngleToSpeaker());
+      
+      alignRequest.HeadingController.setPID(0.01, 0.001, 0);
+      alignRequest.HeadingController.setTolerance(1);
 
-    m_Drivetrain.setControl(driveRequest);;
+      m_Drivetrain.setControl(alignRequest);
 
+      // if robot is aligned properly
+      if (alignRequest.HeadingController.atSetpoint())
+      {
+        m_Drivetrain.setRobotAligned(true);
+      }
+      else
+      {
+        m_Drivetrain.setRobotAligned(false);
+      }
+    }
+    else
+    {
+      m_Drivetrain.setRobotAligned(false);
+
+      // set to basic drive request
+      SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric()
+        .withDeadband(DriveConstants.MAX_SPEED * 0.1).withRotationalDeadband(DriveConstants.MAX_ANGULAR_RATE * 0.1)
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+        .withSteerRequestType(SteerRequestType.MotionMagic)
+        .withVelocityX(m_SpeedXSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
+        .withVelocityY(m_SpeedYSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
+        .withRotationalRate(m_RotationalSpeedSupplier.get() * DriveConstants.MAX_ANGULAR_RATE * 1.2);
+
+      m_Drivetrain.setControl(driveRequest);
+    }
   }
 
   // Called once the command ends or is interrupted.

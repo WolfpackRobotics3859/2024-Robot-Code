@@ -1,8 +1,12 @@
 package frc.robot.constants;
 
+import com.google.flatbuffers.Constants;
+
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.constants.drivetrain.DriveConstants;
 
 public class Positions 
@@ -15,7 +19,7 @@ public class Positions
         public static final double SHOOTER_ROLLER_2_VELOCITY = 0;
         public static final double SHOOTER_FEEDER_VOLTAGE = 0;
         public static final double SHOOTER_WRIST_ANGLE = 0.5;
-        public static final double ELEVATOR_POSITION = 0.11;
+        public static final double ELEVATOR_POSITION = 0.0725;
     }
 
     public static final class INTAKING
@@ -25,8 +29,8 @@ public class Positions
         public static final double SHOOTER_ROLLER_1_VELOCITY = -30;
         public static final double SHOOTER_ROLLER_2_VELOCITY = -30;
         public static final double SHOOTER_FEEDER_VOLTAGE = -3;
-        public static final double SHOOTER_WRIST_ANGLE = 0.5;
-        public static final double ELEVATOR_POSITION = 0.11;
+        public static final double SHOOTER_WRIST_ANGLE = 0.53;
+        public static final double ELEVATOR_POSITION = 0.0725;
     }
 
     public static final class AMP
@@ -74,5 +78,16 @@ public class Positions
 
         public static final AprilTag BLUE_SPEAKER_TAG = DriveConstants.TAG_LAYOUT.getTags().get(7);
         public static final AprilTag RED_SPEAKER_TAG = DriveConstants.TAG_LAYOUT.getTags().get(4);
+
+        /**
+         * Gets the current speaker the robot should be aimed at based on the DriverStation or FMS
+         * @return The AprilTag object of the desired speaker (if none present, returns null)
+         */
+        public static AprilTag currentSpeakerTag()
+        {
+            return DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue
+            ? BLUE_SPEAKER_TAG
+            : RED_SPEAKER_TAG;
+        }
     }
 }

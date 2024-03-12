@@ -19,21 +19,22 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.commands.PathfindHolonomic;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.constants.Global;
+import frc.robot.constants.Positions;
 import frc.robot.constants.drivetrain.DriveConstants;
 import frc.robot.constants.drivetrain.TunerConstants;
 
@@ -43,6 +44,9 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   private PhotonPoseEstimator m_CameraForward1Estimator, m_CameraForward2Estimator, m_CameraRear1Estimator;
   private Timer m_TelemetryTimer = new Timer();
   Field2d m_Field_Odometry = new Field2d();
+
+  private boolean alignToSpeaker = false;
+  private boolean isAligned = false;
 
   private final SwerveRequest.ApplyChassisSpeeds m_autoRequest = new SwerveRequest.ApplyChassisSpeeds()
     .withDriveRequestType(DriveRequestType.Velocity)
@@ -99,6 +103,42 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   public ChassisSpeeds getCurrentRobotChassisSpeeds()
   {
     return m_kinematics.toChassisSpeeds(getState().ModuleStates);
+  }
+
+  // whether or not to align to shooter
+  public void setAlignToSpeaker(boolean aligned)
+  {
+    this.alignToSpeaker = aligned;
+  }
+
+  // whether the drivetrain is set to align to a speaker
+  public boolean getAligned()
+  {
+    return this.alignToSpeaker;
+  }
+
+  // set if the robot is properly aligned or not
+  public void setRobotAligned(boolean aligned)
+  {
+    this.isAligned = aligned;
+  }
+
+  // whether the robot is properly aligned or not
+  public boolean isRobotAligned()
+  {
+    return this.isAligned;
+  }
+
+  public Rotation2d getAngleToSpeaker()
+  {
+    // get current robot pose
+    Pose2d currentPose = this.m_odometry.getEstimatedPosition();
+
+    // set speaker point
+    Translation2d speakerPoint = Positions.APRILTAGS.currentSpeakerTag().pose.getTranslation().toTranslation2d();
+
+    // return desired angle
+    return(new Rotation2d(speakerPoint.getX() - currentPose.getX(), speakerPoint.getY() - currentPose.getY()));
   }
 
   private void configurePhotonVision()
