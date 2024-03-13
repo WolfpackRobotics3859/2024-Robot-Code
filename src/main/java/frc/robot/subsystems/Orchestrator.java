@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import javax.swing.text.Position;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import edu.wpi.first.wpilibj.Timer;
@@ -88,12 +86,11 @@ public class Orchestrator extends SubsystemBase
   @Override
   public void periodic()
   {
-    
     if(Global.ENABLE_TELEMETRY)
     {
       if(m_TelemetryTimer.get() > Global.TELEMETRY_UPDATE_SPEED)
       {
-        BaseStatusSignal.refreshAll(m_ElevatorPositionSignal);
+        BaseStatusSignal.refreshAll(m_ElevatorPositionSignal, m_ShooterPositionSignal, m_IntakePositionSignal);
         m_TelemetryTimer.reset();
       }
     }

@@ -68,7 +68,7 @@ public class ElevatorConstants
     public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = new CurrentLimitsConfigs()
         .withStatorCurrentLimit(26)
         .withStatorCurrentLimitEnable(true)
-        .withSupplyCurrentLimit(2)
+        .withSupplyCurrentLimit(10)
         .withSupplyCurrentLimitEnable(true);
 
     public static final MagnetSensorConfigs MAGNET_SENSOR_CONFIGS = new MagnetSensorConfigs()

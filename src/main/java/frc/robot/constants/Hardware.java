@@ -2,6 +2,7 @@ package frc.robot.constants;
 
 public class Hardware
 {
+    // CAN
     // Controllers
     public static final int PRIMARY_CONTROLLER_PORT = 0;
     public static final int SECONDARY_CONTROLLER_PORT = 1;

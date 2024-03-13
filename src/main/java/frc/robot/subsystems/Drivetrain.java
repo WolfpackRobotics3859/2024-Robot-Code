@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -32,7 +31,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.constants.Global;
-import frc.robot.constants.Positions;
 import frc.robot.constants.drivetrain.DriveConstants;
 import frc.robot.constants.drivetrain.TunerConstants;
 

@@ -26,7 +26,7 @@ public class DriveConstants
     public static final double TURN_TO_ANGLE_D = 0;
 
     // tolerance in degrees
-    public static final double TURN_TO_ANGLE_TOLERANCE = 1;
+    public static final double TURN_TO_ANGLE_TOLERANCE = 0.5;
 
     // VISION
     public static final AprilTagFieldLayout TAG_LAYOUT;
@@ -52,27 +52,27 @@ public class DriveConstants
         public static Pose2d BLUE_AMP = TAG_LAYOUT.getTagPose(6).get().toPose2d();
     }
 
-        public static final double AMBIGUITY_THRESHOLD = 0.25;
+    public static final double AMBIGUITY_THRESHOLD = 0.25;
 
-        public static final class CAMERA_POSITIONS
-        {
-            public static final Transform3d RIGHT_1 = 
-                new Transform3d(new Translation3d(Units.inchesToMeters(12.142), 
-                                                  Units.inchesToMeters(0.0372), 
-                                                  Units.inchesToMeters(16.157)), 
-                                                  new Rotation3d(0, Rotation2d.fromDegrees(-10).getDegrees(), 0));
+    public static final class CAMERA_POSITIONS
+    {
+        public static final Transform3d RIGHT_1 = 
+            new Transform3d(new Translation3d(Units.inchesToMeters(12.142), 
+                                                Units.inchesToMeters(0.0372), 
+                                                Units.inchesToMeters(16.157)), 
+                                                new Rotation3d(0, Rotation2d.fromDegrees(-10).getDegrees(), 0));
 
-            public static final Transform3d LEFT_1 = 
-                new Transform3d(new Translation3d(Units.inchesToMeters(12.142), 
-                                                  Units.inchesToMeters(0.0372), 
-                                                  Units.inchesToMeters(16.157)), 
-                                                  new Rotation3d(0, Rotation2d.fromDegrees(-10).getDegrees(), 0));
-                
-            public static final Transform3d REAR_1 = 
-                new Transform3d(new Translation3d(Units.inchesToMeters(12.142), 
-                                                  Units.inchesToMeters(0.0372), 
-                                                  Units.inchesToMeters(16.157)), 
-                                                  new Rotation3d(0, Rotation2d.fromDegrees(-10).getDegrees(), 0));
-        }
+        public static final Transform3d LEFT_1 = 
+            new Transform3d(new Translation3d(Units.inchesToMeters(12.142), 
+                                                Units.inchesToMeters(0.0372), 
+                                                Units.inchesToMeters(16.157)), 
+                                                new Rotation3d(0, Rotation2d.fromDegrees(-10).getDegrees(), 0));
+            
+        public static final Transform3d REAR_1 = 
+            new Transform3d(new Translation3d(Units.inchesToMeters(12.142), 
+                                                Units.inchesToMeters(0.0372), 
+                                                Units.inchesToMeters(16.157)), 
+                                                new Rotation3d(0, Rotation2d.fromDegrees(-10).getDegrees(), 0));
+    }
 }
 

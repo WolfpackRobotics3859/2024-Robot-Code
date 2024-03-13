@@ -5,19 +5,16 @@
 package frc.robot.commands.orchestrator;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Orchestrator;
 
 public class ShootLow extends Command 
 {
   private final Orchestrator m_Orchestrator;
-  private final Drivetrain m_Drivetrain;
 
   /** Creates a new ShootLow. */
-  public ShootLow(Orchestrator orchestrator, Drivetrain drivetrain) 
+  public ShootLow(Orchestrator orchestrator) 
   {
     this.m_Orchestrator = orchestrator;
-    this.m_Drivetrain = drivetrain;
     addRequirements(m_Orchestrator);
   }
 

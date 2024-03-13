@@ -18,11 +18,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Orchestrator;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
-import frc.robot.commands.autos.DriveBack;
-import frc.robot.commands.autos.LongDriveBack;
-import frc.robot.commands.autos.Shoot;
-import frc.robot.commands.autos.ShootAndDrive;
-import frc.robot.commands.drivetrain.DriveRotation;
 import frc.robot.commands.drivetrain.Drive;
 import frc.robot.commands.drivetrain.DriveWithTargetAngle;
 import frc.robot.commands.drivetrain.SeedFieldRelative;
@@ -35,7 +30,6 @@ import frc.robot.commands.orchestrator.BumperShot;
 import frc.robot.commands.orchestrator.DefenseShot;
 import frc.robot.commands.orchestrator.IWantANote;
 import frc.robot.commands.orchestrator.ManualControl;
-import frc.robot.commands.orchestrator.ShootLow;
 import frc.robot.commands.orchestrator.Stow;
 import frc.robot.commands.shooter.KillShooter;
 import frc.robot.commands.shooter.ShooterPlayAlong;
@@ -58,6 +52,9 @@ public class RobotContainer
   private final Supplier<Double> m_PrimaryControllerLeftY = () -> -m_PrimaryController.getLeftY();
   private final Supplier<Double> m_PrimaryControllerLeftX = () -> -m_PrimaryController.getLeftX();
   private final Supplier<Double> m_PrimaryControllerRightX = () -> -m_PrimaryController.getRightX();
+
+  // Auto Chooser
+  private final SendableChooser<Command> autoSelector = new SendableChooser<>();
 
   /**
    * @brief Gets the Drivetrain subsystem.
@@ -114,30 +111,14 @@ public class RobotContainer
     return this.m_SecondaryController;
   }
 
-  private final SendableChooser<Command> autoSelector = new SendableChooser<>();
-  private final SendableChooser<Double> angleSelector = new SendableChooser<>();
-
   public RobotContainer() 
-  {
-    // seed angle chooser
-    angleSelector.setDefaultOption("Front", 180.0);
-    angleSelector.addOption("Left", 300.0);
-    angleSelector.addOption("Right", 240.0);
-
-    autoSelector.setDefaultOption("None", new PrintCommand("No auto selected."));
-    autoSelector.addOption("Drive Back", new DriveBack(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
-    autoSelector.addOption("Shoot", new Shoot(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
-    autoSelector.addOption("Shoot and Drive Back", new ShootAndDrive(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
-    autoSelector.addOption("Long Drive Back", new LongDriveBack(m_Orchestrator, m_Drivetrain, angleSelector.getSelected()));
-
-    SmartDashboard.putData("Auto", autoSelector);
-    SmartDashboard.putData("Start Angle", angleSelector);
-           
-    configureBindings();
-  
+  {  
     this.configureDefaultCommands();
     this.configureSmartDashboardCommands();
+    this.configureAutoSelector();
     this.configureBindings();
+
+    SmartDashboard.putData("Auto Selector", autoSelector);
   }
 
   private void configureDefaultCommands()
@@ -159,8 +140,15 @@ public class RobotContainer
     SmartDashboard.putData("Kill Intake", new KillIntake(m_Intake));
   }
 
+  private void configureAutoSelector()
+  {
+    // TODO: add auto options
+    autoSelector.setDefaultOption("None", new PrintCommand("No auto selected."));
+  }
+
   private void configureBindings() 
   {
+    // TODO: Update bindings for comp
     m_PrimaryController.leftTrigger().whileTrue(new IWantANote(m_Orchestrator));
     m_PrimaryController.rightTrigger().whileTrue(new BumperShot(m_Orchestrator));
     m_PrimaryController.rightBumper().whileTrue(new DefenseShot(m_Orchestrator));
