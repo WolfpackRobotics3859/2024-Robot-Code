@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -46,12 +47,11 @@ public class RobotContainer
   private final CommandXboxController m_primaryController = new CommandXboxController(Hardware.PRIMARY_CONTROLLER_PORT);
   private final CommandXboxController m_secondaryController = new CommandXboxController(Hardware.SECONDARY_CONTROLLER_PORT);
 
-  // Getters
   /**
    * @brief Gets the Drivetrain subsystem.
    * @return The drivetrain object
    */
-  public Drivetrain getDriveSub()
+  public Drivetrain getDrive()
   {
     return this.m_Drivetrain;
   }
@@ -110,9 +110,13 @@ public class RobotContainer
     SmartDashboard.setDefaultNumber("Amp Shot Elevator Position", ElevatorConstants.ELEVATOR_AMP_SHOT_POSITION);
     SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 6);
     SmartDashboard.setDefaultNumber("Amp Shot Motor 1 Velocity", 17.5);
+  
+    this.configureDefaultCommands();
+    this.configureSmartDashboardCommands();
+    this.configureBindings();
   }
 
-  private void configureBindings() 
+  private void configureDefaultCommands()
   {
     m_Drivetrain.setDefaultCommand(
       new Drive(m_Drivetrain,
@@ -127,6 +131,17 @@ public class RobotContainer
     m_Intake.setDefaultCommand(new IntakePlayAlong(m_Orchestrator, m_Intake));
     m_Elevator.setDefaultCommand(new ElevatorPlayAlong(m_Orchestrator, m_Elevator));
     m_Orchestrator.setDefaultCommand(new Stow(m_Orchestrator));
+  }
+
+  private void configureSmartDashboardCommands()
+  {
+    SmartDashboard.putData("Enable Manual Control", new ManualControl(m_Orchestrator));
+    SmartDashboard.putData("Seed Odometry At Current Angle", new SeedFieldRelative(m_Drivetrain));
+  }
+
+  private void configureBindings() 
+  {
+    
 
     m_primaryController.a().whileTrue(new DriveWithAngle(m_Drivetrain,
         () -> -m_primaryController.getLeftY(),
@@ -164,6 +179,10 @@ public class RobotContainer
       180.0)); // change angle at some point
 
     m_secondaryController.a().whileTrue(new SeedFieldRelative(m_Drivetrain));
+    // m_primaryController.x().whileTrue(new DriveWithAngle(m_Drivetrain,
+    //     () -> -m_primaryController.getLeftY(),
+    //     () -> -m_primaryController.getLeftX(),
+    //     270.0));
 
     m_primaryController.a().whileTrue(new AmpShot(m_Orchestrator));
     m_primaryController.b().whileTrue(new IWantANote(m_Orchestrator));

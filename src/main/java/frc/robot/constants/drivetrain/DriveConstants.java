@@ -37,13 +37,13 @@ public class DriveConstants
 
         public static final class CAMERA_POSITIONS
         {
-            public static final Transform3d FORWARD_1 = 
+            public static final Transform3d RIGHT_1 = 
                 new Transform3d(new Translation3d(Units.inchesToMeters(12.142), 
                                                   Units.inchesToMeters(0.0372), 
                                                   Units.inchesToMeters(16.157)), 
                                                   new Rotation3d(0, Rotation2d.fromDegrees(-10).getDegrees(), 0));
 
-            public static final Transform3d FORWARD_2 = 
+            public static final Transform3d LEFT_1 = 
                 new Transform3d(new Translation3d(Units.inchesToMeters(12.142), 
                                                   Units.inchesToMeters(0.0372), 
                                                   Units.inchesToMeters(16.157)), 

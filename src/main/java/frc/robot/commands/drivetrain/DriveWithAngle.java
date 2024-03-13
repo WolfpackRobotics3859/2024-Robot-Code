@@ -56,9 +56,16 @@ public class DriveWithAngle extends Command
     final SwerveRequest.FieldCentricFacingAngle driveRequest = new SwerveRequest.FieldCentricFacingAngle()
       .withDeadband(DriveConstants.MAX_SPEED * 0.1).withRotationalDeadband(DriveConstants.MAX_ANGULAR_RATE * 0.1)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-      .withVelocityX(m_SpeedXSupplier.get() * DriveConstants.MAX_SPEED * 0.4)
-      .withVelocityY(m_SpeedYSupplier.get() * DriveConstants.MAX_SPEED * 0.4)
-      .withTargetDirection(Rotation2d.fromDegrees(m_angle));
+      .withSteerRequestType(SteerRequestType.MotionMagic)
+      .withVelocityX(m_SpeedXSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
+      .withVelocityY(m_SpeedYSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
+      .withTargetDirection(Rotation2d.fromDegrees(m_angleSupplier.get()));
+
+    // configure PID controller
+    // TODO: tune these numbers
+    driveRequest.HeadingController.setPID(0.01, 0.001, 0);
+    driveRequest.HeadingController.setTolerance(0.5);
+    driveRequest.HeadingController.enableContinuousInput(-180, 180);
 
     m_Drivetrain.setControl(driveRequest);
   }
