@@ -152,9 +152,9 @@ public class Orchestrator extends SubsystemBase
     m_ShooterTopRollerVelocity = SmartDashboard.getNumber("[Manual] Top Roller Velocity", 0);
     m_ShooterBottomRollerVelocity = SmartDashboard.getNumber("[Manual] Bottom Roller Velocity", 0);
     m_ShooterFeederVoltage = SmartDashboard.getNumber("[Manual] Feeder Roller Voltage", 0);
-    m_ShooterAngle = SmartDashboard.getNumber("[Manual] Shooter Angle", 0.45);
-    m_ElevatorPosition = SmartDashboard.getNumber("[Manual] Elevator Position", 0.65);
-    m_IntakePosition = SmartDashboard.getNumber("[Manual] Intake Position", 0.5);
+    m_ShooterAngle = SmartDashboard.getNumber("[Manual] Shooter Angle", 0.6);
+    m_ElevatorPosition = SmartDashboard.getNumber("[Manual] Elevator Position", 0.275);
+    m_IntakePosition = SmartDashboard.getNumber("[Manual] Intake Position", 2.7);
     m_IntakeRollersVoltage = SmartDashboard.getNumber("[Manual] Intake Voltage", 0);
   }
 
@@ -163,16 +163,16 @@ public class Orchestrator extends SubsystemBase
   {
     m_IntakeRollersVoltage = Positions.STOW.INTAKE_ROLLER_VOLTAGE;
 
-    if (!m_Shooter.noteCentered())
-    {
-      noteToMiddle();
-    }
-    else
-    {
-      m_ShooterTopRollerVelocity = Positions.STOW.SHOOTER_ROLLER_1_VELOCITY;
-      m_ShooterBottomRollerVelocity = Positions.STOW.SHOOTER_ROLLER_2_VELOCITY;
-      m_ShooterFeederVoltage = Positions.STOW.SHOOTER_FEEDER_VOLTAGE;
-    }
+    // if (!m_Shooter.noteCentered())
+    // {
+    //   noteToMiddle();
+    // }
+    // else
+    // {
+    m_ShooterTopRollerVelocity = Positions.STOW.SHOOTER_ROLLER_1_VELOCITY;
+    m_ShooterBottomRollerVelocity = Positions.STOW.SHOOTER_ROLLER_2_VELOCITY;
+    m_ShooterFeederVoltage = Positions.STOW.SHOOTER_FEEDER_VOLTAGE;
+    // }
 
     if(elevatorDown())
     {
@@ -221,20 +221,20 @@ public class Orchestrator extends SubsystemBase
     if(elevatorDown())
     {
       // set to bumper shot
-      m_ElevatorPosition = Positions.LOW_BUMPER_SHOT.ELEVATOR_POSITION;
-      m_ShooterTopRollerVelocity = Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_1_VELOCITY;
-      m_ShooterBottomRollerVelocity = Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_2_VELOCITY;
-      m_IntakePosition = Positions.LOW_BUMPER_SHOT.INTAKE_WRIST_POSITION;
-      m_IntakeRollersVoltage = Positions.LOW_BUMPER_SHOT.INTAKE_ROLLER_VOLTAGE;
+      // m_ElevatorPosition = Positions.LOW_BUMPER_SHOT.ELEVATOR_POSITION;
+      // m_ShooterTopRollerVelocity = Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_1_VELOCITY;
+      // m_ShooterBottomRollerVelocity = Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_2_VELOCITY;
+      // m_IntakePosition = Positions.LOW_BUMPER_SHOT.INTAKE_WRIST_POSITION;
+      // m_IntakeRollersVoltage = Positions.LOW_BUMPER_SHOT.INTAKE_ROLLER_VOLTAGE;
 
-      if (m_Elevator.isInPosition(m_ElevatorPosition))
-      {
-        m_ShooterAngle = Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE;
-        if (m_Shooter.inPosition(m_ShooterAngle))
-        {
-          m_ShooterFeederVoltage = Positions.INTAKING.SHOOTER_FEEDER_VOLTAGE;
-        }
-      }
+      // if (m_Elevator.isInPosition(m_ElevatorPosition))
+      // {
+      //   m_ShooterAngle = Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE;
+      //   if (m_Shooter.inPosition(m_ShooterAngle))
+      //   {
+      //     m_ShooterFeederVoltage = Positions.LOW_BUMPER_SHOT.SHOOTER_FEEDER_VOLTAGE;
+      //   }
+      // }
     }
     return false;
   }
@@ -244,9 +244,22 @@ public class Orchestrator extends SubsystemBase
   // Returns true when no note is detected anymore.
   public boolean shootHigh()
   {
-    // Empty for now.
+    if (m_Shooter.shooterClear())
+    {
+      return true;
+    }
+
     if(elevatorUp())
     {
+      m_ElevatorPosition = Positions.DEFENSE_SHOT.ELEVATOR_POSITION;
+      m_ShooterAngle = Positions.DEFENSE_SHOT.SHOOTER_WRIST_ANGLE;
+      m_ShooterTopRollerVelocity = Positions.DEFENSE_SHOT.SHOOTER_ROLLER_1_VELOCITY;
+      m_ShooterBottomRollerVelocity = Positions.DEFENSE_SHOT.SHOOTER_ROLLER_2_VELOCITY;
+
+      if (m_Elevator.isInPosition(m_ElevatorPosition) && m_Shooter.inPosition(m_ShooterAngle) && m_Shooter.getShooterReady())
+      {
+        m_ShooterFeederVoltage = Positions.DEFENSE_SHOT.SHOOTER_FEEDER_VOLTAGE;
+      }
     }
     return false;
   }

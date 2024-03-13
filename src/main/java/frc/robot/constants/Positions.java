@@ -1,6 +1,6 @@
 package frc.robot.constants;
 
-import com.google.flatbuffers.Constants;
+import java.util.function.Supplier;
 
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -63,9 +63,15 @@ public class Positions
         public static final double ELEVATOR_POSITION = 0.275;
     }
 
-    public static final class HIGH_BUMPER_SHOT
+    public static final class DEFENSE_SHOT
     {
-        
+        public static final double INTAKE_ROLLER_VOLTAGE = 0;
+        public static final double INTAKE_WRIST_POSITION = 0.5;
+        public static final double SHOOTER_ROLLER_1_VELOCITY = 40;
+        public static final double SHOOTER_ROLLER_2_VELOCITY = 40;
+        public static final double SHOOTER_FEEDER_VOLTAGE = 10;
+        public static final double SHOOTER_WRIST_ANGLE = 0.54;
+        public static final double ELEVATOR_POSITION = 0.75;
     }
 
     public static final class APRILTAGS
@@ -83,11 +89,15 @@ public class Positions
          * Gets the current speaker the robot should be aimed at based on the DriverStation or FMS
          * @return The AprilTag object of the desired speaker (if none present, returns null)
          */
-        public static AprilTag currentSpeakerTag()
+        public static final AprilTag getCurrentSpeakerTag()
         {
             return DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue
             ? BLUE_SPEAKER_TAG
             : RED_SPEAKER_TAG;
         }
+
+        public static final Supplier<Pose2d> SPEAKER_POSE_SUPPLIER = () -> DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue
+            ? BLUE_SPEAKER_TAG.pose.toPose2d()
+            : RED_SPEAKER_TAG.pose.toPose2d();
     }
 }

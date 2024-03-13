@@ -4,14 +4,8 @@
 
 package frc.robot.utils;
 
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-
 /** Add your docs here. */
-public abstract class Tabs
+public class ShotCalculator
 {
-    protected ShuffleboardTab tab;
     
-    public abstract void createEntries();
-
-    public abstract void update();
 }

@@ -50,22 +50,22 @@ public class ShooterConstants
 
 
     // Wrist values
-    public static final double SHOOTER_WRIST_FEED_FORWARD = 0.75;
+    public static final double SHOOTER_WRIST_FEED_FORWARD = 0.3;
 
     // Shooter motor configs
     public static final double SHOOTER_MOTOR_ACCELERATION = 30;
 
     public static final Slot0Configs SHOOTER_1_GAINS = new Slot0Configs()
-        .withKP(0.0025769).withKI(0).withKD(0)
-        .withKS(0.17472).withKV(0.11134).withKA(0.029604);
+        .withKP(0.094562).withKI(0).withKD(0)
+        .withKS(0.095166).withKV(0.11334).withKA(0.023285);
 
     public static final Slot0Configs SHOOTER_2_GAINS = new Slot0Configs()
-        .withKP(0.011753).withKI(0).withKD(0)
-        .withKS(0.13771).withKV(0.10834).withKA(0.01631);
+        .withKP(0.090537).withKI(0).withKD(0)
+        .withKS(0.090537).withKV(0.11444).withKA(0.021771);
     
     // Wrist motor configs
     public static final Slot0Configs WRIST_GAINS = new Slot0Configs()
-        .withKP(35).withKI(0).withKD(0)
+        .withKP(37).withKI(0).withKD(0)
         .withKS(0).withKV(0).withKA(0)
         .withGravityType(GravityTypeValue.Arm_Cosine);
 
@@ -98,7 +98,7 @@ public class ShooterConstants
     // Wrist CANCoder
     public static final MagnetSensorConfigs WRIST_CANCODER_MAGNET_CONFIGS = new MagnetSensorConfigs()
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
-        .withMagnetOffset(-0.25)
+        .withMagnetOffset(0.26)
         .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1);
 
     // Compile all configs into a single config variable for ease of use
@@ -143,8 +143,8 @@ public class ShooterConstants
 
     // Shooting positions
     // TODO fix these values
-    public static final Measure<Distance> MIN_SHOOTING_DISTANCE = Units.Meters.of(0);
-    public static final Measure<Distance> MAX_SHOOTING_DISTANCE = Units.Meters.of(8);
+    public static final Measure<Distance> MIN_SHOOTING_DISTANCE = Units.Inches.of(0);
+    public static final Measure<Distance> MAX_SHOOTING_DISTANCE = Units.Inches.of(120);
 
     // Misc
     public static final double WRIST_MOVEMENT_TOLERANCE = 0.04;

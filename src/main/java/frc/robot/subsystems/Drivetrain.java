@@ -11,6 +11,7 @@ import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonUtils;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -24,9 +25,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -40,10 +39,10 @@ import frc.robot.constants.drivetrain.TunerConstants;
 
 public class Drivetrain extends SwerveDrivetrain implements Subsystem 
 {
-  private PhotonCamera m_CameraForward1, m_CameraForward2, m_CameraRear1;
-  private PhotonPoseEstimator m_CameraForward1Estimator, m_CameraForward2Estimator, m_CameraRear1Estimator;
+  private PhotonCamera m_CameraRight, m_CameraLeft, m_CameraRear1;
+  private PhotonPoseEstimator m_CameraRightEstimator, m_CameraLeftEstimator, m_CameraRear1Estimator;
   private Timer m_TelemetryTimer = new Timer();
-  Field2d m_Field_Odometry = new Field2d();
+  private Field2d m_Field_Odometry = new Field2d();
 
   private boolean alignToSpeaker = false;
   private boolean isAligned = false;
@@ -81,6 +80,10 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
         Logger.recordOutput("robotPose", m_odometry.getEstimatedPosition());
         m_Field_Odometry.setRobotPose(this.m_odometry.getEstimatedPosition());
         SmartDashboard.putData("Field Data", m_Field_Odometry);
+        SmartDashboard.putBoolean("Align to speaker", alignToSpeaker);
+        SmartDashboard.putBoolean("Is Aligned", isAligned);
+        SmartDashboard.putNumber("Speaker Heading", this.getAngleToSpeaker().getDegrees());
+        m_TelemetryTimer.reset();
       }
     } 
   }
@@ -131,24 +134,14 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
 
   public Rotation2d getAngleToSpeaker()
   {
-    // get current robot pose
-    Pose2d currentPose = this.m_odometry.getEstimatedPosition();
-
-    // set speaker point
-    Translation2d speakerPoint = Positions.APRILTAGS.currentSpeakerTag().pose.getTranslation().toTranslation2d();
-
     // return desired angle
-    return(new Rotation2d(speakerPoint.getX() - currentPose.getX(), speakerPoint.getY() - currentPose.getY()));
+    return(PhotonUtils.getYawToPose(this.m_odometry.getEstimatedPosition(), Positions.APRILTAGS.SPEAKER_POSE_SUPPLIER.get()));
   }
 
   private void configurePhotonVision()
   {
-    m_CameraForward1 = new PhotonCamera("CameraForward1");
-    m_CameraForward2 = new PhotonCamera("CameraForward2");
-    m_CameraRear1 = new PhotonCamera("CameraRear1");
-    m_CameraForward1Estimator = new PhotonPoseEstimator(DriveConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_CameraForward1, DriveConstants.CAMERA_POSITIONS.FORWARD_1);
-    m_CameraForward2Estimator = new PhotonPoseEstimator(DriveConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_CameraForward2, DriveConstants.CAMERA_POSITIONS.FORWARD_2);
-    m_CameraRear1Estimator = new PhotonPoseEstimator(DriveConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_CameraRear1, DriveConstants.CAMERA_POSITIONS.REAR_1);
+    m_CameraRight = new PhotonCamera("CameraRight1");
+    m_CameraRightEstimator = new PhotonPoseEstimator(DriveConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_CameraRight, DriveConstants.CAMERA_POSITIONS.RIGHT);
   }
   
   /** 
@@ -182,44 +175,45 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   // public Command autoPathBuilder = new AutoBuilder().pathfindToPose
   // (null, null, ModuleCount, 0
   // );
+  Optional<EstimatedRobotPose> pose;
 
   private void updateVision()
   {
-    if(m_CameraForward1.isConnected())
+    if(m_CameraRight.isConnected())
     {
-      Optional<EstimatedRobotPose> pose = this.m_CameraForward1Estimator.update();
+      pose = this.m_CameraRightEstimator.update();
       try
       {
-        this.m_odometry.addVisionMeasurement(pose.get().estimatedPose.toPose2d(), ModuleCount);
+        this.m_odometry.addVisionMeasurement(pose.get().estimatedPose.toPose2d(), pose.get().timestampSeconds);
       }
       catch(Exception e)
       {
         // System.out.println("[DRIVE] WARNING: CameraForward1Estimator returning null values.");
       }
     }
-    if(m_CameraForward2.isConnected())
-    {
-      Optional<EstimatedRobotPose> pose = this.m_CameraForward2Estimator.update();
-      try
-      {
-        this.m_odometry.addVisionMeasurement(pose.get().estimatedPose.toPose2d(), ModuleCount);
-      }
-      catch(Exception e)
-      {
-        // System.out.println("[DRIVE] WARNING: CameraForward2Estimator returning null values.");
-      }
-    }
-    if(m_CameraRear1.isConnected())
-    {
-      Optional<EstimatedRobotPose> pose = this.m_CameraRear1Estimator.update();
-      try
-      {
-        this.m_odometry.addVisionMeasurement(pose.get().estimatedPose.toPose2d(), ModuleCount);
-      }
-      catch(Exception e)
-      {
-        // System.out.println("[DRIVE] WARNING: CameraRear1Estimator returning null values.");
-      }
-    }
+    // if(m_CameraLeft.isConnected())
+    // {
+    //   Optional<EstimatedRobotPose> pose = this.m_CameraLeftEstimator.update();
+    //   try
+    //   {
+    //     this.m_odometry.addVisionMeasurement(pose.get().estimatedPose.toPose2d(), ModuleCount);
+    //   }
+    //   catch(Exception e)
+    //   {
+    //     // System.out.println("[DRIVE] WARNING: CameraForward2Estimator returning null values.");
+    //   }
+    // }
+    // if(m_CameraRear1.isConnected())
+    // {
+    //   Optional<EstimatedRobotPose> pose = this.m_CameraRear1Estimator.update();
+    //   try
+    //   {
+    //     this.m_odometry.addVisionMeasurement(pose.get().estimatedPose.toPose2d(), ModuleCount);
+    //   }
+    //   catch(Exception e)
+    //   {
+    //     // System.out.println("[DRIVE] WARNING: CameraRear1Estimator returning null values.");
+    //   }
+    
   }
 }

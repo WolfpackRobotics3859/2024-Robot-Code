@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,11 +16,11 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Orchestrator;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
-import frc.robot.utils.ShuffleboardManager;
 import frc.robot.commands.autos.DriveBack;
 import frc.robot.commands.autos.LongDriveBack;
 import frc.robot.commands.autos.Shoot;
 import frc.robot.commands.autos.ShootAndDrive;
+import frc.robot.commands.drivetrain.DriveRotation;
 import frc.robot.commands.drivetrain.Drive;
 import frc.robot.commands.drivetrain.DriveAngle;
 import frc.robot.commands.drivetrain.SeedFieldRelative;
@@ -31,6 +29,7 @@ import frc.robot.commands.intake.IntakePlayAlong;
 import frc.robot.commands.orchestrator.AmpShot;
 import frc.robot.commands.orchestrator.IWantANote;
 import frc.robot.commands.orchestrator.ManualControl;
+import frc.robot.commands.orchestrator.ShootLow;
 import frc.robot.commands.orchestrator.Stow;
 import frc.robot.commands.shooter.ShooterPlayAlong;
 
@@ -49,9 +48,6 @@ public class RobotContainer
   // Controllers
   private final CommandXboxController m_primaryController = new CommandXboxController(Hardware.PRIMARY_CONTROLLER_PORT);
   private final CommandXboxController m_secondaryController = new CommandXboxController(Hardware.SECONDARY_CONTROLLER_PORT);
-
-  // Shuffleboard
-  private final ShuffleboardManager m_ShuffleboardManager = new ShuffleboardManager(m_Orchestrator, m_Drivetrain);
 
   // Getters
   /**
@@ -140,26 +136,34 @@ public class RobotContainer
     m_Elevator.setDefaultCommand(new ElevatorPlayAlong(m_Orchestrator, m_Elevator));
     m_Orchestrator.setDefaultCommand(new Stow(m_Orchestrator));
 
-    // m_primaryController.a().whileTrue(new DriveWithAngle(m_Drivetrain,
-    //     () -> -m_primaryController.getLeftY(),
-    //     () -> -m_primaryController.getLeftX(),
-    //     180.0));
+    m_primaryController.rightTrigger().whileTrue(new IWantANote(m_Orchestrator)); // intake
+    m_primaryController.leftTrigger().whileTrue(new ShootLow(m_Orchestrator, m_Drivetrain)); // low shot
 
-    // m_primaryController.y().whileTrue(new DriveWithAngle(m_Drivetrain,
-    //     () -> -m_primaryController.getLeftY(),
-    //     () -> -m_primaryController.getLeftX(),
-    //     90.0));
+    m_primaryController.rightBumper().onTrue(new SeedFieldRelative(m_Drivetrain));
 
-    // m_primaryController.y().whileTrue(new DriveWithAngle(m_Drivetrain,
-    //     () -> -m_primaryController.getLeftY(),
-    //     () -> -m_primaryController.getLeftX(),
-    //     0.0));
+    // turn to angles
+    m_primaryController.a().whileTrue(new DriveAngle(m_Drivetrain,
+        () -> -m_primaryController.getLeftY(),
+        () -> -m_primaryController.getLeftX(),
+        () -> 180.0));
 
-    // m_primaryController.x().whileTrue(new DriveWithAngle(m_Drivetrain,
-    //     () -> -m_primaryController.getLeftY(),
-    //     () -> -m_primaryController.getLeftX(),
-    //     270.0));
+    m_primaryController.y().whileTrue(new DriveAngle(m_Drivetrain,
+        () -> -m_primaryController.getLeftY(),
+        () -> -m_primaryController.getLeftX(),
+        () -> 90.0));
 
+    m_primaryController.b().whileTrue(new DriveRotation(m_Drivetrain,
+        () -> -m_primaryController.getLeftY(),
+        () -> -m_primaryController.getLeftX(),
+        () -> m_Drivetrain.getAngleToSpeaker())
+    );
+
+    m_primaryController.x().whileTrue(new DriveAngle(m_Drivetrain,
+        () -> -m_primaryController.getLeftY(),
+        () -> -m_primaryController.getLeftX(),
+        () -> 270.0));
+
+    //
     m_secondaryController.x().whileTrue(new DriveAngle(m_Drivetrain, // left chain
       () -> -m_primaryController.getLeftY(),
       () -> -m_primaryController.getLeftX(),
@@ -177,13 +181,12 @@ public class RobotContainer
 
     m_secondaryController.a().whileTrue(new SeedFieldRelative(m_Drivetrain));
 
-    m_primaryController.a().whileTrue(new AmpShot(m_Orchestrator));
-    m_primaryController.b().whileTrue(new IWantANote(m_Orchestrator));
+    m_primaryController.rightBumper().onTrue(new SeedFieldRelative(m_Drivetrain));
   }
 
   public Command getAutonomousCommand() 
   {
-    return m_ShuffleboardManager.getAutoCommand();
+    return autoSelector.getSelected();
   }
 }
 

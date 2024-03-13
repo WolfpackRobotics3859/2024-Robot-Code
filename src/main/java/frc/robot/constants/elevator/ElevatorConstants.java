@@ -28,9 +28,9 @@ public class ElevatorConstants
 
     // Limit Values
     public static final double ELEVATOR_TOP_LIMIT = .84;
-    public static final double ELEVATOR_BOTTOM_LIMIT = 0.09;
+    public static final double ELEVATOR_BOTTOM_LIMIT = 0.06;
 
-     public static final double ELEVATOR_BUMPER_SHOT_POSITION = 0.127;
+    public static final double ELEVATOR_BUMPER_SHOT_POSITION = 0.127;
     public static final double ELEVATOR_MANUAL_SHOT_POSITION = 0.127;
     public static final double ELEVATOR_PURGE_POSITION = 0.125;
     public static final double ELEVATOR_CLIMB_SAFE_DOWN = 0.185;
@@ -73,7 +73,7 @@ public class ElevatorConstants
 
     public static final MagnetSensorConfigs MAGNET_SENSOR_CONFIGS = new MagnetSensorConfigs()
         .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
-        .withMagnetOffset(-0.548193)
+        .withMagnetOffset(-0.703)
         .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1);
     
     public static final TalonFXConfiguration ELEVATOR_MOTOR_CONFIG = new TalonFXConfiguration()

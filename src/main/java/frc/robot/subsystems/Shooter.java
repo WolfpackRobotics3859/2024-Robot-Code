@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
@@ -13,22 +14,18 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import frc.robot.Robot;
 import frc.robot.constants.Global;
 import frc.robot.constants.Hardware;
+import frc.robot.constants.Positions;
 import frc.robot.constants.shooter.ShooterConstants;
 import edu.wpi.first.apriltag.AprilTag;
-import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -56,6 +53,8 @@ public class Shooter extends SubsystemBase
   {
     // Motor Configuration
     m_WristMotor.getConfigurator().apply(ShooterConstants.WRIST_MOTOR_CONFIGURATION);
+    m_ShooterMotor1.getConfigurator().apply(ShooterConstants.SHOOTER_MOTOR_1_CONFIGURATION);
+    m_ShooterMotor2.getConfigurator().apply(ShooterConstants.SHOOTER_MOTOR_2_CONFIGURATION);
 
     // Encoder Configuration
     m_WristCANCoder.getConfigurator().apply(ShooterConstants.WRIST_CANCODER_CONFIGURATION);
@@ -173,17 +172,19 @@ public class Shooter extends SubsystemBase
   }
 
   /**
-   * Finds the distance between the robot and one of the speakers, depending on the current alliance color of the robot. If none given, robot will aim at blue speaker.
+   * Finds the distance between the robot and one of the speakers, depending on the current alliance color of the robot. If none given, robot will aim at red speaker.
    * @param robotPose The current pose of the robot
    * @param targetTag The AprilTag object of the target
-   * @return The distance in meters (clamped to be within set distances)
+   * @return The distance in inches (clamped to be within set distances)
    */
-  public Measure<Distance> getSpeakerDistance(Pose2d robotPose, AprilTag targetTag)
+  public Measure<Distance> getSpeakerDistance(Pose2d robotPose)
   {
-    return Units.Meters.of(MathUtil.clamp(
+    AprilTag targetTag = Positions.APRILTAGS.getCurrentSpeakerTag();
+    
+    return Units.Inches.of(MathUtil.clamp(
       robotPose.getTranslation().getDistance(targetTag.pose.toPose2d().getTranslation()),
-      ShooterConstants.MIN_SHOOTING_DISTANCE.in(Units.Meters),
-      ShooterConstants.MAX_SHOOTING_DISTANCE.in(Units.Meters)
+      ShooterConstants.MIN_SHOOTING_DISTANCE.in(Units.Inches),
+      ShooterConstants.MAX_SHOOTING_DISTANCE.in(Units.Inches)
     ));
   }
 
