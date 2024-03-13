@@ -52,28 +52,6 @@ public class Positions
         public static final double ELEVATOR_POSITION = 0.275;
     }
 
-    public static final class LOW_BUMPER_SHOT
-    {
-        public static final double INTAKE_ROLLER_VOLTAGE = 0;
-        public static final double INTAKE_WRIST_POSITION = 2.7;
-        public static final double SHOOTER_ROLLER_1_VELOCITY = 35;
-        public static final double SHOOTER_ROLLER_2_VELOCITY = 35;
-        public static final double SHOOTER_FEEDER_VOLTAGE = 10;
-        public static final double SHOOTER_WRIST_ANGLE = 0.635;
-        public static final double ELEVATOR_POSITION = 0.275;
-    }
-
-    public static final class DEFENSE_SHOT
-    {
-        public static final double INTAKE_ROLLER_VOLTAGE = 0;
-        public static final double INTAKE_WRIST_POSITION = 0.5;
-        public static final double SHOOTER_ROLLER_1_VELOCITY = 40;
-        public static final double SHOOTER_ROLLER_2_VELOCITY = 40;
-        public static final double SHOOTER_FEEDER_VOLTAGE = 10;
-        public static final double SHOOTER_WRIST_ANGLE = 0.54;
-        public static final double ELEVATOR_POSITION = 0.75;
-    }
-
     public static final class APRILTAGS
     {
         public static final Pose3d BLUE_AMP_3D_POSE = DriveConstants.TAG_LAYOUT.getTagPose(5).get();
@@ -99,5 +77,27 @@ public class Positions
         public static final Supplier<Pose2d> SPEAKER_POSE_SUPPLIER = () -> DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue
             ? BLUE_SPEAKER_TAG.pose.toPose2d()
             : RED_SPEAKER_TAG.pose.toPose2d();
+    }
+
+    public static final class LOW_BUMPER_SHOT
+    {
+        public static final double INTAKE_ROLLER_VOLTAGE = 0;
+        public static final double INTAKE_WRIST_POSITION = 2.7;
+        public static final double SHOOTER_ROLLER_1_VELOCITY = 35;
+        public static final double SHOOTER_ROLLER_2_VELOCITY = 35;
+        public static final double SHOOTER_FEEDER_VOLTAGE = 10;
+        public static final double SHOOTER_WRIST_ANGLE = 0.635;
+        public static final double ELEVATOR_POSITION = 0.275;
+    }
+
+    public static final class DEFENSE_SHOT
+    {
+        public static final double INTAKE_ROLLER_VOLTAGE = 0;
+        public static final double INTAKE_WRIST_POSITION = 3.0;
+        public static final double SHOOTER_ROLLER_1_VELOCITY = 30;
+        public static final double SHOOTER_ROLLER_2_VELOCITY = 30;
+        public static final double SHOOTER_FEEDER_VOLTAGE = -10;
+        public static final double SHOOTER_WRIST_ANGLE = 0.53;
+        public static final double ELEVATOR_POSITION = 0.83; 
     }
 }

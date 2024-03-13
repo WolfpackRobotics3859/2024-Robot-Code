@@ -15,7 +15,7 @@ public class IntakeConstants
     // Position Values
     public static final double INTAKE_DOWN_POSITION = 0;
     public static final double INTAKE_UP_POSITION = 4.3;
-    public static final double INTAKE_CLEARANCE_POSITION = 3.0;
+    public static final double INTAKE_CLEAR_POSITION = 3.0;
     public static final double INTAKE_BUMPER_SHOT_POSITION = 2.7;
     public static final double INTAKE_AMP_SHOT_POSITION = 3.6;
 

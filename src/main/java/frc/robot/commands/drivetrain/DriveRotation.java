@@ -54,7 +54,6 @@ public class DriveRotation extends Command
     driveRequest.HeadingController.enableContinuousInput(-180, 180);
 
     // set drivetrain to not be aligned
-    m_Drivetrain.setRobotAligned(false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -70,22 +69,12 @@ public class DriveRotation extends Command
       .withTargetDirection(m_RotationSupplier.get());
 
     m_Drivetrain.setControl(driveRequest);
-
-    if (driveRequest.HeadingController.atSetpoint())
-    {
-      m_Drivetrain.setAlignToSpeaker(true);
-    }
-    else
-    {
-      m_Drivetrain.setAlignToSpeaker(false);
-    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) 
   {
-    m_Drivetrain.setAlignToSpeaker(false);
   }
 
   // Returns true when the command should end.

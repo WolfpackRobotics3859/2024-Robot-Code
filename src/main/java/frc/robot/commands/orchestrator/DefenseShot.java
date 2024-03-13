@@ -5,46 +5,40 @@
 package frc.robot.commands.orchestrator;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Orchestrator;
 
-public class ShootLow extends Command 
-{
-  private final Orchestrator m_Orchestrator;
-  private final Drivetrain m_Drivetrain;
-
-  /** Creates a new ShootLow. */
-  public ShootLow(Orchestrator orchestrator, Drivetrain drivetrain) 
+public class DefenseShot extends Command {
+  private Orchestrator m_Orchestrator;
+  public DefenseShot(Orchestrator orchestrator) 
   {
-    this.m_Orchestrator = orchestrator;
-    this.m_Drivetrain = drivetrain;
+    m_Orchestrator = orchestrator;
     addRequirements(m_Orchestrator);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize()
+  public void initialize() 
   {
-    m_Orchestrator.freshenOrchestrator();
+    // Intentionally Empty
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
-    m_Orchestrator.shootLow();
-
+    m_Orchestrator.shootHigh();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted)
   {
+    // Intentionally Empty
   }
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished()
+  public boolean isFinished() 
   {
     return false;
   }

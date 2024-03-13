@@ -15,9 +15,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.constants.drivetrain.DriveConstants;
 
-public class DriveAngle extends Command
+public class DriveWithTargetAngle extends Command
 {
-  private final Supplier<Double> m_SpeedXSupplier, m_SpeedYSupplier, m_angleSupplier;
+  private final Supplier<Double> m_SpeedXSupplier, m_SpeedYSupplier;
+  private final Supplier<Rotation2d> m_AngleSupplier;
   private final Drivetrain m_Drivetrain;
   private final SwerveRequest.FieldCentricFacingAngle driveRequest = new SwerveRequest.FieldCentricFacingAngle();
   
@@ -28,11 +29,11 @@ public class DriveAngle extends Command
    * @param speedY The speed in the Y direction
    * @param angle The angle to point the robot toward
    */
-  public DriveAngle(Drivetrain drivetrain, Supplier<Double> speedX, Supplier<Double> speedY, Supplier<Double> angle) 
+  public DriveWithTargetAngle(Drivetrain drivetrain, Supplier<Double> speedX, Supplier<Double> speedY, Supplier<Rotation2d> angle) 
   {
     this.m_SpeedXSupplier = speedX;
     this.m_SpeedYSupplier = speedY;
-    this.m_angleSupplier = angle;
+    this.m_AngleSupplier = angle;
     this.m_Drivetrain = drivetrain;
 
     addRequirements(drivetrain);
@@ -42,29 +43,23 @@ public class DriveAngle extends Command
   @Override
   public void initialize() 
   {
-    // configure PID controller
-    driveRequest.HeadingController.setPID
-    (
-      DriveConstants.TURN_TO_ANGLE_P,
-      DriveConstants.TURN_TO_ANGLE_I,
-      DriveConstants.TURN_TO_ANGLE_D
-    );
-
-    driveRequest.HeadingController.setTolerance(DriveConstants.TURN_TO_ANGLE_TOLERANCE);
+    driveRequest.HeadingController.setPID(5, 0.001, 0);
+    driveRequest.HeadingController.setTolerance(0.5);
+    driveRequest.HeadingController.enableContinuousInput(-180, 180);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute()
   {
-    // create request
+    // modify request
     driveRequest
-      .withDeadband(DriveConstants.MAX_SPEED * 0.1)
+      .withDeadband(DriveConstants.MAX_SPEED * 0.1).withRotationalDeadband(DriveConstants.MAX_ANGULAR_RATE * 0.1)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
       .withSteerRequestType(SteerRequestType.MotionMagic)
       .withVelocityX(m_SpeedXSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
       .withVelocityY(m_SpeedYSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
-      .withTargetDirection(Rotation2d.fromDegrees(m_angleSupplier.get()));
+      .withTargetDirection(m_AngleSupplier.get());
 
     m_Drivetrain.setControl(driveRequest);
   }
