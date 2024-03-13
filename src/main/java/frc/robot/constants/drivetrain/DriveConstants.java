@@ -4,6 +4,7 @@ import java.io.UncheckedIOException;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -32,6 +33,14 @@ public class DriveConstants
                 throw new RuntimeException(e);
             }
         }
+
+    public static class APRIL_TAG_POSES
+    {
+        public static Pose2d RED_SPEAKER = TAG_LAYOUT.getTagPose(4).get().toPose2d();
+        public static Pose2d BLUE_SPEAKER = TAG_LAYOUT.getTagPose(7).get().toPose2d();
+        public static Pose2d RED_AMP = TAG_LAYOUT.getTagPose(5).get().toPose2d();
+        public static Pose2d BLUE_AMP = TAG_LAYOUT.getTagPose(6).get().toPose2d();
+    }
 
         public static final double AMBIGUITY_THRESHOLD = 0.25;
 

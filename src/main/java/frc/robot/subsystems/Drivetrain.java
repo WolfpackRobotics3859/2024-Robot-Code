@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -23,18 +24,13 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.commands.drivetrain.Drive;
 import frc.robot.constants.Global;
 import frc.robot.constants.drivetrain.DriveConstants;
 import frc.robot.constants.drivetrain.TunerConstants;
@@ -125,7 +121,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     return m_kinematics.toChassisSpeeds(getState().ModuleStates);
   }
 
-  public Supplier<Rotation2d> YawToSpeaker = () -> PhotonUtils.getYawToPose(this.m_odometry.getEstimatedPosition(), DriveConstants.TAG_LAYOUT.getTagPose(6).get().toPose2d());
+  public Supplier<Rotation2d> YawToSpeaker = () -> PhotonUtils.getYawToPose(this.m_odometry.getEstimatedPosition(), DriveConstants.TAG_LAYOUT.getTagPose(4).get().toPose2d());
 
   private void configurePhotonVision()
   {
@@ -157,7 +153,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
       this::getCurrentRobotChassisSpeeds,
       (speeds)->this.setControl(m_AutoRequest.withSpeeds(speeds)),
       new HolonomicPathFollowerConfig(new PIDConstants(7, 0, 0), new PIDConstants(7, 0, 0), TunerConstants.SPEED_AT_12_VOLTS_MPS, driveBaseRadius, new ReplanningConfig()),
-      ()->false,
+      ()->true,
       this);
   }
 
