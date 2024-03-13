@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import javax.swing.text.Position;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Global;
 import frc.robot.constants.Positions;
 import frc.robot.constants.elevator.ElevatorConstants;
+import frc.robot.constants.intake.IntakeConstants;
 import frc.robot.constants.shooter.ShooterConstants;
 
 public class Orchestrator extends SubsystemBase
@@ -49,20 +51,12 @@ public class Orchestrator extends SubsystemBase
     this.m_Elevator = elevator;
     this.m_Shooter = shooter;
     this.m_Intake = intake;
-    this.Setup();
-
+    this.setup();
+    this.initializeManualControlValues();
     m_ElevatorPositionSignal = m_Elevator.getPositionSignal();
-
-    SmartDashboard.setDefaultNumber("[Manual] Top Roller Velocity", 0);
-    SmartDashboard.setDefaultNumber("[Manual] Bottom Roller Velocity", 0);
-    SmartDashboard.setDefaultNumber("[Manual] Feeder Roller Voltage", 0);
-    SmartDashboard.setDefaultNumber("[Manual] Shooter Angle", 0.45);
-    SmartDashboard.setDefaultNumber("[Manual] Elevator Position", 0.67);
-    SmartDashboard.setDefaultNumber("[Manual] Intake Position", 0.5);
-    SmartDashboard.setDefaultNumber("[Manual] Intake Voltage", 0);
   }
 
-  private void Setup()
+  private void setup()
   {
     if(Global.ENABLE_EXTRA_TELEMETRY)
     {
@@ -75,17 +69,29 @@ public class Orchestrator extends SubsystemBase
     SmartDashboard.putData(this);
   }
 
+  private void initializeManualControlValues()
+  {
+    SmartDashboard.setDefaultNumber("[Manual] Top Roller Velocity", 0);
+    SmartDashboard.setDefaultNumber("[Manual] Bottom Roller Velocity", 0);
+    SmartDashboard.setDefaultNumber("[Manual] Feeder Roller Voltage", 0);
+    SmartDashboard.setDefaultNumber("[Manual] Shooter Angle", 0.45);
+    SmartDashboard.setDefaultNumber("[Manual] Elevator Position", 0.67);
+    SmartDashboard.setDefaultNumber("[Manual] Intake Position", 0.5);
+    SmartDashboard.setDefaultNumber("[Manual] Intake Voltage", 0);
+  }
+
   @Override
   public void periodic()
   {
-    // if(Global.ENABLE_TELEMETRY)
-    // {
-    //   if(m_TelemetryTimer.get() > Global.TELEMETRY_UPDATE_SPEED)
-    //   {
-    //     // Intentionally Empty
-    //     m_TelemetryTimer.reset();
-    //   }
-    // }
+    
+    if(Global.ENABLE_TELEMETRY)
+    {
+      if(m_TelemetryTimer.get() > Global.TELEMETRY_UPDATE_SPEED)
+      {
+        BaseStatusSignal.refreshAll(m_ElevatorPositionSignal);
+        m_TelemetryTimer.reset();
+      }
+    }
 
     // if(Global.ENABLE_EXTRA_TELEMETRY)
     // {
@@ -140,8 +146,7 @@ public class Orchestrator extends SubsystemBase
   public void manualControl()
   {
     m_ShooterTopRollerVelocity = SmartDashboard.getNumber("[Manual] Top Roller Velocity", 0);
-    m_ShooterBottomRollerVelocity = SmartDashboard.getNumber("[Manual] Top Roller Velocity", 0);
-    // m_ShooterBottomRollerVelocity = SmartDashboard.getNumber("[Manual] Bottom Roller Velocity", 0);
+    m_ShooterBottomRollerVelocity = SmartDashboard.getNumber("[Manual] Bottom Roller Velocity", 0);
     m_ShooterFeederVoltage = SmartDashboard.getNumber("[Manual] Feeder Roller Voltage", 0);
     m_ShooterAngle = SmartDashboard.getNumber("[Manual] Shooter Angle", 0.45);
     m_ElevatorPosition = SmartDashboard.getNumber("[Manual] Elevator Position", 0.65);
@@ -152,26 +157,39 @@ public class Orchestrator extends SubsystemBase
   // Should include the ability to kill motors once robot is safely stowed.
   public void stow()
   {
-    m_ShooterTopRollerVelocity = Positions.STOW.SHOOTER_ROLLER_1_VELOCITY;
-    m_ShooterBottomRollerVelocity = Positions.STOW.SHOOTER_ROLLER_2_VELOCITY;
-    m_ShooterFeederVoltage = Positions.STOW.SHOOTER_FEEDER_VOLTAGE;
     m_IntakeRollersVoltage = Positions.STOW.INTAKE_ROLLER_VOLTAGE;
+
+    if (!m_Shooter.hasNoteCentered())
+    {
+      this.noteToMiddle();
+    }
+    else
+    {
+      m_ShooterTopRollerVelocity = Positions.STOW.SHOOTER_ROLLER_1_VELOCITY;
+      m_ShooterBottomRollerVelocity = Positions.STOW.SHOOTER_ROLLER_2_VELOCITY;
+      m_ShooterFeederVoltage = Positions.STOW.SHOOTER_FEEDER_VOLTAGE;
+    }
+
     if(elevatorDown())
     {
       m_ElevatorPosition = Positions.STOW.ELEVATOR_POSITION;
       m_ShooterAngle = Positions.STOW.SHOOTER_WRIST_ANGLE;
-      m_IntakePosition = Positions.STOW.INTAKE_WRIST_POSITION;
+      if (m_Elevator.isInPosition(m_ElevatorPosition) && m_Shooter.inPosition(m_ShooterAngle))
+      {
+        m_IntakePosition = Positions.STOW.INTAKE_WRIST_POSITION;
+      }
     }
   }
 
   public void intake()
   {
-    if(!m_Shooter.hasNoteRearPosition())
+    if(m_Shooter.hasNoteRearPosition() || m_Shooter.hasNoteCentered())
     {
       m_ShooterTopRollerVelocity = 0;
       m_ShooterBottomRollerVelocity = 0;
       m_ShooterFeederVoltage = 0;
       m_IntakeRollersVoltage = 0;
+      this.stow();
       return;
     }
     if(elevatorDown())
@@ -191,16 +209,41 @@ public class Orchestrator extends SubsystemBase
   // Returns true when no note is detected anymore.
   public boolean shootLow()
   {
-    // Intentionally Empty
+    if(m_Shooter.shooterClear())
+    {
+      m_ShooterTopRollerVelocity = 0;
+      m_ShooterBottomRollerVelocity = 0;
+      m_ShooterFeederVoltage = 0;
+      this.stow();
+      return true;
+    }
+
     if(elevatorDown())
     {
-      m_ElevatorPosition = Positions.INTAKING.ELEVATOR_POSITION;
-      m_ShooterAngle = Positions.INTAKING.SHOOTER_WRIST_ANGLE;
-      m_ShooterTopRollerVelocity = Positions.INTAKING.SHOOTER_ROLLER_1_VELOCITY;
-      m_ShooterBottomRollerVelocity = Positions.INTAKING.SHOOTER_ROLLER_2_VELOCITY;
-      m_ShooterFeederVoltage = Positions.INTAKING.SHOOTER_FEEDER_VOLTAGE;
-      m_IntakePosition = Positions.INTAKING.INTAKE_WRIST_POSITION;
-      m_IntakeRollersVoltage = Positions.INTAKING.INTAKE_ROLLER_VOLTAGE;
+      if(this.m_FreshCommand)
+      {
+        if(this.noteBackward())
+        {
+          m_ShooterTopRollerVelocity = Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_1_VELOCITY;
+          m_ShooterBottomRollerVelocity = Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_2_VELOCITY;
+          this.m_FreshCommand = false;
+        }
+      }
+
+      m_ElevatorPosition = Positions.LOW_BUMPER_SHOT.ELEVATOR_POSITION;
+      m_IntakePosition = Positions.LOW_BUMPER_SHOT.INTAKE_WRIST_POSITION;
+      m_IntakeRollersVoltage = Positions.LOW_BUMPER_SHOT.INTAKE_ROLLER_VOLTAGE;
+
+      if(m_Elevator.isInPosition(m_ElevatorPosition))
+      {
+        m_ShooterAngle = Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE;
+        if (this.m_Shooter.readyToShoot(Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE, 
+                                        Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_1_VELOCITY,
+                                        Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_2_VELOCITY))
+        {
+          m_ShooterFeederVoltage = Positions.LOW_BUMPER_SHOT.SHOOTER_FEEDER_VOLTAGE;
+        }
+      }
     }
     return false;
   }
@@ -210,9 +253,41 @@ public class Orchestrator extends SubsystemBase
   // Returns true when no note is detected anymore.
   public boolean shootHigh()
   {
-    // Empty for now.
+    if(m_Shooter.shooterClear())
+    {
+      m_ShooterTopRollerVelocity = 0;
+      m_ShooterBottomRollerVelocity = 0;
+      m_ShooterFeederVoltage = 0;
+      this.stow();
+      return true;
+    }
+
     if(elevatorUp())
     {
+      if(this.m_FreshCommand)
+      {
+        if(this.noteBackward())
+        {
+          m_ShooterTopRollerVelocity = Positions.DEFENSE_SHOT.SHOOTER_ROLLER_1_VELOCITY;
+          m_ShooterBottomRollerVelocity = Positions.DEFENSE_SHOT.SHOOTER_ROLLER_2_VELOCITY;
+          this.m_FreshCommand = false;
+        }
+      }
+
+      m_ElevatorPosition = Positions.DEFENSE_SHOT.ELEVATOR_POSITION;
+      m_IntakePosition = Positions.DEFENSE_SHOT.INTAKE_WRIST_POSITION;
+      m_IntakeRollersVoltage = Positions.DEFENSE_SHOT.INTAKE_ROLLER_VOLTAGE;
+
+      if(m_Elevator.isInPosition(m_ElevatorPosition))
+      {
+        m_ShooterAngle = Positions.DEFENSE_SHOT.SHOOTER_WRIST_ANGLE;
+        if (this.m_Shooter.readyToShoot(Positions.DEFENSE_SHOT.SHOOTER_WRIST_ANGLE, 
+                                        Positions.DEFENSE_SHOT.SHOOTER_ROLLER_1_VELOCITY,
+                                        Positions.DEFENSE_SHOT.SHOOTER_ROLLER_2_VELOCITY))
+        {
+          m_ShooterFeederVoltage = Positions.DEFENSE_SHOT.SHOOTER_FEEDER_VOLTAGE;
+        }
+      }
     }
     return false;
   }
@@ -224,22 +299,38 @@ public class Orchestrator extends SubsystemBase
   {
     if(m_Shooter.shooterClear())
     {
+      m_ShooterTopRollerVelocity = 0;
+      m_ShooterBottomRollerVelocity = 0;
+      m_ShooterFeederVoltage = 0;
+      this.stow();
       return true;
     }
+
     if(elevatorUp())
     {
-      m_ShooterAngle = Positions.AMP.SHOOTER_WRIST_ANGLE;
+      if(this.m_FreshCommand)
+      {
+        if(this.noteForward())
+        {
+          m_ShooterTopRollerVelocity = Positions.AMP.SHOOTER_ROLLER_1_VELOCITY;
+          m_ShooterBottomRollerVelocity = Positions.AMP.SHOOTER_ROLLER_2_VELOCITY;
+          this.m_FreshCommand = false;
+        }
+      }
+
+      m_ElevatorPosition = Positions.AMP.ELEVATOR_POSITION;
       m_IntakePosition = Positions.AMP.INTAKE_WRIST_POSITION;
       m_IntakeRollersVoltage = Positions.AMP.INTAKE_ROLLER_VOLTAGE;
-      if(m_Shooter.inPosition(m_ShooterAngle))
+
+      if(m_Elevator.isInPosition(m_ElevatorPosition))
       {
-        m_ElevatorPosition = Positions.AMP.ELEVATOR_POSITION;
-      }
-      if(m_Elevator.isInPosition(m_ElevatorPosition) && m_Shooter.inPosition(m_ShooterAngle))
-      {
-        m_ShooterTopRollerVelocity = Positions.AMP.SHOOTER_ROLLER_1_VELOCITY;
-        m_ShooterBottomRollerVelocity = Positions.AMP.SHOOTER_ROLLER_2_VELOCITY;
-        m_ShooterFeederVoltage = Positions.AMP.SHOOTER_FEEDER_VOLTAGE;
+        m_ShooterAngle = Positions.AMP.SHOOTER_WRIST_ANGLE;
+        if (this.m_Shooter.readyToShoot(Positions.AMP.SHOOTER_WRIST_ANGLE, 
+                                        Positions.AMP.SHOOTER_ROLLER_1_VELOCITY,
+                                        Positions.AMP.SHOOTER_ROLLER_2_VELOCITY))
+        {
+          m_ShooterFeederVoltage = Positions.AMP.SHOOTER_FEEDER_VOLTAGE;
+        }
       }
     }
     return false;
@@ -256,14 +347,16 @@ public class Orchestrator extends SubsystemBase
     {
       return true;
     }
-    else if(m_Elevator.isBelowBar())
+
+    if(m_Elevator.isBelowBar())
     {
+      m_IntakePosition = IntakeConstants.INTAKE_CLEAR_POSITION;
       if(m_ShooterAngle != ShooterConstants.WRIST_CLEARANCE_POSITION)
       {
         m_ElevatorPosition = ElevatorConstants.BAR_BOTTOM_CLEAR - 0.01;
         m_ShooterAngle = ShooterConstants.WRIST_CLEARANCE_POSITION;
       }
-      if(m_Shooter.inPosition(m_ShooterAngle))
+      if(m_Shooter.inPosition(ShooterConstants.WRIST_CLEARANCE_POSITION))
       {
         m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
       }
@@ -292,8 +385,10 @@ public class Orchestrator extends SubsystemBase
     {
       return true;
     }
-    else if(m_Elevator.isAboveBar())
+    
+    if(m_Elevator.isAboveBar())
     {
+      m_IntakePosition = IntakeConstants.INTAKE_CLEAR_POSITION;
       if(m_ShooterAngle != ShooterConstants.WRIST_CLEARANCE_POSITION)
       {
         m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
@@ -308,7 +403,6 @@ public class Orchestrator extends SubsystemBase
     {
       if(m_ShooterAngle != ShooterConstants.WRIST_CLEARANCE_POSITION)
       {
-        m_ElevatorPositionSignal.refresh();
         if(m_ElevatorPositionSignal.getValueAsDouble() >= ElevatorConstants.BAR)
         {
           m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
@@ -318,6 +412,75 @@ public class Orchestrator extends SubsystemBase
           m_ElevatorPosition = ElevatorConstants.BAR_BOTTOM_CLEAR - 0.01;
         }
       }
+      else
+      {
+        if(!m_Shooter.inPosition(ShooterConstants.WRIST_CLEARANCE_POSITION))
+        {
+          m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
+        }
+      }
+    }
+    return false;
+  }
+
+  // Add to positions
+  private boolean noteForward()
+  {
+    if(!this.m_Shooter.hasNoteForwardPosition())
+    {
+      m_ShooterFeederVoltage = 1.5;
+      m_ShooterBottomRollerVelocity = 5;
+      m_ShooterTopRollerVelocity = 5;
+      return false;
+    }
+    m_ShooterFeederVoltage = 0;
+    m_ShooterBottomRollerVelocity = 0;
+    m_ShooterTopRollerVelocity = 0;
+    return true;
+  }
+
+  // Add to positions
+  private boolean noteBackward()
+  {
+    if(!this.m_Shooter.hasNoteRearPosition())
+    {
+      m_ShooterFeederVoltage = -2.5;
+      m_ShooterBottomRollerVelocity = -5;
+      m_ShooterTopRollerVelocity = -5;
+      return false;
+    }
+    m_ShooterFeederVoltage = 0;
+    m_ShooterBottomRollerVelocity = 0;
+    m_ShooterTopRollerVelocity = 0;
+    return true;
+  }
+
+  private boolean noteToMiddle()
+  {
+    if(this.m_Shooter.hasNoteCentered())
+    {
+      m_ShooterFeederVoltage = 0;
+      m_ShooterBottomRollerVelocity = 0;
+      m_ShooterTopRollerVelocity = 0;
+      return true;
+    }
+    if(m_Shooter.hasNoteForwardPosition())
+    {
+      m_ShooterFeederVoltage = -2.5;
+      m_ShooterBottomRollerVelocity = -5;
+      m_ShooterTopRollerVelocity = -5;
+    }
+    if(m_Shooter.hasNoteRearPosition())
+    {
+      m_ShooterFeederVoltage = 1.5;
+      m_ShooterBottomRollerVelocity = 5;
+      m_ShooterTopRollerVelocity = 5;
+    }
+    if(m_Shooter.shooterClear())
+    {
+      m_ShooterFeederVoltage = 0;
+      m_ShooterBottomRollerVelocity = 0;
+      m_ShooterTopRollerVelocity = 0;
     }
     return false;
   }

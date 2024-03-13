@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Global;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.elevator.ElevatorConstants;
-import frc.robot.constants.shooter.ShooterConstants;
 
 public class Elevator extends SubsystemBase
 {

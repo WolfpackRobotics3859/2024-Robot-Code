@@ -102,19 +102,23 @@ public class Shooter extends SubsystemBase
 
   public boolean hasNoteRearPosition()
   {
-    return !m_BeamBreak1.get() && m_BeamBreak2.get();
+    return m_BeamBreak1.get() && !m_BeamBreak2.get();
   }
 
   public boolean hasNoteForwardPosition()
   {
-    return m_BeamBreak1.get() && !m_BeamBreak2.get();
+    return !m_BeamBreak1.get() && m_BeamBreak2.get();
   }
 
-  public boolean shooterClear()
+  public boolean hasNoteCentered()
   {
     return !m_BeamBreak1.get() && !m_BeamBreak2.get();
   }
 
+  public boolean shooterClear()
+  {
+    return m_BeamBreak1.get() && m_BeamBreak2.get();
+  }
 
   public boolean getShooterReady()
   {
@@ -131,11 +135,29 @@ public class Shooter extends SubsystemBase
     return m_BeamBreak2.get();
   }
 
+  public boolean readyToShoot(double expectedWristPosition, double expectedRoller1Speed, double expectedRoller2Speed)
+  {
+    return this.inPosition(expectedWristPosition) && this.rollersAtSpeed(expectedRoller1Speed, expectedRoller2Speed);
+  }
+
   public boolean inPosition(double assignedPosition)
   {
-    System.out.println("Closed Loop Shooter Error " + m_WristMotor.getClosedLoopError().getValueAsDouble());
-    // return Math.abs(m_WristMotor.getClosedLoopError().getValueAsDouble()) < ShooterConstants.POSITION_CLOSED_LOOP_ERROR_TOLERANCE;
     return Math.abs(m_WristMotor.getPosition().getValueAsDouble() - assignedPosition) <  ShooterConstants.POSITION_CLOSED_LOOP_ERROR_TOLERANCE;
+  }
+
+  public boolean rollersAtSpeed(double roller1Speed, double roller2Speed)
+  {
+    return this.roller1AtSpeed(roller1Speed) && this.roller2AtSpeed(roller2Speed);
+  }
+
+  public boolean roller1AtSpeed(double rollerSpeed)
+  {
+    return Math.abs(m_ShooterMotor1.getVelocity().getValueAsDouble() - rollerSpeed) < ShooterConstants.VELOCITY_CLOSED_LOOP_ERROR_TOLERANCE;
+  }
+
+  public boolean roller2AtSpeed(double rollerSpeed)
+  {
+    return Math.abs(m_ShooterMotor2.getVelocity().getValueAsDouble() - rollerSpeed) < ShooterConstants.VELOCITY_CLOSED_LOOP_ERROR_TOLERANCE;
   }
 
   /**
