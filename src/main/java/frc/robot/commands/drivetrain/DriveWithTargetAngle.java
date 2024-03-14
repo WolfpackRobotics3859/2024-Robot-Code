@@ -43,9 +43,10 @@ public class DriveWithTargetAngle extends Command
   @Override
   public void initialize() 
   {
-    driveRequest.HeadingController.setPID(5, 0.001, 0);
+    driveRequest.HeadingController.setPID(7, 0.001, 0);
     driveRequest.HeadingController.setTolerance(0.5);
-    driveRequest.HeadingController.enableContinuousInput(-180, 180);
+    driveRequest.HeadingController.enableContinuousInput(-180, 180)
+    ;
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -91,6 +91,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
         SmartDashboard.putNumber("CameraRight1ExceptionCount", m_CameraRight1ExceptionCount);
         SmartDashboard.putNumber("CameraRight1ExceptionCount", m_CameraLeft1ExceptionCount);
         SmartDashboard.putNumber("CameraRight1ExceptionCount", m_CameraRear1ExceptionCount);
+        SmartDashboard.putNumber("Yaw to speaker", this.YawToSpeaker.get().getDegrees());
       }
     } 
   }
@@ -120,8 +121,10 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     return m_kinematics.toChassisSpeeds(getState().ModuleStates);
   }
 
-  public Supplier<Rotation2d> YawToSpeaker = () -> PhotonUtils.getYawToPose(this.m_odometry.getEstimatedPosition(), DriveConstants.TAG_LAYOUT.getTagPose(4).get().toPose2d());
+  public Supplier<Rotation2d> YawToSpeaker = () -> this.m_odometry.getEstimatedPosition().getRotation().rotateBy(PhotonUtils.getYawToPose(this.m_odometry.getEstimatedPosition(), DriveConstants.TAG_LAYOUT.getTagPose(4).get().toPose2d()));
 
+  public Supplier<Double> distanceToSpeaker = () -> PhotonUtils.getDistanceToPose(this.m_odometry.getEstimatedPosition(), DriveConstants.TAG_LAYOUT.getTagPose(4).get().toPose2d());
+  
   private void configurePhotonVision()
   {
     m_CameraRight1 = new PhotonCamera("CameraRight1");
