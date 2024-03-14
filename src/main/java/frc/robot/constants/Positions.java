@@ -97,7 +97,7 @@ public class Positions
         public static final double SHOOTER_ROLLER_1_VELOCITY = 30;
         public static final double SHOOTER_ROLLER_2_VELOCITY = 30;
         public static final double SHOOTER_FEEDER_VOLTAGE = 10;
-        public static final double SHOOTER_WRIST_ANGLE = 0.53;
-        public static final double ELEVATOR_POSITION = 0.805; 
+        public static final double SHOOTER_WRIST_ANGLE = 0.57;
+        public static final double ELEVATOR_POSITION = 0.8; 
     }
 }
