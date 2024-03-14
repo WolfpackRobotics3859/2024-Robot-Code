@@ -19,7 +19,7 @@ public class DefenseShot extends Command {
   @Override
   public void initialize() 
   {
-    // Intentionally Empty
+    m_Orchestrator.freshenOrchestrator();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

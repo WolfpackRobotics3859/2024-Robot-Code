@@ -37,11 +37,11 @@ public class Positions
     {
         public static final double INTAKE_ROLLER_VOLTAGE = 0;
         public static final double INTAKE_WRIST_POSITION = 3.0;
-        public static final double SHOOTER_ROLLER_1_VELOCITY = -30;
-        public static final double SHOOTER_ROLLER_2_VELOCITY = -30;
-        public static final double SHOOTER_FEEDER_VOLTAGE = -10;
+        public static final double SHOOTER_ROLLER_1_VELOCITY = -35;
+        public static final double SHOOTER_ROLLER_2_VELOCITY = -35;
+        public static final double SHOOTER_FEEDER_VOLTAGE = -11;
         public static final double SHOOTER_WRIST_ANGLE = 0.53;
-        public static final double ELEVATOR_POSITION = 0.84;
+        public static final double ELEVATOR_POSITION = 0.805;
     }
 
     public static final class LOW_SHOT
@@ -83,11 +83,11 @@ public class Positions
     {
         public static final double INTAKE_ROLLER_VOLTAGE = 0;
         public static final double INTAKE_WRIST_POSITION = 2.7;
-        public static final double SHOOTER_ROLLER_1_VELOCITY = 35;
-        public static final double SHOOTER_ROLLER_2_VELOCITY = 35;
+        public static final double SHOOTER_ROLLER_1_VELOCITY = 40;
+        public static final double SHOOTER_ROLLER_2_VELOCITY = 40;
         public static final double SHOOTER_FEEDER_VOLTAGE = 10;
-        public static final double SHOOTER_WRIST_ANGLE = 0.635;
-        public static final double ELEVATOR_POSITION = 0.275;
+        public static final double SHOOTER_WRIST_ANGLE = 0.665;
+        public static final double ELEVATOR_POSITION = 0.2;
     }
 
     public static final class DEFENSE_SHOT
@@ -96,8 +96,8 @@ public class Positions
         public static final double INTAKE_WRIST_POSITION = 3.0;
         public static final double SHOOTER_ROLLER_1_VELOCITY = 30;
         public static final double SHOOTER_ROLLER_2_VELOCITY = 30;
-        public static final double SHOOTER_FEEDER_VOLTAGE = -10;
+        public static final double SHOOTER_FEEDER_VOLTAGE = 10;
         public static final double SHOOTER_WRIST_ANGLE = 0.53;
-        public static final double ELEVATOR_POSITION = 0.83; 
+        public static final double ELEVATOR_POSITION = 0.805; 
     }
 }

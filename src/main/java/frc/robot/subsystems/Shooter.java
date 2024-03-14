@@ -129,7 +129,7 @@ public class Shooter extends SubsystemBase
 
   public boolean hasNoteCentered()
   {
-    return m_BeamBreak1.get() && m_BeamBreak2.get();
+    return !m_BeamBreak1.get() && !m_BeamBreak2.get();
   }
 
   public boolean shooterClear()

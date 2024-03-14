@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import javax.swing.text.Position;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import edu.wpi.first.wpilibj.Timer;
@@ -90,7 +92,7 @@ public class Orchestrator extends SubsystemBase
     {
       if(m_TelemetryTimer.get() > Global.TELEMETRY_UPDATE_SPEED)
       {
-        BaseStatusSignal.refreshAll(m_ElevatorPositionSignal, m_ShooterPositionSignal, m_IntakePositionSignal);
+        BaseStatusSignal.refreshAll(m_ElevatorPositionSignal);
         m_TelemetryTimer.reset();
       }
     }
@@ -268,23 +270,25 @@ public class Orchestrator extends SubsystemBase
 
     if(elevatorUp())
     {
-      if(this.m_FreshCommand)
-      {
-        if(this.noteBackward())
-        {
-          m_ShooterTopRollerVelocity = Positions.DEFENSE_SHOT.SHOOTER_ROLLER_1_VELOCITY;
-          m_ShooterBottomRollerVelocity = Positions.DEFENSE_SHOT.SHOOTER_ROLLER_2_VELOCITY;
-          this.m_FreshCommand = false;
-        }
-      }
 
       m_ElevatorPosition = Positions.DEFENSE_SHOT.ELEVATOR_POSITION;
       m_IntakePosition = Positions.DEFENSE_SHOT.INTAKE_WRIST_POSITION;
       m_IntakeRollersVoltage = Positions.DEFENSE_SHOT.INTAKE_ROLLER_VOLTAGE;
+      m_ShooterAngle = Positions.DEFENSE_SHOT.SHOOTER_WRIST_ANGLE;
+
 
       if(m_Elevator.isInPosition(m_ElevatorPosition))
       {
-        m_ShooterAngle = Positions.DEFENSE_SHOT.SHOOTER_WRIST_ANGLE;
+        if(this.m_FreshCommand)
+        {
+          if(this.noteBackward())
+          {
+            m_ShooterTopRollerVelocity = Positions.DEFENSE_SHOT.SHOOTER_ROLLER_1_VELOCITY;
+            m_ShooterBottomRollerVelocity = Positions.DEFENSE_SHOT.SHOOTER_ROLLER_2_VELOCITY;
+            this.m_FreshCommand = false;
+          }
+        }
+
         if (this.m_Shooter.readyToShoot(Positions.DEFENSE_SHOT.SHOOTER_WRIST_ANGLE, 
                                         Positions.DEFENSE_SHOT.SHOOTER_ROLLER_1_VELOCITY,
                                         Positions.DEFENSE_SHOT.SHOOTER_ROLLER_2_VELOCITY))
@@ -316,24 +320,26 @@ public class Orchestrator extends SubsystemBase
       {
         if(this.noteForward())
         {
-          m_ShooterTopRollerVelocity = Positions.AMP.SHOOTER_ROLLER_1_VELOCITY;
-          m_ShooterBottomRollerVelocity = Positions.AMP.SHOOTER_ROLLER_2_VELOCITY;
           this.m_FreshCommand = false;
         }
+      }
+      else
+      {
+        m_ShooterFeederVoltage = Positions.AMP.SHOOTER_FEEDER_VOLTAGE;
       }
 
       m_ElevatorPosition = Positions.AMP.ELEVATOR_POSITION;
       m_IntakePosition = Positions.AMP.INTAKE_WRIST_POSITION;
       m_IntakeRollersVoltage = Positions.AMP.INTAKE_ROLLER_VOLTAGE;
+      m_ShooterAngle = Positions.AMP.SHOOTER_WRIST_ANGLE;
 
       if(m_Elevator.isInPosition(m_ElevatorPosition))
       {
-        m_ShooterAngle = Positions.AMP.SHOOTER_WRIST_ANGLE;
-        if (this.m_Shooter.readyToShoot(Positions.AMP.SHOOTER_WRIST_ANGLE, 
-                                        Positions.AMP.SHOOTER_ROLLER_1_VELOCITY,
-                                        Positions.AMP.SHOOTER_ROLLER_2_VELOCITY))
+        if (this.m_Shooter.inPosition(Positions.AMP.SHOOTER_WRIST_ANGLE))
         {
-          m_ShooterFeederVoltage = Positions.AMP.SHOOTER_FEEDER_VOLTAGE;
+          m_ShooterTopRollerVelocity = Positions.AMP.SHOOTER_ROLLER_1_VELOCITY;
+          m_ShooterBottomRollerVelocity = Positions.AMP.SHOOTER_ROLLER_2_VELOCITY;
+
         }
       }
     }
@@ -450,9 +456,9 @@ public class Orchestrator extends SubsystemBase
   {
     if(!this.m_Shooter.hasNoteForwardPosition())
     {
-      m_ShooterFeederVoltage = 1.5;
-      m_ShooterBottomRollerVelocity = 5;
-      m_ShooterTopRollerVelocity = 5;
+      m_ShooterFeederVoltage = 3;
+      m_ShooterBottomRollerVelocity = 10;
+      m_ShooterTopRollerVelocity = 10;
       return false;
     }
     m_ShooterFeederVoltage = 0;
@@ -466,9 +472,9 @@ public class Orchestrator extends SubsystemBase
   {
     if(!this.m_Shooter.hasNoteRearPosition())
     {
-      m_ShooterFeederVoltage = -2.5;
-      m_ShooterBottomRollerVelocity = -5;
-      m_ShooterTopRollerVelocity = -5;
+      m_ShooterFeederVoltage = -3;
+      m_ShooterBottomRollerVelocity = -10;
+      m_ShooterTopRollerVelocity = -10;
       return false;
     }
     m_ShooterFeederVoltage = 0;

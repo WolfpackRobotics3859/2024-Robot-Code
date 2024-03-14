@@ -52,8 +52,6 @@ public class DriveRotation extends Command
     );
 
     driveRequest.HeadingController.enableContinuousInput(-180, 180);
-
-    // set drivetrain to not be aligned
   }
 
   // Called every time the scheduler runs while the command is scheduled.
