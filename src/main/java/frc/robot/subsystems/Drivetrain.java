@@ -23,6 +23,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -92,6 +93,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
         SmartDashboard.putNumber("CameraRight1ExceptionCount", m_CameraLeft1ExceptionCount);
         SmartDashboard.putNumber("CameraRight1ExceptionCount", m_CameraRear1ExceptionCount);
         SmartDashboard.putNumber("Yaw to speaker", this.YawToSpeaker.get().getDegrees());
+        SmartDashboard.putNumber("Distance to Speaker", this.distanceToSpeaker.get());
       }
     } 
   }

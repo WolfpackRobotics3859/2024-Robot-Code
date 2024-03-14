@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import javax.swing.text.Position;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import edu.wpi.first.wpilibj.Timer;
@@ -242,8 +240,8 @@ public class Orchestrator extends SubsystemBase
 
       if(m_Elevator.isInPosition(m_ElevatorPosition))
       {
-        m_ShooterAngle = Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE;
-        if (this.m_Shooter.readyToShoot(Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE, 
+        m_ShooterAngle = -0.0249*m_Drivetrain.distanceToSpeaker.get() + 0.691;
+        if (this.m_Shooter.readyToShoot(-0.0249*m_Drivetrain.distanceToSpeaker.get() + 0.691, 
                                         Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_1_VELOCITY,
                                         Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_2_VELOCITY))
         {
