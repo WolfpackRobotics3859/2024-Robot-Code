@@ -42,6 +42,8 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   private Timer m_TelemetryTimer = new Timer();
   private Timer m_ExtraTelemetryTimer = new Timer();
   private int m_CameraRight1ExceptionCount, m_CameraLeft1ExceptionCount, m_CameraRear1ExceptionCount;
+  private boolean m_VisionEnabled = true;
+  private boolean m_Aligned = false;
 
   private final SwerveRequest.ApplyChassisSpeeds m_AutoRequest = new SwerveRequest.ApplyChassisSpeeds()
     .withDriveRequestType(DriveRequestType.Velocity)
@@ -92,8 +94,9 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
         SmartDashboard.putNumber("CameraRight1ExceptionCount", m_CameraRight1ExceptionCount);
         SmartDashboard.putNumber("CameraRight1ExceptionCount", m_CameraLeft1ExceptionCount);
         SmartDashboard.putNumber("CameraRight1ExceptionCount", m_CameraRear1ExceptionCount);
-        SmartDashboard.putNumber("Yaw to speaker", this.YawToSpeaker.get().getDegrees());
+        SmartDashboard.putNumber("Yaw to speaker", this.yawToSpeaker.get().getDegrees());
         SmartDashboard.putNumber("Distance to Speaker", this.distanceToSpeaker.get());
+        SmartDashboard.putBoolean("Vision Enabled", this.getVisionEnabled());
       }
     } 
   }
@@ -123,9 +126,19 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     return m_kinematics.toChassisSpeeds(getState().ModuleStates);
   }
 
-  public Supplier<Rotation2d> YawToSpeaker = () -> this.m_odometry.getEstimatedPosition().getRotation().rotateBy(PhotonUtils.getYawToPose(this.m_odometry.getEstimatedPosition(), DriveConstants.TAG_LAYOUT.getTagPose(4).get().toPose2d()));
+  public Supplier<Rotation2d> yawToSpeaker = () -> this.m_odometry.getEstimatedPosition().getRotation().rotateBy(PhotonUtils.getYawToPose(this.m_odometry.getEstimatedPosition(), DriveConstants.APRIL_TAG_POSES.SPEAKER_POSE_SUPPLIER.get()));
 
-  public Supplier<Double> distanceToSpeaker = () -> PhotonUtils.getDistanceToPose(this.m_odometry.getEstimatedPosition(), DriveConstants.TAG_LAYOUT.getTagPose(4).get().toPose2d());
+  public Supplier<Double> distanceToSpeaker = () -> PhotonUtils.getDistanceToPose(this.m_odometry.getEstimatedPosition(), DriveConstants.APRIL_TAG_POSES.SPEAKER_POSE_SUPPLIER.get());
+  
+  public void setAligned(boolean aligned)
+  {
+    this.m_Aligned = aligned;
+  }
+
+  public boolean getAligned()
+  {
+    return this.m_Aligned;
+  }
   
   private void configurePhotonVision()
   {
@@ -136,6 +149,16 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     m_CameraLeft1Estimator = new PhotonPoseEstimator(DriveConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_CameraLeft1, DriveConstants.CAMERA_POSITIONS.LEFT_1);
     m_CameraRear1Estimator = new PhotonPoseEstimator(DriveConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_CameraRear1, DriveConstants.CAMERA_POSITIONS.REAR_1);
     m_CameraRight1ExceptionCount = m_CameraLeft1ExceptionCount = m_CameraRear1ExceptionCount = 0;
+  }
+
+  public boolean getVisionEnabled()
+  {
+    return this.m_VisionEnabled;
+  }
+
+  public void setVisionEnabled(boolean enabled)
+  {
+    this.m_VisionEnabled = enabled;
   }
   
   /** 

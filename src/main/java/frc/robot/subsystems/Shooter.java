@@ -15,14 +15,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.constants.Global;
 import frc.robot.constants.Hardware;
-import frc.robot.constants.Positions;
 import frc.robot.constants.shooter.ShooterConstants;
-import edu.wpi.first.apriltag.AprilTag;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -188,23 +181,6 @@ public class Shooter extends SubsystemBase
   }
 
   /**
-   * Finds the distance between the robot and one of the speakers, depending on the current alliance color of the robot. If none given, robot will aim at red speaker.
-   * @param robotPose The current pose of the robot
-   * @param targetTag The AprilTag object of the target
-   * @return The distance in inches (clamped to be within set distances)
-   */
-  public Measure<Distance> getSpeakerDistance(Pose2d robotPose)
-  {
-    AprilTag targetTag = Positions.APRILTAGS.getCurrentSpeakerTag();
-    
-    return Units.Inches.of(MathUtil.clamp(
-      robotPose.getTranslation().getDistance(targetTag.pose.toPose2d().getTranslation()),
-      ShooterConstants.MIN_SHOOTING_DISTANCE.in(Units.Inches),
-      ShooterConstants.MAX_SHOOTING_DISTANCE.in(Units.Inches)
-    ));
-  }
-
-  /**
    * @brief Applies a Motion Magic request to the selected motor with the set velocity.
    * @param motor The motor you want to send the request to MOTOR_1 or MOTOR_2, setting this to WRIST_MOTOR will do nothing.
    * @param velocity The desired velocity to run the motor at, measured in rotations per second.
@@ -329,15 +305,5 @@ public class Shooter extends SubsystemBase
         System.out.println("Warning: Shooter cannot brake a motor that doesn't exist.");
         break;
     }
-  }
-
-  private boolean motor1Ready()
-  {
-    return Math.abs(m_ShooterMotor1.getClosedLoopError().getValueAsDouble()) < ShooterConstants.VELOCITY_CLOSED_LOOP_ERROR_TOLERANCE;
-  }
-
-  private boolean motor2Ready()
-  {
-    return Math.abs(m_ShooterMotor1.getClosedLoopError().getValueAsDouble()) < ShooterConstants.VELOCITY_CLOSED_LOOP_ERROR_TOLERANCE;
   }
 }
