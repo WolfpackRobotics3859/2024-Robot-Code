@@ -1,14 +1,5 @@
 package frc.robot.constants;
 
-import java.util.function.Supplier;
-
-import edu.wpi.first.apriltag.AprilTag;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.constants.drivetrain.DriveConstants;
-
 public class Positions 
 {
     public static final class STOW
@@ -49,42 +40,17 @@ public class Positions
         public static final double INTAKE_ROLLER_VOLTAGE = 0;
         public static final double INTAKE_WRIST_POSITION = 2.7;
         public static final double SHOOTER_FEEDER_VOLTAGE = 10;
-        public static final double ELEVATOR_POSITION = 0.275;
-    }
-
-    public static final class APRILTAGS
-    {
-        public static final Pose3d BLUE_AMP_3D_POSE = DriveConstants.TAG_LAYOUT.getTagPose(5).get();
-        public static final Pose2d BLUE_AMP_POSE = new Pose2d(BLUE_AMP_3D_POSE.getX(), BLUE_AMP_3D_POSE.getY(), BLUE_AMP_3D_POSE.getRotation().toRotation2d());
-
-        public static final Pose3d RED_AMP_3D_POSE = DriveConstants.TAG_LAYOUT.getTagPose(4).get();
-        public static final Pose2d RED_AMP_POSE = new Pose2d(RED_AMP_3D_POSE.getX(), RED_AMP_3D_POSE.getY(), RED_AMP_3D_POSE.getRotation().toRotation2d());
-
-        public static final AprilTag BLUE_SPEAKER_TAG = DriveConstants.TAG_LAYOUT.getTags().get(7);
-        public static final AprilTag RED_SPEAKER_TAG = DriveConstants.TAG_LAYOUT.getTags().get(4);
-
-        /**
-         * Gets the current speaker the robot should be aimed at based on the DriverStation or FMS
-         * @return The AprilTag object of the desired speaker (if none present, returns null)
-         */
-        public static final AprilTag getCurrentSpeakerTag()
-        {
-            return DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue
-            ? BLUE_SPEAKER_TAG
-            : RED_SPEAKER_TAG;
-        }
-
-        public static final Supplier<Pose2d> SPEAKER_POSE_SUPPLIER = () -> DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue
-            ? BLUE_SPEAKER_TAG.pose.toPose2d()
-            : RED_SPEAKER_TAG.pose.toPose2d();
+        public static final double ELEVATOR_POSITION = 0.2;
+        public static final double SHOOTER_ROLLER_1_VELOCITY = 70;
+        public static final double SHOOTER_ROLLER_2_VELOCITY = 70;
     }
 
     public static final class LOW_BUMPER_SHOT
     {
         public static final double INTAKE_ROLLER_VOLTAGE = 0;
         public static final double INTAKE_WRIST_POSITION = 2.7;
-        public static final double SHOOTER_ROLLER_1_VELOCITY = 70;
-        public static final double SHOOTER_ROLLER_2_VELOCITY = 70;
+        public static final double SHOOTER_ROLLER_1_VELOCITY = 40;
+        public static final double SHOOTER_ROLLER_2_VELOCITY = 40;
         public static final double SHOOTER_FEEDER_VOLTAGE = 10;
         public static final double SHOOTER_WRIST_ANGLE = 0.665;
         public static final double ELEVATOR_POSITION = 0.2;

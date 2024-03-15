@@ -1,6 +1,7 @@
 package frc.robot.constants.drivetrain;
 
 import java.io.UncheckedIOException;
+import java.util.function.Supplier;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -10,6 +11,8 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class DriveConstants 
 {
@@ -21,8 +24,8 @@ public class DriveConstants
 
     // Turn to angle PID
     // TODO: tune these numbers
-    public static final double TURN_TO_ANGLE_P = 7;
-    public static final double TURN_TO_ANGLE_I = 0.01;
+    public static final double TURN_TO_ANGLE_P = 10;
+    public static final double TURN_TO_ANGLE_I = 0.001;
     public static final double TURN_TO_ANGLE_D = 0;
 
     // tolerance in degrees
@@ -42,14 +45,6 @@ public class DriveConstants
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-    }
-
-    public static class APRIL_TAG_POSES
-    {
-        public static Pose2d RED_SPEAKER = TAG_LAYOUT.getTagPose(4).get().toPose2d();
-        public static Pose2d BLUE_SPEAKER = TAG_LAYOUT.getTagPose(7).get().toPose2d();
-        public static Pose2d RED_AMP = TAG_LAYOUT.getTagPose(5).get().toPose2d();
-        public static Pose2d BLUE_AMP = TAG_LAYOUT.getTagPose(6).get().toPose2d();
     }
 
     public static final double AMBIGUITY_THRESHOLD = 0.25;
@@ -74,5 +69,22 @@ public class DriveConstants
                                                 Units.inchesToMeters(16.157)), 
                                                 new Rotation3d(0, Rotation2d.fromDegrees(-10).getDegrees(), 0));
     }
+
+    // POSES
+    public static class APRIL_TAG_POSES
+    {
+        public static final Pose2d RED_SPEAKER = TAG_LAYOUT.getTagPose(4).get().toPose2d();
+        public static final Pose2d BLUE_SPEAKER = TAG_LAYOUT.getTagPose(7).get().toPose2d();
+        public static final Pose2d RED_AMP = TAG_LAYOUT.getTagPose(5).get().toPose2d();
+        public static final Pose2d BLUE_AMP = TAG_LAYOUT.getTagPose(6).get().toPose2d();
+
+        public static final Supplier<Pose2d> SPEAKER_POSE_SUPPLIER = () -> DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue
+            ? BLUE_SPEAKER
+            : RED_SPEAKER;
+    }
+
+    // SHOOTING DISTANCES
+    public static final double MIN_SHOOTING_DISTANCE = 0;
+    public static final double MAX_SHOOTING_DISTANCE = 8;
 }
 
