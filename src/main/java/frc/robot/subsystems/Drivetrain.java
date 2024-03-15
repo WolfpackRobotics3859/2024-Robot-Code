@@ -37,7 +37,7 @@ import frc.robot.constants.drivetrain.TunerConstants;
 
 public class Drivetrain extends SwerveDrivetrain implements Subsystem 
 {
-  private PhotonCamera m_CameraRight1, m_CameraLeft1, m_CameraRear1;
+  private PhotonCamera m_CameraRight1, m_CameraLeft1, m_CameraRear1, m_DriverCamera;
   private PhotonPoseEstimator m_CameraRight1Estimator, m_CameraLeft1Estimator, m_CameraRear1Estimator;
   private Timer m_TelemetryTimer = new Timer();
   private Timer m_ExtraTelemetryTimer = new Timer();
@@ -139,12 +139,15 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   {
     return this.m_Aligned;
   }
-  
+
   private void configurePhotonVision()
   {
     m_CameraRight1 = new PhotonCamera("CameraRight1");
     m_CameraLeft1 = new PhotonCamera("CameraLeft1");
     m_CameraRear1 = new PhotonCamera("CameraRear1");
+    m_DriverCamera = new PhotonCamera("DriverCamera");
+    m_DriverCamera.setDriverMode(true);
+
     m_CameraRight1Estimator = new PhotonPoseEstimator(DriveConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_CameraRight1, DriveConstants.CAMERA_POSITIONS.RIGHT_1);
     m_CameraLeft1Estimator = new PhotonPoseEstimator(DriveConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_CameraLeft1, DriveConstants.CAMERA_POSITIONS.LEFT_1);
     m_CameraRear1Estimator = new PhotonPoseEstimator(DriveConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_CameraRear1, DriveConstants.CAMERA_POSITIONS.REAR_1);

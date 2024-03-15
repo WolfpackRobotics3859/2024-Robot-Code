@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Global;
@@ -247,7 +246,8 @@ public class Orchestrator extends SubsystemBase
           m_ShooterAngle = -0.0249*m_Drivetrain.distanceToSpeaker.get() + 0.691;
           if (this.m_Shooter.readyToShoot(-0.0249*m_Drivetrain.distanceToSpeaker.get() + 0.691, 
                                           Positions.LOW_SHOT.SHOOTER_ROLLER_1_VELOCITY,
-                                          Positions.LOW_SHOT.SHOOTER_ROLLER_2_VELOCITY))
+                                          Positions.LOW_SHOT.SHOOTER_ROLLER_2_VELOCITY)
+                                          && m_Drivetrain.getAligned())
           {
             m_ShooterFeederVoltage = Positions.LOW_SHOT.SHOOTER_FEEDER_VOLTAGE;
           }
@@ -286,8 +286,6 @@ public class Orchestrator extends SubsystemBase
     return false;
   }
 
-  // If no vision data is available, this will default to bumper shot.
-  // If the user is outside of range, this will do nothing
   // Returns true when no note is detected anymore.
   public boolean shootHigh()
   {
@@ -401,6 +399,30 @@ public class Orchestrator extends SubsystemBase
     // Empty for now.
   }
 
+  public boolean climb()
+  {
+    m_ShooterFeederVoltage = Positions.CLIMB.SHOOTER_FEEDER_VOLTAGE;
+    m_ShooterTopRollerVelocity = Positions.CLIMB.SHOOTER_ROLLER_1_VELOCITY;
+    m_ShooterBottomRollerVelocity = Positions.CLIMB.SHOOTER_ROLLER_2_VELOCITY;
+    m_IntakePosition = Positions.CLIMB.INTAKE_WRIST_POSITION;
+    m_IntakeRollersVoltage = Positions.CLIMB.INTAKE_ROLLER_VOLTAGE;
+
+    // if elevator is up all the way
+    if(elevatorUp())
+    {
+      // set to clearance
+      m_ShooterAngle = ShooterConstants.WRIST_CLEARANCE_POSITION;
+      m_ElevatorPosition = Positions.CLIMB.ELEVATOR_POSITION;
+
+      // if in position return true to end the command
+      if(m_Shooter.inPosition(ShooterConstants.WRIST_CLEARANCE_POSITION) && m_Elevator.isInPosition(Positions.CLIMB.ELEVATOR_POSITION))
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public boolean elevatorUp()
   {
     if(m_Elevator.isAboveBar())
@@ -418,7 +440,7 @@ public class Orchestrator extends SubsystemBase
       }
       if(m_Shooter.inPosition(ShooterConstants.WRIST_CLEARANCE_POSITION))
       {
-        m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
+        m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.005;
       }
     }
     else
@@ -432,7 +454,7 @@ public class Orchestrator extends SubsystemBase
         }
         else
         {
-          m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
+          m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.005;
         }
       }
     }
@@ -451,7 +473,7 @@ public class Orchestrator extends SubsystemBase
       m_IntakePosition = IntakeConstants.INTAKE_CLEAR_POSITION;
       if(m_ShooterAngle != ShooterConstants.WRIST_CLEARANCE_POSITION)
       {
-        m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
+        m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.005;
         m_ShooterAngle = ShooterConstants.WRIST_CLEARANCE_POSITION;
       }
       if(m_Shooter.inPosition(this.m_ShooterAngle))
@@ -465,7 +487,7 @@ public class Orchestrator extends SubsystemBase
       {
         if(m_ElevatorPositionSignal.getValueAsDouble() >= ElevatorConstants.BAR)
         {
-          m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
+          m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.005;
         }
         else
         {
@@ -476,14 +498,14 @@ public class Orchestrator extends SubsystemBase
       {
         if(!m_Shooter.inPosition(ShooterConstants.WRIST_CLEARANCE_POSITION))
         {
-          m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.01;
+          m_ElevatorPosition = ElevatorConstants.BAR_TOP_CLEAR + 0.05;
         }
       }
     }
     return false;
   }
 
-  // Add to positions
+  // Note movements
   private boolean noteForward()
   {
     if(!this.m_Shooter.hasNoteForwardPosition())

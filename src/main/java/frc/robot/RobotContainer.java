@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Hardware;
@@ -151,12 +152,18 @@ public class RobotContainer
   private void configureBindings() 
   {
     // TODO: Update bindings for comp
-    m_PrimaryController.leftTrigger().whileTrue(new IntakeCommand(m_Orchestrator));
-    m_PrimaryController.rightTrigger().whileTrue(new LowShot(m_Orchestrator));
-    m_PrimaryController.rightBumper().whileTrue(new DefenseShot(m_Orchestrator));
-    m_PrimaryController.leftBumper().whileTrue(new AmpShot(m_Orchestrator));
-    m_PrimaryController.a().whileTrue(new DriveWithTargetAngle(m_Drivetrain, m_PrimaryControllerLeftY, m_PrimaryControllerLeftX, m_Drivetrain.yawToSpeaker));
-    m_PrimaryController.y().onTrue(new SeedFieldRelative(m_Drivetrain));
+    // PRIMARY CONTROLLER
+    m_PrimaryController.rightTrigger().whileTrue(new IntakeCommand(m_Orchestrator)); // intake
+    m_PrimaryController.leftTrigger().whileTrue // low shot
+    (
+      new ParallelCommandGroup
+      (
+        new LowShot(m_Orchestrator),
+        new DriveWithTargetAngle(m_Drivetrain, m_PrimaryControllerLeftY, m_PrimaryControllerLeftX, m_Drivetrain.yawToSpeaker))
+    );
+    m_PrimaryController.leftBumper().whileTrue(new AmpShot(m_Orchestrator)); // amp shot
+    m_PrimaryController.rightBumper().whileTrue(new DefenseShot(m_Orchestrator)); // defense shot
+    m_PrimaryController.a().onTrue(new SeedFieldRelative(m_Drivetrain)); // reset gyro
   }
 
   public Command getAutonomousCommand() 

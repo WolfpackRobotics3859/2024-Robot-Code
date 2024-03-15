@@ -32,10 +32,12 @@ public class Elevator extends SubsystemBase
 
   public Elevator()
   {
-    m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.ELEVATOR_MOTOR_CONFIG);
-    m_ElevatorMotor2.getConfigurator().apply(ElevatorConstants.CURRENT_LIMITS_CONFIGS);
+    m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.ELEVATOR_MOTOR_1_CONFIG);
+    m_ElevatorMotor2.getConfigurator().apply(ElevatorConstants.ELEVATOR_MOTOR_2_CONFIG);
+
     Follower followRequest = new Follower(Hardware.ELEVATOR_MOTOR_1_ID, false);
     m_ElevatorMotor2.setControl(followRequest);
+    
     m_CANCoder.getConfigurator().apply(ElevatorConstants.ELEVATOR_CANCODER_CONFIGURATION);
     
     // Telemetry Configuration
