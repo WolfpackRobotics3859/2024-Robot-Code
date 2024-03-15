@@ -43,10 +43,16 @@ public class DriveWithTargetAngle extends Command
   @Override
   public void initialize() 
   {
-    driveRequest.HeadingController.setPID(7, 0.001, 0);
-    driveRequest.HeadingController.setTolerance(0.5);
-    driveRequest.HeadingController.enableContinuousInput(-180, 180)
-    ;
+    driveRequest.HeadingController.setPID
+    (
+      DriveConstants.TURN_TO_ANGLE_P,
+      DriveConstants.TURN_TO_ANGLE_I,
+      DriveConstants.TURN_TO_ANGLE_D
+    );
+    driveRequest.HeadingController.setTolerance(DriveConstants.TURN_TO_ANGLE_TOLERANCE);
+    driveRequest.HeadingController.enableContinuousInput(-180, 180);
+
+    m_Drivetrain.setAligned(false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -63,13 +69,22 @@ public class DriveWithTargetAngle extends Command
       .withTargetDirection(m_AngleSupplier.get());
 
     m_Drivetrain.setControl(driveRequest);
+
+    if(driveRequest.HeadingController.atSetpoint())
+    {
+      m_Drivetrain.setAligned(true);
+    }
+    else
+    {
+      m_Drivetrain.setAligned(false);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) 
   {
-    // Intentionally Empty
+    m_Drivetrain.setAligned(false);
   }
 
   // Returns true when the command should end.
