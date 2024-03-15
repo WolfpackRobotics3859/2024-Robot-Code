@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Global;
@@ -224,30 +225,63 @@ public class Orchestrator extends SubsystemBase
 
     if(elevatorDown())
     {
-      if(this.m_FreshCommand)
+      if(m_Drivetrain.getVisionEnabled())
       {
-        if(this.noteBackward())
+        // LOW SHOT W/ VISION
+        if(this.m_FreshCommand)
         {
-          m_ShooterTopRollerVelocity = Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_1_VELOCITY;
-          m_ShooterBottomRollerVelocity = Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_2_VELOCITY;
-          this.m_FreshCommand = false;
+          if(this.noteBackward())
+          {
+            m_ShooterTopRollerVelocity = Positions.LOW_SHOT.SHOOTER_ROLLER_1_VELOCITY;
+            m_ShooterBottomRollerVelocity = Positions.LOW_SHOT.SHOOTER_ROLLER_2_VELOCITY;
+            this.m_FreshCommand = false;
+          }
+        }
+  
+        m_ElevatorPosition = Positions.LOW_SHOT.ELEVATOR_POSITION;
+        m_IntakePosition = Positions.LOW_SHOT.INTAKE_WRIST_POSITION;
+        m_IntakeRollersVoltage = Positions.LOW_SHOT.INTAKE_ROLLER_VOLTAGE;
+  
+        if(m_Elevator.isInPosition(m_ElevatorPosition))
+        {
+          m_ShooterAngle = -0.0249*m_Drivetrain.distanceToSpeaker.get() + 0.691;
+          if (this.m_Shooter.readyToShoot(-0.0249*m_Drivetrain.distanceToSpeaker.get() + 0.691, 
+                                          Positions.LOW_SHOT.SHOOTER_ROLLER_1_VELOCITY,
+                                          Positions.LOW_SHOT.SHOOTER_ROLLER_2_VELOCITY))
+          {
+            m_ShooterFeederVoltage = Positions.LOW_SHOT.SHOOTER_FEEDER_VOLTAGE;
+          }
         }
       }
-
-      m_ElevatorPosition = Positions.LOW_BUMPER_SHOT.ELEVATOR_POSITION;
-      m_IntakePosition = Positions.LOW_BUMPER_SHOT.INTAKE_WRIST_POSITION;
-      m_IntakeRollersVoltage = Positions.LOW_BUMPER_SHOT.INTAKE_ROLLER_VOLTAGE;
-
-      if(m_Elevator.isInPosition(m_ElevatorPosition))
+      else
       {
-        m_ShooterAngle = -0.0249*m_Drivetrain.distanceToSpeaker.get() + 0.691;
-        if (this.m_Shooter.readyToShoot(-0.0249*m_Drivetrain.distanceToSpeaker.get() + 0.691, 
-                                        Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_1_VELOCITY,
-                                        Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_2_VELOCITY))
+        // BACKUP BUMPER SHOT
+        if(this.m_FreshCommand)
         {
-          m_ShooterFeederVoltage = Positions.LOW_BUMPER_SHOT.SHOOTER_FEEDER_VOLTAGE;
+          if(this.noteBackward())
+          {
+            m_ShooterTopRollerVelocity = Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_1_VELOCITY;
+            m_ShooterBottomRollerVelocity = Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_2_VELOCITY;
+            this.m_FreshCommand = false;
+          }
+        }
+  
+        m_ElevatorPosition = Positions.LOW_BUMPER_SHOT.ELEVATOR_POSITION;
+        m_IntakePosition = Positions.LOW_BUMPER_SHOT.INTAKE_WRIST_POSITION;
+        m_IntakeRollersVoltage = Positions.LOW_BUMPER_SHOT.INTAKE_ROLLER_VOLTAGE;
+  
+        if(m_Elevator.isInPosition(m_ElevatorPosition))
+        {
+          m_ShooterAngle = Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE;
+          if (this.m_Shooter.readyToShoot(Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE, 
+                                          Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_1_VELOCITY,
+                                          Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_2_VELOCITY))
+          {
+            m_ShooterFeederVoltage = Positions.LOW_BUMPER_SHOT.SHOOTER_FEEDER_VOLTAGE;
+          }
         }
       }
+      
     }
     return false;
   }

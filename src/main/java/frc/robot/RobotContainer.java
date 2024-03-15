@@ -26,9 +26,10 @@ import frc.robot.commands.elevator.KillElevator;
 import frc.robot.commands.intake.IntakePlayAlong;
 import frc.robot.commands.intake.KillIntake;
 import frc.robot.commands.orchestrator.AmpShot;
-import frc.robot.commands.orchestrator.BumperShot;
 import frc.robot.commands.orchestrator.DefenseShot;
-import frc.robot.commands.orchestrator.IWantANote;
+import frc.robot.commands.orchestrator.DisableVision;
+import frc.robot.commands.orchestrator.IntakeCommand;
+import frc.robot.commands.orchestrator.LowShot;
 import frc.robot.commands.orchestrator.ManualControl;
 import frc.robot.commands.orchestrator.Stow;
 import frc.robot.commands.shooter.KillShooter;
@@ -138,6 +139,7 @@ public class RobotContainer
     SmartDashboard.putData("Kill Shooter", new KillShooter(m_Shooter));
     SmartDashboard.putData("Kill Elevator", new KillElevator(m_Elevator));
     SmartDashboard.putData("Kill Intake", new KillIntake(m_Intake));
+    SmartDashboard.putData("Disable Vision", new DisableVision(m_Drivetrain));
   }
 
   private void configureAutoSelector()
@@ -149,11 +151,11 @@ public class RobotContainer
   private void configureBindings() 
   {
     // TODO: Update bindings for comp
-    m_PrimaryController.leftTrigger().whileTrue(new IWantANote(m_Orchestrator));
-    m_PrimaryController.rightTrigger().whileTrue(new BumperShot(m_Orchestrator));
+    m_PrimaryController.leftTrigger().whileTrue(new IntakeCommand(m_Orchestrator));
+    m_PrimaryController.rightTrigger().whileTrue(new LowShot(m_Orchestrator));
     m_PrimaryController.rightBumper().whileTrue(new DefenseShot(m_Orchestrator));
     m_PrimaryController.leftBumper().whileTrue(new AmpShot(m_Orchestrator));
-    m_PrimaryController.a().whileTrue(new DriveWithTargetAngle(m_Drivetrain, m_PrimaryControllerLeftY, m_PrimaryControllerLeftX, m_Drivetrain.YawToSpeaker));
+    m_PrimaryController.a().whileTrue(new DriveWithTargetAngle(m_Drivetrain, m_PrimaryControllerLeftY, m_PrimaryControllerLeftX, m_Drivetrain.yawToSpeaker));
     m_PrimaryController.y().onTrue(new SeedFieldRelative(m_Drivetrain));
   }
 

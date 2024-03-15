@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Orchestrator;
 
 public class DefenseShot extends Command {
-  private Orchestrator m_Orchestrator;
+  private final Orchestrator m_Orchestrator;
+  
   public DefenseShot(Orchestrator orchestrator) 
   {
     m_Orchestrator = orchestrator;

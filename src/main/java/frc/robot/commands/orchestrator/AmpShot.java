@@ -9,7 +9,7 @@ import frc.robot.subsystems.Orchestrator;
 
 public class AmpShot extends Command 
 {
-  private Orchestrator m_Orchestrator;
+  private final Orchestrator m_Orchestrator;
   /** Creates a new AmpShot. */
   public AmpShot(Orchestrator orchestrator) 
   {
