@@ -23,7 +23,7 @@ import frc.robot.constants.Hardware;
 public class ShooterConstants
 {
     // Position Values
-    public static final double WRIST_CLEARANCE_POSITION = .68;
+    public static final double WRIST_CLEARANCE_POSITION = .6775;
 
     // Limit Values
     public static final double WRIST_MAX_DOWN_POSITION = 0.3;
@@ -55,7 +55,7 @@ public class ShooterConstants
 
     public static final MotionMagicConfigs WRIST_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(3)
-        .withMotionMagicAcceleration(1);
+        .withMotionMagicAcceleration(1.2);
 
     public static final SoftwareLimitSwitchConfigs WRIST_SOFT_LIMIT_CONFIGS = new SoftwareLimitSwitchConfigs()
         .withForwardSoftLimitEnable(false)

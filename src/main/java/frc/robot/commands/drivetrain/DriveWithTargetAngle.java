@@ -50,7 +50,7 @@ public class DriveWithTargetAngle extends Command
       DriveConstants.TURN_TO_ANGLE_D
     );
     driveRequest.HeadingController.setTolerance(DriveConstants.TURN_TO_ANGLE_TOLERANCE);
-    driveRequest.HeadingController.enableContinuousInput(-180, 180);
+    driveRequest.HeadingController.enableContinuousInput(Math.PI, -Math.PI);
 
     m_Drivetrain.setAligned(false);
   }
@@ -61,7 +61,7 @@ public class DriveWithTargetAngle extends Command
   {
     // modify request
     driveRequest
-      .withDeadband(DriveConstants.MAX_SPEED * 0.1).withRotationalDeadband(DriveConstants.MAX_ANGULAR_RATE * 0.1)
+      .withDeadband(DriveConstants.MAX_SPEED * 0.1)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
       .withSteerRequestType(SteerRequestType.MotionMagic)
       .withVelocityX(m_SpeedXSupplier.get() * DriveConstants.MAX_SPEED * 0.65)

@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
@@ -12,6 +15,8 @@ import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -37,7 +42,7 @@ public class Elevator extends SubsystemBase
 
     Follower followRequest = new Follower(Hardware.ELEVATOR_MOTOR_1_ID, false);
     m_ElevatorMotor2.setControl(followRequest);
-    
+
     m_CANCoder.getConfigurator().apply(ElevatorConstants.ELEVATOR_CANCODER_CONFIGURATION);
     
     // Telemetry Configuration
@@ -131,6 +136,8 @@ public class Elevator extends SubsystemBase
   {
     return position < ElevatorConstants.BAR_BOTTOM_CLEAR;
   }
+
+  public final BooleanSupplier killShooterForClimb = () -> this.m_ElevatorMotor1.getPosition().getValueAsDouble() < ElevatorConstants.BAR;
 
   public boolean isInPosition(double position)
   {

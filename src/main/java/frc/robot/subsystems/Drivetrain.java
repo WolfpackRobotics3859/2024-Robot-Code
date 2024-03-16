@@ -25,6 +25,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
@@ -68,6 +69,8 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     {
       m_ExtraTelemetryTimer.start();
     }
+
+    SmartDashboard.setDefaultBoolean("Is Blue", false);
   }
 
   @Override
@@ -121,14 +124,23 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     return m_odometry;
   }
 
+  private Pose2d getSpeakerPose()
+  {
+    if(SmartDashboard.getBoolean("Is Blue", false))
+    {
+      return DriveConstants.APRIL_TAG_POSES.BLUE_SPEAKER;
+    }
+    return DriveConstants.APRIL_TAG_POSES.RED_SPEAKER;
+  }
+
   public ChassisSpeeds getCurrentRobotChassisSpeeds()
   {
     return m_kinematics.toChassisSpeeds(getState().ModuleStates);
   }
 
-  public Supplier<Rotation2d> yawToSpeaker = () -> this.m_odometry.getEstimatedPosition().getRotation().rotateBy(PhotonUtils.getYawToPose(this.m_odometry.getEstimatedPosition(), DriveConstants.APRIL_TAG_POSES.SPEAKER_POSE_SUPPLIER.get()));
+  public Supplier<Rotation2d> yawToSpeaker = () -> this.m_odometry.getEstimatedPosition().getRotation().rotateBy(PhotonUtils.getYawToPose(this.m_odometry.getEstimatedPosition(), this.getSpeakerPose()));
 
-  public Supplier<Double> distanceToSpeaker = () -> PhotonUtils.getDistanceToPose(this.m_odometry.getEstimatedPosition(), DriveConstants.APRIL_TAG_POSES.SPEAKER_POSE_SUPPLIER.get());
+  public Supplier<Double> distanceToSpeaker = () -> PhotonUtils.getDistanceToPose(this.m_odometry.getEstimatedPosition(), this.getSpeakerPose());
   
   public void setAligned(boolean aligned)
   {

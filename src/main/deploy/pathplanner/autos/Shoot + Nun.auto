@@ -1,23 +1,10 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.7426336086361384,
-      "y": 4.401663085651201
-    },
-    "rotation": 121.21840276434644
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
-      "commands": [
-        {
-          "type": "named",
-          "data": {
-            "name": null
-          }
-        }
-      ]
+      "commands": []
     }
   },
   "folder": null,

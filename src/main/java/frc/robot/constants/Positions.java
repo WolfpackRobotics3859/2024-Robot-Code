@@ -1,7 +1,6 @@
 package frc.robot.constants;
 
 import frc.robot.constants.elevator.ElevatorConstants;
-import frc.robot.subsystems.Elevator;
 
 public class Positions 
 {
@@ -18,7 +17,7 @@ public class Positions
 
     public static final class INTAKING
     {
-        public static final double INTAKE_ROLLER_VOLTAGE = -7;
+        public static final double INTAKE_ROLLER_VOLTAGE = -9;
         public static final double INTAKE_WRIST_POSITION = 0;
         public static final double SHOOTER_ROLLER_1_VELOCITY = -20;
         public static final double SHOOTER_ROLLER_2_VELOCITY = -20;
@@ -55,7 +54,7 @@ public class Positions
         public static final double SHOOTER_ROLLER_1_VELOCITY = 40;
         public static final double SHOOTER_ROLLER_2_VELOCITY = 40;
         public static final double SHOOTER_FEEDER_VOLTAGE = 10;
-        public static final double SHOOTER_WRIST_ANGLE = 0.665;
+        public static final double SHOOTER_WRIST_ANGLE = 0.675;
         public static final double ELEVATOR_POSITION = 0.2;
     }
 
@@ -66,8 +65,8 @@ public class Positions
         public static final double SHOOTER_ROLLER_1_VELOCITY = 30;
         public static final double SHOOTER_ROLLER_2_VELOCITY = 30;
         public static final double SHOOTER_FEEDER_VOLTAGE = 10;
-        public static final double SHOOTER_WRIST_ANGLE = 0.57;
-        public static final double ELEVATOR_POSITION = 0.8; 
+        public static final double SHOOTER_WRIST_ANGLE = 0.63;
+        public static final double ELEVATOR_POSITION = 0.78; 
     }
 
     public static final class CLIMB

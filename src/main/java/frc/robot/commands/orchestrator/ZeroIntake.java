@@ -51,13 +51,5 @@ public class ZeroIntake extends Command
   public boolean isFinished()
   {
     return false;
-    // if (m_Timer.get() > 4)
-    // {
-    //   return true;
-    // }
-    // else
-    // {
-    //   return false;
-    // }
   }
 }

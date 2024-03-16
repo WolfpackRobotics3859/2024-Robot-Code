@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -243,11 +245,16 @@ public class Orchestrator extends SubsystemBase
   
         if(m_Elevator.isInPosition(m_ElevatorPosition))
         {
-          m_ShooterAngle = -0.0249*m_Drivetrain.distanceToSpeaker.get() + 0.691;
-          if (this.m_Shooter.readyToShoot(-0.0249*m_Drivetrain.distanceToSpeaker.get() + 0.691, 
+          double i = m_Drivetrain.distanceToSpeaker.get();
+          // 0.738 + -0.0567x + 5.12E-03x^2
+          double shooterAngle = 0.738 + (-0.0567 * i) + (5.12*Math.pow(10, -3)*Math.pow(i, 2));
+          //double shooterAngle = SmartDashboard.getNumber("[Manual] Shooter Angle", 0.6);
+          m_ShooterAngle = MathUtil.clamp(shooterAngle, 0.55, Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE);
+          if (this.m_Shooter.readyToShoot(MathUtil.clamp(shooterAngle, 0.55, Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE), 
                                           Positions.LOW_SHOT.SHOOTER_ROLLER_1_VELOCITY,
                                           Positions.LOW_SHOT.SHOOTER_ROLLER_2_VELOCITY)
                                           && m_Drivetrain.getAligned())
+
           {
             m_ShooterFeederVoltage = Positions.LOW_SHOT.SHOOTER_FEEDER_VOLTAGE;
           }
@@ -392,6 +399,73 @@ public class Orchestrator extends SubsystemBase
     }
 
     return false;
+  }
+
+  // Prepares the amp shot, returning true when amp shot is ready to be taken
+  public boolean prepareAmp()
+  {
+    if(m_Shooter.shooterClear())
+    {
+      m_ShooterTopRollerVelocity = 0;
+      m_ShooterBottomRollerVelocity = 0;
+      m_ShooterFeederVoltage = 0;
+      this.stow();
+      return true;
+    }
+
+    if(elevatorUp())
+    {
+      if(this.m_FreshCommand)
+      {
+        if(this.noteForward())
+        {
+          this.m_FreshCommand = false;
+        }
+      }
+      else
+      {
+        m_ShooterFeederVoltage = Positions.AMP.SHOOTER_FEEDER_VOLTAGE;
+      }
+
+      m_ElevatorPosition = Positions.AMP.ELEVATOR_POSITION;
+      m_IntakePosition = Positions.AMP.INTAKE_WRIST_POSITION;
+      m_IntakeRollersVoltage = Positions.AMP.INTAKE_ROLLER_VOLTAGE;
+      m_ShooterAngle = Positions.AMP.SHOOTER_WRIST_ANGLE;
+
+      if(m_Elevator.isInPosition(m_ElevatorPosition))
+      {
+        if (this.m_Shooter.inPosition(Positions.AMP.SHOOTER_WRIST_ANGLE))
+        {
+          return true;
+        }
+      }
+    }
+
+    // if note is forward
+    if (m_Shooter.hasNoteForwardPosition() && m_FreshCommand)
+    {
+      // command is no longer fresh
+      this.m_FreshCommand = false;
+      m_ShooterFeederVoltage = 0;
+      m_ShooterBottomRollerVelocity = 0;
+      m_ShooterTopRollerVelocity = 0;
+    }
+
+    // if command is fresh (just started)
+    if (this.m_FreshCommand && (m_Elevator.isAboveBar() || m_Shooter.inPosition(ShooterConstants.WRIST_CLEARANCE_POSITION)))
+    {
+      // move note forward
+      noteForward();
+    }
+
+    return false;
+  }
+
+  // just runs motors
+  public void shootAmpWithPrep()
+  {
+    m_ShooterTopRollerVelocity = Positions.AMP.SHOOTER_ROLLER_1_VELOCITY;
+    m_ShooterBottomRollerVelocity = Positions.AMP.SHOOTER_ROLLER_2_VELOCITY;
   }
 
   public void purge()

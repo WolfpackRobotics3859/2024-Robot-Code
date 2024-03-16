@@ -77,8 +77,6 @@ public class Shooter extends SubsystemBase
       {
         m_TelemetryTimer.reset();
         SmartDashboard.putNumber("Shooter Wrist Position", m_WristMotor.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("Shooter Motor 1 Velocity", m_ShooterMotor1.getVelocity().getValueAsDouble());
-        SmartDashboard.putNumber("Shooter Motor 2 Velocity", m_ShooterMotor2.getVelocity().getValueAsDouble());
         SmartDashboard.putBoolean("Beam Break 1", m_BeamBreak1.get());
         SmartDashboard.putBoolean("Beam Break 2", m_BeamBreak2.get());
       }
@@ -103,6 +101,7 @@ public class Shooter extends SubsystemBase
         break;
       case POSITION:
         this.setMotorPosition(motor, value);
+        break;
       default:
         System.out.println("Warning: Invalid control mode for shooter.");
         break;

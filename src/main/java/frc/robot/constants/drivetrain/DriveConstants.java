@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveConstants 
 {
@@ -78,9 +79,7 @@ public class DriveConstants
         public static final Pose2d RED_AMP = TAG_LAYOUT.getTagPose(5).get().toPose2d();
         public static final Pose2d BLUE_AMP = TAG_LAYOUT.getTagPose(6).get().toPose2d();
 
-        public static final Supplier<Pose2d> SPEAKER_POSE_SUPPLIER = () -> DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue
-            ? BLUE_SPEAKER
-            : RED_SPEAKER;
+        // public static final Supplier<Pose2d> SPEAKER_POSE_SUPPLIER = () -> SmartDashboard.getBoolean(", false)
     }
 
     // SHOOTING DISTANCES

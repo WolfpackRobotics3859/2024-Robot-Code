@@ -7,22 +7,20 @@ package frc.robot.commands.orchestrator;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.elevator.ElevatorConstants.MODE;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Orchestrator;
 
 public class Climb extends Command 
 {
-  private final Orchestrator m_Orchestrator;
   private final Elevator m_Elevator;
   private final Supplier<Double> m_ElevatorMovementSupplier;
 
-  public Climb(Orchestrator orchestrator, Elevator elevator, Supplier<Double> movementSupplier) 
+  public Climb(Elevator elevator, Supplier<Double> movementSupplier) 
   {
-    this.m_Orchestrator = orchestrator;
     this.m_Elevator = elevator;
     this.m_ElevatorMovementSupplier = movementSupplier;
 
-    addRequirements(m_Orchestrator, m_Elevator);
+    addRequirements(m_Elevator);
   }
 
   // Called when the command is initially scheduled.
@@ -36,7 +34,14 @@ public class Climb extends Command
   @Override
   public void execute() 
   {
-    // Intentionally Empty
+    if (m_Elevator.getPositionSignal().getValueAsDouble() > 0.325 && m_ElevatorMovementSupplier.get() != 0)
+    {
+      m_Elevator.elevatorRequest(MODE.PERCENT, m_ElevatorMovementSupplier.get() * 0.6);
+    }
+    else
+    {
+      m_Elevator.elevatorRequest(MODE.BRAKE, 0);
+    }
   }
 
   // Called once the command ends or is interrupted.

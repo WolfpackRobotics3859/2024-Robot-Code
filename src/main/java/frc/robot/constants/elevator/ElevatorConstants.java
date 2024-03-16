@@ -65,13 +65,13 @@ public class ElevatorConstants
     public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = new CurrentLimitsConfigs()
         .withStatorCurrentLimit(26)
         .withStatorCurrentLimitEnable(true)
-        .withSupplyCurrentLimit(10)
+        .withSupplyCurrentLimit(20)
         .withSupplyCurrentLimitEnable(true);
 
     // CANCoder Configs
     public static final MagnetSensorConfigs MAGNET_SENSOR_CONFIGS = new MagnetSensorConfigs()
         .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
-        .withMagnetOffset(-0.14)
+        .withMagnetOffset(-0.125)
         .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1);
     
     // Condensed Configs

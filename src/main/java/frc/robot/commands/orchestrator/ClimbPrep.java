@@ -28,7 +28,7 @@ public class ClimbPrep extends Command
   @Override
   public void execute() 
   {
-    // Intentionally Empty
+    m_Orchestrator.climb();
   }
 
   // Called once the command ends or is interrupted.
@@ -42,10 +42,6 @@ public class ClimbPrep extends Command
   @Override
   public boolean isFinished()
   {
-    if (m_Orchestrator.climb())
-    {
-      return true;
-    }
     return false;
   }
 }
