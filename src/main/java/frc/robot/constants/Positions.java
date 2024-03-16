@@ -78,4 +78,15 @@ public class Positions
         public static final double SHOOTER_FEEDER_VOLTAGE = 0;
         public static final double ELEVATOR_POSITION = ElevatorConstants.BAR_TOP_CLEAR+0.01; 
     }
+
+    public static final class PURGE
+    {
+        public static final double INTAKE_ROLLER_VOLTAGE = 8;
+        public static final double INTAKE_WRIST_POSITION = 2.4;
+        public static final double SHOOTER_ROLLER_1_VELOCITY = -40;
+        public static final double SHOOTER_ROLLER_2_VELOCITY = -40;
+        public static final double SHOOTER_FEEDER_VOLTAGE = -10;
+        public static final double SHOOTER_WRIST_ANGLE = 0.5;
+        public static final double ELEVATOR_POSITION = 0.2;
+    }
 }

@@ -34,9 +34,9 @@ public class Climb extends Command
   @Override
   public void execute() 
   {
-    if (m_Elevator.getPositionSignal().getValueAsDouble() > 0.325 && m_ElevatorMovementSupplier.get() != 0)
+    if (m_ElevatorMovementSupplier.get() != 0)
     {
-      m_Elevator.elevatorRequest(MODE.PERCENT, m_ElevatorMovementSupplier.get() * 0.6);
+      m_Elevator.elevatorRequest(MODE.PERCENT, m_ElevatorMovementSupplier.get() * 0.7);
     }
     else
     {

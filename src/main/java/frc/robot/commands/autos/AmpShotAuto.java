@@ -4,7 +4,6 @@
 
 package frc.robot.commands.autos;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Orchestrator;
 import frc.robot.subsystems.Shooter;
@@ -13,7 +12,6 @@ public class AmpShotAuto extends Command
 {
   private final Orchestrator m_Orchestrator;
   private final Shooter m_Shooter;
-  private final Timer m_Timer = new Timer();
   /** Creates a new AmpShot. */
   public AmpShotAuto(Orchestrator orchestrator, Shooter shooter) 
   {
@@ -35,11 +33,6 @@ public class AmpShotAuto extends Command
   public void execute() 
   {
     m_Orchestrator.shootAmp();
-
-    if (m_Shooter.shooterClear())
-    {
-      m_Timer.start();
-    }
   }
 
   // Called once the command ends or is interrupted.
@@ -53,10 +46,6 @@ public class AmpShotAuto extends Command
   @Override
   public boolean isFinished()
   {
-    if (m_Timer.hasElapsed(1))
-    {
-      return true;
-    }
-    return false;
+    return m_Shooter.shooterClear();
   }
 }

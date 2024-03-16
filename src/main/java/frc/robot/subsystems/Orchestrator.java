@@ -35,10 +35,9 @@ public class Orchestrator extends SubsystemBase
   private double m_ElevatorPosition = 0;
 
   private boolean m_FreshCommand = true;
+  private boolean m_ShootAmp = false;
 
   private StatusSignal<Double> m_ElevatorPositionSignal;
-  private StatusSignal<Double> m_ShooterPositionSignal;
-  private StatusSignal<Double> m_IntakePositionSignal;
 
   /**
    * Creates a new orchestrator subsystem.
@@ -55,6 +54,7 @@ public class Orchestrator extends SubsystemBase
     this.m_Intake = intake;
     this.setup();
     this.initializeManualControlValues();
+
     m_ElevatorPositionSignal = m_Elevator.getPositionSignal();
   }
 
@@ -69,9 +69,6 @@ public class Orchestrator extends SubsystemBase
       m_TelemetryTimer.start();
     }
     SmartDashboard.putData(this);
-
-    m_Elevator.configureElevator(m_Shooter.getPositionSignal());
-    m_Shooter.configureShooter(m_Elevator.getPositionSignal());
   }
 
   private void initializeManualControlValues()
@@ -96,15 +93,6 @@ public class Orchestrator extends SubsystemBase
         m_TelemetryTimer.reset();
       }
     }
-
-    // if(Global.ENABLE_EXTRA_TELEMETRY)
-    // {
-    //   if(m_ExtraTelemetryTimer.get() > Global.EXTRA_TELEMETRY_UPDATE_SPEED)
-    //   {
-    //     // Intentioally Empty
-    //     m_ExtraTelemetryTimer.reset();
-    //   }
-    // }
   }
 
   // subsystem getters
@@ -436,7 +424,11 @@ public class Orchestrator extends SubsystemBase
       {
         if (this.m_Shooter.inPosition(Positions.AMP.SHOOTER_WRIST_ANGLE))
         {
-          return true;
+          if (this.m_ShootAmp)
+          {
+            m_ShooterTopRollerVelocity = Positions.AMP.SHOOTER_ROLLER_1_VELOCITY;
+            m_ShooterBottomRollerVelocity = Positions.AMP.SHOOTER_ROLLER_2_VELOCITY;
+          }
         }
       }
     }
@@ -468,9 +460,31 @@ public class Orchestrator extends SubsystemBase
     m_ShooterBottomRollerVelocity = Positions.AMP.SHOOTER_ROLLER_2_VELOCITY;
   }
 
+  public void setAmpShoot(boolean shoot)
+  {
+    this.m_ShootAmp = shoot;
+  }
+
+  // sends note out the back and runs intake forward
   public void purge()
   {
-    // Empty for now.
+    if(elevatorDown())
+    {
+      m_ElevatorPosition = Positions.PURGE.ELEVATOR_POSITION;
+      m_IntakePosition = Positions.PURGE.INTAKE_WRIST_POSITION;
+      m_IntakeRollersVoltage = Positions.PURGE.INTAKE_ROLLER_VOLTAGE;
+      m_ShooterAngle = Positions.PURGE.SHOOTER_WRIST_ANGLE;
+
+      if(m_Elevator.isInPosition(Positions.PURGE.ELEVATOR_POSITION))
+      {
+        if (m_Shooter.inPosition(Positions.PURGE.SHOOTER_WRIST_ANGLE))
+        {
+          m_ShooterTopRollerVelocity = Positions.PURGE.SHOOTER_ROLLER_1_VELOCITY;
+          m_ShooterBottomRollerVelocity = Positions.PURGE.SHOOTER_ROLLER_2_VELOCITY;
+          m_ShooterFeederVoltage = Positions.PURGE.SHOOTER_FEEDER_VOLTAGE;
+        }
+      }
+    }
   }
 
   public boolean climb()

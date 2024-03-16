@@ -1,0 +1,164 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "SeedField"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4NoteLeg1"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AimAuto"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "LowShotAuto"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4NoteLeg2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeAuto"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4NoteLeg3"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AimAuto"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "LowShotAuto"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeAuto"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4NoteLeg4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AimAuto"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "LowShotAuto"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4NoteLeg5"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeAuto"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AimAuto"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "LowShotAuto"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

@@ -64,9 +64,9 @@ public class ElevatorConstants
 
     public static final CurrentLimitsConfigs CURRENT_LIMITS_CONFIGS = new CurrentLimitsConfigs()
         .withStatorCurrentLimit(26)
-        .withStatorCurrentLimitEnable(true)
+        .withStatorCurrentLimitEnable(false)
         .withSupplyCurrentLimit(20)
-        .withSupplyCurrentLimitEnable(true);
+        .withSupplyCurrentLimitEnable(false);
 
     // CANCoder Configs
     public static final MagnetSensorConfigs MAGNET_SENSOR_CONFIGS = new MagnetSensorConfigs()

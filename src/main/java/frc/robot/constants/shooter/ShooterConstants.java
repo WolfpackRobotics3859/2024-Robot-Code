@@ -23,7 +23,7 @@ import frc.robot.constants.Hardware;
 public class ShooterConstants
 {
     // Position Values
-    public static final double WRIST_CLEARANCE_POSITION = .6775;
+    public static final double WRIST_CLEARANCE_POSITION = .68;
 
     // Limit Values
     public static final double WRIST_MAX_DOWN_POSITION = 0.3;

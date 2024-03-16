@@ -8,14 +8,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Orchestrator;
 import frc.robot.subsystems.Shooter;
 
-public class IntakeAuto extends Command {
+public class IntakeAuto extends Command 
+{
   private final Orchestrator m_Orchestrator;
   private final Shooter m_Shooter;
-  /** Creates a new IWantANote. */
+
   public IntakeAuto(Orchestrator orchestrator, Shooter shooter) {
     m_Orchestrator = orchestrator;
     m_Shooter = shooter;
-
     addRequirements(m_Orchestrator);
   }
 
@@ -37,6 +37,7 @@ public class IntakeAuto extends Command {
   @Override
   public void end(boolean interrupted)
   {
+    m_Orchestrator.stow();
     // Intentionally Empty
   }
 
@@ -44,10 +45,7 @@ public class IntakeAuto extends Command {
   @Override
   public boolean isFinished()
   {
-    if (!m_Shooter.shooterClear())
-    {
-      return true;
-    }
-    return false;
+    
+   return m_Shooter.hasNoteCentered() || m_Shooter.hasNoteRearPosition();
   }
 }

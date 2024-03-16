@@ -6,21 +6,18 @@ package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Orchestrator;
 import frc.robot.subsystems.Shooter;
 
 public class LowShotAuto extends Command {
   private final Orchestrator m_Orchestrator;
   private final Shooter m_Shooter;
-  private final Drivetrain m_Drivetrain;
   private final Timer m_Timer = new Timer();
 
-  public LowShotAuto(Orchestrator orchestrator, Shooter shooter, Drivetrain drivetrain) 
+  public LowShotAuto(Orchestrator orchestrator, Shooter shooter) 
   {
     m_Orchestrator = orchestrator;
     m_Shooter = shooter;
-    m_Drivetrain = drivetrain;
 
     addRequirements(m_Orchestrator);
   }
@@ -30,7 +27,6 @@ public class LowShotAuto extends Command {
   public void initialize() 
   {
     m_Orchestrator.freshenOrchestrator();
-    m_Drivetrain.setAligned(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,31 +34,20 @@ public class LowShotAuto extends Command {
   public void execute() 
   {
     m_Orchestrator.shootLow();
-
-    if (m_Shooter.shooterClear())
-    {
-      m_Timer.start();
-    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted)
   {
-    m_Drivetrain.setAligned(false);
+    m_Orchestrator.stow();
+    // Intentionally Empty
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
   {
-    if (m_Timer.hasElapsed(1))
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
+    return m_Shooter.shooterClear();
   }
 }

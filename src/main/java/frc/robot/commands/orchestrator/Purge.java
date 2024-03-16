@@ -7,40 +7,34 @@ package frc.robot.commands.orchestrator;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Orchestrator;
 
-public class ShootAmp extends Command 
+public class Purge extends Command 
 {
-  private final Orchestrator m_Orchestrator;
-
-  public ShootAmp(Orchestrator orchestrator) 
+  private Orchestrator m_Orchestrator;
+  /** Creates a new Stow. */
+  public Purge(Orchestrator orchestrator) 
   {
     this.m_Orchestrator = orchestrator;
+    addRequirements(m_Orchestrator);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize()
-  {
-    m_Orchestrator.setAmpShoot(true);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
-    // Intentionally Empty
+    m_Orchestrator.purge();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted)
-  {
-    m_Orchestrator.setAmpShoot(false);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished()
-  {
+  public boolean isFinished() {
     return false;
   }
 }

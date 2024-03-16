@@ -43,8 +43,10 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   private Timer m_TelemetryTimer = new Timer();
   private Timer m_ExtraTelemetryTimer = new Timer();
   private int m_CameraRight1ExceptionCount, m_CameraLeft1ExceptionCount, m_CameraRear1ExceptionCount;
-  private boolean m_VisionEnabled = true;
+  private boolean m_VisionEnabled = false;
   private boolean m_Aligned = false;
+
+  private final Rotation2d m_OperatorForwardPerspective = DriveConstants.APRIL_TAG_POSES.OPERATOR_OFFSET_SUPPLIER.get();
 
   private final SwerveRequest.ApplyChassisSpeeds m_AutoRequest = new SwerveRequest.ApplyChassisSpeeds()
     .withDriveRequestType(DriveRequestType.Velocity)
@@ -71,6 +73,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     }
 
     SmartDashboard.setDefaultBoolean("Is Blue", false);
+    this.setOperatorPerspectiveForward(this.m_OperatorForwardPerspective);
   }
 
   @Override
@@ -78,12 +81,11 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   {
     m_CameraRight1ExceptionCount = updateVisionWithCamera(m_CameraRight1, m_CameraRight1Estimator, m_CameraRight1ExceptionCount);
     m_CameraLeft1ExceptionCount = updateVisionWithCamera(m_CameraLeft1, m_CameraLeft1Estimator, m_CameraLeft1ExceptionCount);
-    m_CameraRight1ExceptionCount = updateVisionWithCamera(m_CameraRear1, m_CameraRear1Estimator, m_CameraRear1ExceptionCount);
-
     if(Global.ENABLE_TELEMETRY)
     {
       if(m_TelemetryTimer.get() > Global.TELEMETRY_UPDATE_SPEED)
       {
+        m_TelemetryTimer.reset();
         Logger.recordOutput("robotPose", m_odometry.getEstimatedPosition());
       }
     }
@@ -91,12 +93,11 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     {
       if(m_ExtraTelemetryTimer.get() > Global.EXTRA_TELEMETRY_UPDATE_SPEED)
       {
+        m_ExtraTelemetryTimer.reset();
         SmartDashboard.putBoolean("CameraRight1 isConnected", m_CameraRight1.isConnected());
         SmartDashboard.putBoolean("CameraLeft1 isConnected", m_CameraLeft1.isConnected());
-        SmartDashboard.putBoolean("CameraRear1 isConnected", m_CameraRear1.isConnected());
         SmartDashboard.putNumber("CameraRight1ExceptionCount", m_CameraRight1ExceptionCount);
-        SmartDashboard.putNumber("CameraRight1ExceptionCount", m_CameraLeft1ExceptionCount);
-        SmartDashboard.putNumber("CameraRight1ExceptionCount", m_CameraRear1ExceptionCount);
+        SmartDashboard.putNumber("CameraLeft1ExceptionCount", m_CameraLeft1ExceptionCount);
         SmartDashboard.putNumber("Yaw to speaker", this.yawToSpeaker.get().getDegrees());
         SmartDashboard.putNumber("Distance to Speaker", this.distanceToSpeaker.get());
         SmartDashboard.putBoolean("Vision Enabled", this.getVisionEnabled());
@@ -131,6 +132,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
       return DriveConstants.APRIL_TAG_POSES.BLUE_SPEAKER;
     }
     return DriveConstants.APRIL_TAG_POSES.RED_SPEAKER;
+    //return DriveConstants.APRIL_TAG_POSES.RED_SPEAKER.rotateBy(Rotation2d.fromRadians(Math.PI));
   }
 
   public ChassisSpeeds getCurrentRobotChassisSpeeds()
@@ -138,9 +140,9 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     return m_kinematics.toChassisSpeeds(getState().ModuleStates);
   }
 
-  public Supplier<Rotation2d> yawToSpeaker = () -> this.m_odometry.getEstimatedPosition().getRotation().rotateBy(PhotonUtils.getYawToPose(this.m_odometry.getEstimatedPosition(), this.getSpeakerPose()));
+  public final Supplier<Rotation2d> yawToSpeaker = () -> this.m_odometry.getEstimatedPosition().getRotation().rotateBy(PhotonUtils.getYawToPose(this.m_odometry.getEstimatedPosition(), this.getSpeakerPose()));
 
-  public Supplier<Double> distanceToSpeaker = () -> PhotonUtils.getDistanceToPose(this.m_odometry.getEstimatedPosition(), this.getSpeakerPose());
+  public final Supplier<Double> distanceToSpeaker = () -> PhotonUtils.getDistanceToPose(this.m_odometry.getEstimatedPosition(), this.getSpeakerPose());
   
   public void setAligned(boolean aligned)
   {
@@ -156,14 +158,12 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   {
     m_CameraRight1 = new PhotonCamera("CameraRight1");
     m_CameraLeft1 = new PhotonCamera("CameraLeft1");
-    m_CameraRear1 = new PhotonCamera("CameraRear1");
     m_DriverCamera = new PhotonCamera("DriverCamera");
     m_DriverCamera.setDriverMode(true);
 
     m_CameraRight1Estimator = new PhotonPoseEstimator(DriveConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_CameraRight1, DriveConstants.CAMERA_POSITIONS.RIGHT_1);
     m_CameraLeft1Estimator = new PhotonPoseEstimator(DriveConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_CameraLeft1, DriveConstants.CAMERA_POSITIONS.LEFT_1);
-    m_CameraRear1Estimator = new PhotonPoseEstimator(DriveConstants.TAG_LAYOUT, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_CameraRear1, DriveConstants.CAMERA_POSITIONS.REAR_1);
-    m_CameraRight1ExceptionCount = m_CameraLeft1ExceptionCount = m_CameraRear1ExceptionCount = 0;
+    m_CameraRight1ExceptionCount = m_CameraLeft1ExceptionCount = 0;
   }
 
   public boolean getVisionEnabled()
