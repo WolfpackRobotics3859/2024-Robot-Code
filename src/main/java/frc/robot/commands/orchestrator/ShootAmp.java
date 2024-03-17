@@ -2,38 +2,30 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.elevator;
+package frc.robot.commands.orchestrator;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Orchestrator;
 
-public class SetElevatorPercent extends Command
+public class ShootAmp extends Command 
 {
-  Elevator m_Elevator;
-  double m_Percent;
+  private final Orchestrator m_Orchestrator;
 
-  /**
-   * @brief Sets the elevator motors to a given percentage of the available voltage.
-   * @param elevator The elevator subsystem object.
-   * @param percent The percent voltage to apply to the motors (-1 to 1).
-  */
-  public SetElevatorPercent(Elevator elevator, double percent)
+  public ShootAmp(Orchestrator orchestrator) 
   {
-    this.m_Elevator = elevator;
-    this.m_Percent = percent;
-    addRequirements(m_Elevator);
+    this.m_Orchestrator = orchestrator;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize()
   {
-    m_Elevator.setElevatorPercent(this.m_Percent);
+    m_Orchestrator.setAmpShoot(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute()
+  public void execute() 
   {
     // Intentionally Empty
   }
@@ -42,7 +34,7 @@ public class SetElevatorPercent extends Command
   @Override
   public void end(boolean interrupted)
   {
-    m_Elevator.setElevatorPercent(0);
+    m_Orchestrator.setAmpShoot(false);
   }
 
   // Returns true when the command should end.

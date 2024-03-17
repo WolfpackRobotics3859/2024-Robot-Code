@@ -2,54 +2,50 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.shooter;
+package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.shooter.ShooterConstants.MOTOR;
+import frc.robot.subsystems.Orchestrator;
 import frc.robot.subsystems.Shooter;
 
-public class SetShooterMotor1Percent extends Command
+public class AmpShotAuto extends Command 
 {
-  Shooter m_Shooter;
-  double m_Percent;
-
-  /**
-   * @brief Applies a percent of the available voltage to shooter motor 1.
-   * @param shooter The shooter subsystem object.
-   * @param percent The percent voltage to apply to the motor, from -1 to 1.
-  */
-  public SetShooterMotor1Percent(Shooter shooter, double percent)
+  private final Orchestrator m_Orchestrator;
+  private final Shooter m_Shooter;
+  
+  public AmpShotAuto(Orchestrator orchestrator, Shooter shooter) 
   {
+    this.m_Orchestrator = orchestrator;
     this.m_Shooter = shooter;
-    this.m_Percent = percent;
-    addRequirements(shooter);
+
+    addRequirements(m_Orchestrator);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize()
   {
-    m_Shooter.setShooterMotorPercent(MOTOR.MOTOR_1, this.m_Percent);
+    m_Orchestrator.freshenOrchestrator();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute()
+  public void execute() 
   {
-    // Intentionally Empty
+    m_Orchestrator.shootAmp();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted)
   {
-    m_Shooter.setShooterMotorPercent(MOTOR.MOTOR_1, 0);
+    // Intentionally Empty
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished()
   {
-    return false;
+    return m_Shooter.shooterClear();
   }
 }

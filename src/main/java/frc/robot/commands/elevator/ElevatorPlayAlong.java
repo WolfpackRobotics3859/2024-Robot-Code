@@ -5,37 +5,42 @@
 package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.elevator.ElevatorConstants;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Orchestrator;
 
-public class SetElevatorPosition extends Command
+public class ElevatorPlayAlong extends Command
 {
-  Elevator m_Elevator;
-  double m_Position;
+  private final Orchestrator m_Orchestrator;
+  private final Elevator m_Elevator;
+  
+  private double m_PreviousElevatorPosition = 0;
 
-  /**
-   * @brief Sends the elevator motors toward a given position.
-   * @param elevator The elevator subsystem object.
-   * @param position The position to send the elevator toward.
-  */
-  public SetElevatorPosition(Elevator elevator, double position)
+  public ElevatorPlayAlong(Orchestrator orchestrator, Elevator elevator)
   {
+    this.m_Orchestrator = orchestrator;
     this.m_Elevator = elevator;
-    this.m_Position = position;
-    addRequirements(elevator);
+    
+    addRequirements(m_Elevator);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize()
   {
-    m_Elevator.setElevatorPosition(this.m_Position);
+    // Intentionally Empty
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute()
   {
-    // Intentionally Empty
+    double goalPosition = this.m_Orchestrator.getElevatorPosition();
+    if(goalPosition != m_PreviousElevatorPosition)
+    {
+      m_PreviousElevatorPosition = goalPosition;
+      this.m_Elevator.elevatorRequest(ElevatorConstants.MODE.POSITION, goalPosition);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -47,7 +52,7 @@ public class SetElevatorPosition extends Command
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished()
+  public boolean isFinished() 
   {
     return false;
   }

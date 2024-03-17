@@ -2,33 +2,28 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.shooter;
+package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.shooter.ShooterConstants.MOTOR;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Intake;
 
-public class SetFeederMotorVelocity extends Command
+public class KillIntake extends Command
 {
-  Shooter m_Shooter;
-  double m_Velocity;
+  private final Intake m_Intake;
 
-  /**
-   * @brief Runs the feeder motor at a given velocity.
-   * @param shooter The shooter subsystem object.
-   * @param velocity The desired velocity to run the motor at, measured in rotations per second.
-  */
-  public SetFeederMotorVelocity(Shooter shooter, double velocity)
+  public KillIntake(Intake intake)
   {
-    this.m_Shooter = shooter;
-    this.m_Velocity = velocity;
+    this.m_Intake = intake;
+
+    addRequirements(m_Intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize()
   {
-     m_Shooter.setMotorVelocity(MOTOR.FEEDER_MOTOR, this.m_Velocity);
+    m_Intake.setRollerVoltage(0);
+    m_Intake.setWristPercent(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -42,7 +37,7 @@ public class SetFeederMotorVelocity extends Command
   @Override
   public void end(boolean interrupted)
   {
-    m_Shooter.setShooterMotorPercent(MOTOR.FEEDER_MOTOR, 0);
+    // Intentionally Empty
   }
 
   // Returns true when the command should end.

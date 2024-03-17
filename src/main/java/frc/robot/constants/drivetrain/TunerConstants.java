@@ -11,17 +11,18 @@ import edu.wpi.first.math.util.Units;
 
 public class TunerConstants 
 {
+
     // Both sets of gains need to be tuned to your individual robot.
 
     // The steer motor uses any SwerveModule.SteerRequestType control request with the
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
     private static final Slot0Configs STEER_GAINS = new Slot0Configs()
-        .withKP(100).withKI(0).withKD(0.05)
+        .withKP(60).withKI(0).withKD(0.05)
         .withKS(0).withKV(1.5).withKA(0);
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs DRIVE_GAINS = new Slot0Configs()
-        .withKP(3).withKI(0).withKD(0)
+        .withKP(2).withKI(0).withKD(0)
         .withKS(0).withKV(0).withKA(0);
 
     // The closed-loop output type to use for the steer motors;
@@ -33,25 +34,25 @@ public class TunerConstants
 
     // The stator current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
-    private static final double SLIP_CURRENT_A = 300.0;
+    private static final double SLIP_CURRENT_A = 60.0;
 
     // Theoretical free speed (m/s) at 12v applied output;
     // This needs to be tuned to your individual robot
-    private static final double SPEED_AT_12_VOLTS_MPS = 6.0;
+    public static final double SPEED_AT_12_VOLTS_MPS = 6;
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
-    private static final double COUPLE_RATIO = 3.090909090909091;
+    private static final double COUPLE_RATIO = 3.5;
 
-    private static final double DRIVE_GEAR_RATIO = 7.1328671328671325;
-    private static final double STEER_GEAR_RATIO = 15.42857142857143;
+    private static final double DRIVE_GEAR_RATIO = 5.6;
+    private static final double STEER_GEAR_RATIO = 13.371428571428572;
     private static final double WHEEL_RADIUS_INCHES = 2;
 
     private static final boolean STEER_MOTOR_REVERSED = true;
     private static final boolean INVERT_LEFT_SIDE = false;
     private static final boolean INVERT_RIGHT_SIDE = true;
 
-    private static final String CANBUS_NAME = "";
+    private static final String CANBUS_NAME = "CANivore";
     private static final int PIDGEON_ID = 0;
 
 
@@ -75,7 +76,7 @@ public class TunerConstants
             .withSpeedAt12VoltsMps(SPEED_AT_12_VOLTS_MPS)
             .withSteerInertia(STEER_INERTIA)
             .withDriveInertia(DRIVE_INERTIA)
-            .withFeedbackSource(SteerFeedbackType.FusedCANcoder)
+            .withFeedbackSource(SteerFeedbackType.RemoteCANcoder)
             .withCouplingGearRatio(COUPLE_RATIO)
             .withSteerMotorInverted(STEER_MOTOR_REVERSED);
 
@@ -84,37 +85,37 @@ public class TunerConstants
     private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 1;
     private static final int FRONT_LEFT_STEER_MOTOR_ID = 2;
     private static final int FRONT_LEFT_ENCODER_ID = 1;
-    private static final double FRONT_LEFT_ENCODER_OFFSET = 0.2353515625;
+    private static final double FRONT_LEFT_ENCODER_OFFSET = -0.129883;
 
-    private static final double FRONT_LEFT_X_POS_INCHES = 10;
-    private static final double FRONT_LEFT_Y_POS_INCHES = 10;
+    private static final double FRONT_LEFT_X_POS_INCHES = 11.75;
+    private static final double FRONT_LEFT_Y_POS_INCHES = 11.75;
 
     // Front Right
-    private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 3;
-    private static final int FRONT_RIGHT_STEER_MOTOR_ID = 4;
-    private static final int FRONT_RIGHT_ENCODER_ID = 2;
-    private static final double FRONT_RIGHT_ENCODER_OFFSET = -0.175048828125;
+    private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 7;
+    private static final int FRONT_RIGHT_STEER_MOTOR_ID = 8;
+    private static final int FRONT_RIGHT_ENCODER_ID = 4;
+    private static final double FRONT_RIGHT_ENCODER_OFFSET = 0.102295;
 
-    private static final double FRONT_RIGHT_X_POS_INCHES = 10;
-    private static final double FRONT_RIGHT_Y_POS_INCHES = -10;
+    private static final double FRONT_RIGHT_X_POS_INCHES = 11.75;
+    private static final double FRONT_RIGHT_Y_POS_INCHES = -11.75;
 
     // Back Left
-    private static final int BACK_LEFT_DRIVE_MOTOR_ID = 5;
-    private static final int BACK_LEFT_STEER_MOTOR_ID = 6;
-    private static final int BACK_LEFT_ENCODER_ID = 3;
-    private static final double BACK_LEFT_ENCODER_OFFSET = 0.37060546875;
+    private static final int BACK_LEFT_DRIVE_MOTOR_ID = 3;
+    private static final int BACK_LEFT_STEER_MOTOR_ID = 4;
+    private static final int BACK_LEFT_ENCODER_ID = 2;
+    private static final double BACK_LEFT_ENCODER_OFFSET = 0.214355;
 
-    private static final double BACK_LEFT_X_POS_INCHES = -10;
-    private static final double BACK_LEFT_Y_POS_INCHES = 10;
+    private static final double BACK_LEFT_X_POS_INCHES = -11.75;
+    private static final double BACK_LEFT_Y_POS_INCHES = 11.75;
 
     // Back Right
-    private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 7;
-    private static final int BACK_RIGHT_STEER_MOTOR_ID = 8;
-    private static final int BACK_RIGHT_ENCODER_ID = 4;
-    private static final double BACK_RIGHT_ENCODER_OFFSET = 0.412353515625;
+    private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 5;
+    private static final int BACK_RIGHT_STEER_MOTOR_ID = 6;
+    private static final int BACK_RIGHT_ENCODER_ID = 3;
+    private static final double BACK_RIGHT_ENCODER_OFFSET = 0.43017578125;
 
-    private static final double BACK_RIGHT_X_POS_INCHES = -10;
-    private static final double BACK_RIGHT_Y_POS_INCHES = -10;
+    private static final double BACK_RIGHT_X_POS_INCHES = -11.75;
+    private static final double BACK_RIGHT_Y_POS_INCHES = -11.75;
 
 
     public static final SwerveModuleConstants FRONT_LEFT = CONSTANT_CREATOR.createModuleConstants(
