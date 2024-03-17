@@ -8,15 +8,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Orchestrator;
 import frc.robot.subsystems.Shooter;
 
-public class IntakeAuto extends Command 
+public class LowShotAutoPrep extends Command 
 {
   private final Orchestrator m_Orchestrator;
-  private final Shooter m_Shooter;
 
-  public IntakeAuto(Orchestrator orchestrator, Shooter shooter)
+  public LowShotAutoPrep(Orchestrator orchestrator, Shooter shooter)
   {
     m_Orchestrator = orchestrator;
-    m_Shooter = shooter;
 
     addRequirements(m_Orchestrator);
   }
@@ -25,14 +23,14 @@ public class IntakeAuto extends Command
   @Override
   public void initialize() 
   {
-    // Intentionally Empty
+    m_Orchestrator.freshenOrchestrator();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
-    m_Orchestrator.intakeAuto();
+    m_Orchestrator.prepLowShot();
   }
 
   // Called once the command ends or is interrupted.
@@ -46,6 +44,6 @@ public class IntakeAuto extends Command
   @Override
   public boolean isFinished()
   {
-    return m_Shooter.hasNoteCentered() || m_Shooter.hasNoteRearPosition();
+    return false;
   }
 }

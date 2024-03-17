@@ -4,16 +4,18 @@
 
 package frc.robot.commands.autos;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Orchestrator;
 import frc.robot.subsystems.Shooter;
 
-public class IntakeAuto extends Command 
+public class LowShotAutoShoot extends Command 
 {
   private final Orchestrator m_Orchestrator;
   private final Shooter m_Shooter;
+  private Timer m_Timer = new Timer();
 
-  public IntakeAuto(Orchestrator orchestrator, Shooter shooter)
+  public LowShotAutoShoot(Orchestrator orchestrator, Shooter shooter)
   {
     m_Orchestrator = orchestrator;
     m_Shooter = shooter;
@@ -32,20 +34,31 @@ public class IntakeAuto extends Command
   @Override
   public void execute() 
   {
-    m_Orchestrator.intakeAuto();
+    m_Orchestrator.shootLowAfterPrep();
+
+    if(m_Shooter.shooterClear())
+    {
+      m_Timer.start();
+    }
+    else
+    {
+      m_Timer.stop();
+      m_Timer.reset();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted)
   {
-    // Intentionally Empty
+    m_Timer.stop();
+    m_Timer.reset();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished()
   {
-    return m_Shooter.hasNoteCentered() || m_Shooter.hasNoteRearPosition();
+    return m_Timer.hasElapsed(0.5);
   }
 }

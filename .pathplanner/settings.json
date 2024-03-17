@@ -3,8 +3,9 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "3 Note From Amp",
     "2 Note From Source",
+    "3 Note From Amp",
+    "4 Note From Amp",
     "4 Note From Source"
   ],
   "autoFolders": [],

@@ -26,6 +26,8 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.commands.autos.AmpShotAuto;
 import frc.robot.commands.autos.IntakeAuto;
 import frc.robot.commands.autos.LowShotAuto;
+import frc.robot.commands.autos.LowShotAutoPrep;
+import frc.robot.commands.autos.LowShotAutoShoot;
 import frc.robot.commands.drivetrain.Drive;
 import frc.robot.commands.drivetrain.DriveWithTargetAngle;
 import frc.robot.commands.drivetrain.SeedFieldRelative;
@@ -158,7 +160,8 @@ public class RobotContainer
     NamedCommands.registerCommand("IntakeAuto", new IntakeAuto(m_Orchestrator, m_Shooter));
     NamedCommands.registerCommand("SeedField", new SeedFieldRelative(m_Drivetrain));
     NamedCommands.registerCommand("AimAuto", new DriveWithTargetAngle(m_Drivetrain, () -> 0.0, () -> 0.0, m_Drivetrain.yawToSpeaker));
-    NamedCommands.registerCommand("FinalLowShot", new LowShot(m_Orchestrator));
+    NamedCommands.registerCommand("PrepLow", new LowShotAutoPrep(m_Orchestrator, m_Shooter));
+    NamedCommands.registerCommand("LowShotFromPrep", new LowShotAutoShoot(m_Orchestrator, m_Shooter));
   }
 
   private void configureSmartDashboardCommands()

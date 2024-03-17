@@ -48,6 +48,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   private boolean m_VisionEnabled = true;
   private boolean m_Aligned = false;
 
+  private Pose2d m_CurrentSpeakerPose;
   private final Rotation2d m_RedOperatorForwardPerspective = Rotation2d.fromDegrees(180);
   private final Rotation2d m_BlueOperatorForwardPerspective = Rotation2d.fromDegrees(0);
   private boolean hasAppliedPerspective = false;
@@ -78,8 +79,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     {
       m_ExtraTelemetryTimer.start();
     }
-
-    SmartDashboard.setDefaultBoolean("Is Blue", false);
   }
 
   @Override
@@ -96,10 +95,12 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
         
         if(allianceColor == Alliance.Red)
         {
+          this.m_CurrentSpeakerPose = DriveConstants.APRIL_TAG_POSES.RED_SPEAKER;
           axisModifier = -1;
         }
         else
         {
+          this.m_CurrentSpeakerPose = DriveConstants.APRIL_TAG_POSES.BLUE_SPEAKER;
           axisModifier = 1;
         }
       });
@@ -154,11 +155,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
 
   private Pose2d getSpeakerPose()
   {
-    if(SmartDashboard.getBoolean("Is Blue", false))
-    {
-      return DriveConstants.APRIL_TAG_POSES.BLUE_SPEAKER;
-    }
-    return DriveConstants.APRIL_TAG_POSES.RED_SPEAKER;
+    return m_CurrentSpeakerPose;
   }
 
   public ChassisSpeeds getCurrentRobotChassisSpeeds()

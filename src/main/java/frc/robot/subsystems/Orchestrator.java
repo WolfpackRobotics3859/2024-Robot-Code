@@ -198,6 +198,29 @@ public class Orchestrator extends SubsystemBase
     }
   }
 
+  public void intakeAuto()
+  {
+    if(m_Shooter.hasNoteRearPosition() || m_Shooter.hasNoteCentered())
+    {
+      m_ShooterTopRollerVelocity = 0;
+      m_ShooterBottomRollerVelocity = 0;
+      m_ShooterFeederVoltage = 0;
+      m_IntakeRollersVoltage = 0;
+      this.stow();
+      return;
+    }
+    if(elevatorDown())
+    {
+      m_ElevatorPosition = Positions.INTAKE_AUTO.ELEVATOR_POSITION;
+      m_ShooterAngle = Positions.INTAKE_AUTO.SHOOTER_WRIST_ANGLE;
+      m_ShooterTopRollerVelocity = Positions.INTAKE_AUTO.SHOOTER_ROLLER_1_VELOCITY;
+      m_ShooterBottomRollerVelocity = Positions.INTAKE_AUTO.SHOOTER_ROLLER_2_VELOCITY;
+      m_ShooterFeederVoltage = Positions.INTAKE_AUTO.SHOOTER_FEEDER_VOLTAGE;
+      m_IntakePosition = Positions.INTAKE_AUTO.INTAKE_WRIST_POSITION;
+      m_IntakeRollersVoltage = Positions.INTAKE_AUTO.INTAKE_ROLLER_VOLTAGE;
+    }
+  }
+
   // If no vision data is available, this will default to bumper shot.
   // If the user is outside of range, this will do nothing.
   // Returns true when no note is detected anymore.
@@ -277,6 +300,60 @@ public class Orchestrator extends SubsystemBase
       
     }
     return false;
+  }
+
+  public boolean prepLowShot()
+  {
+    if(m_Shooter.shooterClear())
+    {
+      m_ShooterTopRollerVelocity = 0;
+      m_ShooterBottomRollerVelocity = 0;
+      m_ShooterFeederVoltage = 0;
+      this.stow();
+      return true;
+    }
+
+    if(elevatorDown())
+    {
+      // LOW SHOT W/ VISION
+      if(this.m_FreshCommand)
+      {
+        if(this.noteBackward())
+        {
+          m_ShooterTopRollerVelocity = Positions.LOW_SHOT.SHOOTER_ROLLER_1_VELOCITY;
+          m_ShooterBottomRollerVelocity = Positions.LOW_SHOT.SHOOTER_ROLLER_2_VELOCITY;
+          this.m_FreshCommand = false;
+        }
+      }
+
+      m_ElevatorPosition = Positions.LOW_SHOT.ELEVATOR_POSITION;
+      m_IntakePosition = Positions.LOW_SHOT.INTAKE_WRIST_POSITION;
+      m_IntakeRollersVoltage = Positions.LOW_SHOT.INTAKE_ROLLER_VOLTAGE;
+
+      double i = m_Drivetrain.distanceToSpeaker.get();
+      // 0.738 + -0.0567x + 5.12E-03x^2
+      double shooterAngle = 0.738 + (-0.0567 * i) + (5.12*Math.pow(10, -3)*Math.pow(i, 2));
+      m_ShooterAngle = MathUtil.clamp(shooterAngle, 0.55, Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE);
+    }
+    return false;
+  }
+
+  public void shootLowAfterPrep()
+  {
+    prepLowShot();
+    if(m_Elevator.isInPosition(m_ElevatorPosition))
+      {
+        double i = m_Drivetrain.distanceToSpeaker.get();
+        // 0.738 + -0.0567x + 5.12E-03x^2
+        double shooterAngle = 0.738 + (-0.0567 * i) + (5.12*Math.pow(10, -3)*Math.pow(i, 2));
+        if (this.m_Shooter.readyToShoot(MathUtil.clamp(shooterAngle, 0.55, Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE), 
+                                        Positions.LOW_SHOT.SHOOTER_ROLLER_1_VELOCITY,
+                                        Positions.LOW_SHOT.SHOOTER_ROLLER_2_VELOCITY)
+                                        && m_Drivetrain.getAligned())
+        {
+          m_ShooterFeederVoltage = Positions.LOW_SHOT.SHOOTER_FEEDER_VOLTAGE;
+        }
+      }
   }
 
   // Returns true when no note is detected anymore.
