@@ -20,6 +20,7 @@ import frc.robot.constants.Hardware;
 import frc.robot.constants.drivetrain.TunerConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Orchestrator;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
@@ -56,6 +57,7 @@ public class RobotContainer
   private final Elevator m_Elevator = new Elevator();
   private final Shooter m_Shooter = new Shooter();
   private final Intake m_Intake = new Intake();
+  private final Lights m_Lights = new Lights();
 
   // Orchestrator
   private final Orchestrator m_Orchestrator = new Orchestrator(m_Drivetrain, m_Elevator, m_Shooter, m_Intake);
@@ -110,6 +112,15 @@ public class RobotContainer
   public Orchestrator getOrchestrator()
   {
     return this.m_Orchestrator;
+  }
+
+  /**
+   * @brief Gets the lights subsystem.
+   * @return The lights object
+   */
+  public Lights getLights()
+  {
+    return this.m_Lights;
   }
   
   public CommandXboxController getPrimaryController()
