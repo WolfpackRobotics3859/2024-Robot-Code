@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.98,
+        "y": 5.81
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.405106535154795,
+        "y": 6.467930511618599
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.653873093293972,
+        "y": 6.754968847933033
+      },
+      "prevControl": {
+        "x": 2.1946117551908757,
+        "y": 6.075644785322205
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.7,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "IntakeAuto"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 1.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 48.652222780306566,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "4 Note From Amp (Close)",
+  "previewStartingState": {
+    "rotation": -171.1763075194586,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}
