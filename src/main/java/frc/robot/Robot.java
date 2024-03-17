@@ -40,7 +40,7 @@ public class Robot extends LoggedRobot
   @Override
   public void disabledPeriodic() 
   {
-    // Intentionally Empty
+    m_robotContainer.getLights().fadeInFadeOut(100, 255);
   }
 
   @Override

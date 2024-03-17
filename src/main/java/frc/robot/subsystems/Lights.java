@@ -15,6 +15,8 @@ public class Lights extends SubsystemBase
   AddressableLEDBuffer m_ledBuffer1 = new AddressableLEDBuffer(115);
   AddressableLED m_led = new AddressableLED(2);
   int[] symbolLights = {3, 4, 5, 7, 8, 9, 11, 12, 13, 15, 16, 17, 28, 30, 32, 34, 38, 40, 47, 48, 49, 51, 52, 53, 55, 56, 57, 59, 60, 72, 74, 76, 80, 84, 91, 95, 96, 97, 99, 100, 101, 103, 104, 105};
+  private int m_BrightnessCount;
+  private boolean m_IsGoingUp = true;
 
   /**
    * @brief Creates a new Lights subsystem. 
@@ -40,7 +42,7 @@ public class Lights extends SubsystemBase
    * @param saturation The saturation (amount of gray) in the lights.
    * @param brightness The brightness of the lights.
    */
-  public void setOrange(int hue, int saturation, int brightness)
+  public void setOrange()
   {
     for (int i = 0; i < m_ledBuffer1.getLength(); i++) 
     {
@@ -56,7 +58,7 @@ public class Lights extends SubsystemBase
    * @param saturation The saturation (amount of gray) in the lights.
    * @param brightness The brightness of the lights.
    */  
-  public void setGreen(int hue, int saturation, int brightness)
+  public void setGreen()
   {
     for (int i = 0; i < m_ledBuffer1.getLength(); i++)
     {
@@ -72,7 +74,7 @@ public class Lights extends SubsystemBase
    * @param saturation The saturation (amount of gray) in the lights.
    * @param brightness The brightness of the lights.
    */  
-  public void setBlue(int hue, int saturation, int brightness)
+  public void setBlue()
   {
     for (int i = 0; i < m_ledBuffer1.getLength(); i++)
     {
@@ -88,11 +90,11 @@ public class Lights extends SubsystemBase
    * @param saturation The saturation (amount of gray) in the lights.
    * @param brightness The brightness of the lights.
    */  
-  public void setRed(int hue, int saturation, int brightness)
+  public void setRed()
   {
     for (int i = 0; i < m_ledBuffer1.getLength(); i++)
     {
-      m_ledBuffer1.setHSV(i, 100, 255, 255);
+      m_ledBuffer1.setHSV(i, 0, 255, 255);
     }
     m_led.setData(m_ledBuffer1);
     m_led.start();
@@ -104,7 +106,7 @@ public class Lights extends SubsystemBase
    * @param saturation The saturation (amount of gray) in the lights.
    * @param brightness The brightness of the lights.
    */    
-  public void setOrangeFlash(int hue, int saturation, int brightness)
+  public void setOrangeFlash()
   {
     if (m_LightTimer.get() > .25)
       {
@@ -128,7 +130,7 @@ public class Lights extends SubsystemBase
    * @param saturation The saturation (amount of gray) in the lights.
    * @param brightness The brightness of the lights.
    */
-  public void setBlueFlash(int hue, int saturation, int brightness)
+  public void setBlueFlash()
   {
     if (m_LightTimer.get() > .25)
       {
@@ -152,7 +154,7 @@ public class Lights extends SubsystemBase
    * @param saturation The saturation (amount of gray) in the lights.
    * @param brightness The brightness of the lights.
    */
-  public void setRedFlash(int hue, int saturation, int brightness)
+  public void setRedFlash()
   {
     if (m_LightTimer.get() > .25)
       {
@@ -176,7 +178,7 @@ public class Lights extends SubsystemBase
    * @param saturation The saturation (amount of gray) in the lights.
    * @param brightness The brightness of the lights.
    */
-  public void setWolfpackSymbol(int hue, int saturation, int brightness)
+  public void setWolfpackSymbol()
   {
     for (int x = 0; x < m_ledBuffer1.getLength(); x++)
     {
@@ -188,6 +190,39 @@ public class Lights extends SubsystemBase
     }
     m_led.setData(m_ledBuffer1);
     m_led.start();
+  }
+
+  /**
+   * @brief Sets a fading in and out brightness pattern for any hue or saturation. 
+   * @param hue The hue (color) of the lights.
+   * @param saturation The saturation (amount of gray) in the lights.
+   */
+  public void fadeInFadeOut(int hue, int saturation)
+  {
+    if(m_LightTimer.get() > 0.25)
+    {
+      if(m_IsGoingUp)
+      {
+        m_BrightnessCount += 10;
+        if(m_BrightnessCount > 240)
+        {
+          m_IsGoingUp = false;
+        }
+      }
+      else
+      {
+        m_BrightnessCount -= 10;
+        if(m_BrightnessCount < 20)
+        {
+          m_IsGoingUp = true;
+        }
+      }
+      for (int x = 0; x < m_ledBuffer1.getLength(); x++)
+      {
+        m_ledBuffer1.setHSV(x, hue, saturation, m_BrightnessCount);
+      }
+      m_led.setData(m_ledBuffer1);
+    }
   }
 
   /**
