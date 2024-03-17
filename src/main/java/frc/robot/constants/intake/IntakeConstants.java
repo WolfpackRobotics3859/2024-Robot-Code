@@ -12,6 +12,9 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 /** Add your docs here. */
 public class IntakeConstants
 {
+    // Position Values
+    public static final double INTAKE_CLEAR_POSITION = 3.0;
+
     // Misc Values
     public static final double INTAKE_WRIST_FEED_FORWARD = 0.2;
     public static final double INTAKE_ROLLERS_ACCELERATION = 30;

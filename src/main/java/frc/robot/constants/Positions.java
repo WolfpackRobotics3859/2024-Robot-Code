@@ -26,7 +26,7 @@ public class Positions
         public static final double ELEVATOR_POSITION = 0.0725;
     }
 
-    public static final class AMP_SHOT
+    public static final class AMP
     {
         public static final double INTAKE_ROLLER_VOLTAGE = 0;
         public static final double INTAKE_WRIST_POSITION = 3.0;
