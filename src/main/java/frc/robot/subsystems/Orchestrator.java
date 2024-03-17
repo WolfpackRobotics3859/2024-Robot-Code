@@ -315,25 +315,49 @@ public class Orchestrator extends SubsystemBase
 
     if(elevatorDown())
     {
-      // LOW SHOT W/ VISION
-      if(this.m_FreshCommand)
+      if(m_Drivetrain.getVisionEnabled())
       {
-        if(this.noteBackward())
+        // LOW SHOT W/ VISION
+        if(this.m_FreshCommand)
         {
-          m_ShooterTopRollerVelocity = Positions.LOW_SHOT.SHOOTER_ROLLER_1_VELOCITY;
-          m_ShooterBottomRollerVelocity = Positions.LOW_SHOT.SHOOTER_ROLLER_2_VELOCITY;
-          this.m_FreshCommand = false;
+          if(this.noteBackward())
+          {
+            m_ShooterTopRollerVelocity = Positions.LOW_SHOT.SHOOTER_ROLLER_1_VELOCITY;
+            m_ShooterBottomRollerVelocity = Positions.LOW_SHOT.SHOOTER_ROLLER_2_VELOCITY;
+            this.m_FreshCommand = false;
+          }
+        }
+
+        m_ElevatorPosition = Positions.LOW_SHOT.ELEVATOR_POSITION;
+        m_IntakePosition = Positions.LOW_SHOT.INTAKE_WRIST_POSITION;
+        m_IntakeRollersVoltage = Positions.LOW_SHOT.INTAKE_ROLLER_VOLTAGE;
+
+        double i = m_Drivetrain.distanceToSpeaker.get();
+        // 0.738 + -0.0567x + 5.12E-03x^2
+        double shooterAngle = 0.738 + (-0.0567 * i) + (5.12*Math.pow(10, -3)*Math.pow(i, 2));
+        m_ShooterAngle = MathUtil.clamp(shooterAngle, 0.55, Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE);
+      }
+      else
+      {
+        if(this.m_FreshCommand)
+        {
+          if(this.noteBackward())
+          {
+            m_ShooterTopRollerVelocity = Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_1_VELOCITY;
+            m_ShooterBottomRollerVelocity = Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_2_VELOCITY;
+            this.m_FreshCommand = false;
+          }
+        }
+  
+        m_ElevatorPosition = Positions.LOW_BUMPER_SHOT.ELEVATOR_POSITION;
+        m_IntakePosition = Positions.LOW_BUMPER_SHOT.INTAKE_WRIST_POSITION;
+        m_IntakeRollersVoltage = Positions.LOW_BUMPER_SHOT.INTAKE_ROLLER_VOLTAGE;
+  
+        if(m_Elevator.isInPosition(m_ElevatorPosition))
+        {
+          m_ShooterAngle = Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE;
         }
       }
-
-      m_ElevatorPosition = Positions.LOW_SHOT.ELEVATOR_POSITION;
-      m_IntakePosition = Positions.LOW_SHOT.INTAKE_WRIST_POSITION;
-      m_IntakeRollersVoltage = Positions.LOW_SHOT.INTAKE_ROLLER_VOLTAGE;
-
-      double i = m_Drivetrain.distanceToSpeaker.get();
-      // 0.738 + -0.0567x + 5.12E-03x^2
-      double shooterAngle = 0.738 + (-0.0567 * i) + (5.12*Math.pow(10, -3)*Math.pow(i, 2));
-      m_ShooterAngle = MathUtil.clamp(shooterAngle, 0.55, Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE);
     }
     return false;
   }
@@ -341,7 +365,9 @@ public class Orchestrator extends SubsystemBase
   public void shootLowAfterPrep()
   {
     prepLowShot();
-    if(m_Elevator.isInPosition(m_ElevatorPosition))
+    if (m_Drivetrain.getVisionEnabled())
+    {
+      if(m_Elevator.isInPosition(m_ElevatorPosition))
       {
         double i = m_Drivetrain.distanceToSpeaker.get();
         // 0.738 + -0.0567x + 5.12E-03x^2
@@ -354,6 +380,19 @@ public class Orchestrator extends SubsystemBase
           m_ShooterFeederVoltage = Positions.LOW_SHOT.SHOOTER_FEEDER_VOLTAGE;
         }
       }
+    }
+    else
+    {
+      if(m_Elevator.isInPosition(m_ElevatorPosition))
+      {
+        if (this.m_Shooter.readyToShoot(Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE, 
+                                          Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_1_VELOCITY,
+                                          Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_2_VELOCITY))
+        {
+          m_ShooterFeederVoltage = Positions.LOW_BUMPER_SHOT.SHOOTER_FEEDER_VOLTAGE;
+        }
+      }
+    }
   }
 
   // Returns true when no note is detected anymore.
