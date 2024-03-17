@@ -20,6 +20,7 @@ public class DriveWithTargetAngle extends Command
   private final Supplier<Double> m_SpeedXSupplier, m_SpeedYSupplier;
   private final Supplier<Rotation2d> m_AngleSupplier;
   private final Drivetrain m_Drivetrain;
+  private final SwerveRequest.FieldCentricFacingAngle driveRequest = new SwerveRequest.FieldCentricFacingAngle();
   
   /**
    * Sends a field centric request to the given swerve drivetrain with given X speed, Y speed, and angle to point toward
@@ -42,35 +43,48 @@ public class DriveWithTargetAngle extends Command
   @Override
   public void initialize() 
   {
-    // Intentionally Empty
+    driveRequest.HeadingController.setPID
+    (
+      DriveConstants.TURN_TO_ANGLE_P,
+      DriveConstants.TURN_TO_ANGLE_I,
+      DriveConstants.TURN_TO_ANGLE_D
+    );
+    driveRequest.HeadingController.setTolerance(DriveConstants.TURN_TO_ANGLE_TOLERANCE);
+    driveRequest.HeadingController.enableContinuousInput(Math.PI, -Math.PI);
+
+    m_Drivetrain.setAligned(false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute()
   {
-    // create request
-    final SwerveRequest.FieldCentricFacingAngle driveRequest = new SwerveRequest.FieldCentricFacingAngle()
-      .withDeadband(DriveConstants.MAX_SPEED * 0.1).withRotationalDeadband(DriveConstants.MAX_ANGULAR_RATE * 0.1)
+    // modify request
+    driveRequest
+      .withDeadband(DriveConstants.MAX_SPEED * 0.1)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
       .withSteerRequestType(SteerRequestType.MotionMagic)
       .withVelocityX(m_SpeedXSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
       .withVelocityY(m_SpeedYSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
       .withTargetDirection(m_AngleSupplier.get());
 
-
-    driveRequest.HeadingController.setPID(5, 0.001, 0);
-    driveRequest.HeadingController.setTolerance(0.5);
-    driveRequest.HeadingController.enableContinuousInput(-180, 180);
-
     m_Drivetrain.setControl(driveRequest);
+
+    if(driveRequest.HeadingController.atSetpoint())
+    {
+      m_Drivetrain.setAligned(true);
+    }
+    else
+    {
+      m_Drivetrain.setAligned(false);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) 
   {
-    // Intentionally Empty
+    m_Drivetrain.setAligned(false);
   }
 
   // Returns true when the command should end.

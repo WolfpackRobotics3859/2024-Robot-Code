@@ -4,41 +4,52 @@
 
 package frc.robot.commands.orchestrator;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Orchestrator;
+import frc.robot.subsystems.Intake;
 
-public class AmpShot extends Command 
+public class ZeroIntake extends Command 
 {
-  private final Orchestrator m_Orchestrator;
-  
-  public AmpShot(Orchestrator orchestrator) 
-  {
-    this.m_Orchestrator = orchestrator;
+  private final Intake m_Intake;
+  private final Timer m_Timer;
 
-    addRequirements(m_Orchestrator);
+  /** Creates a new ZeroIntake. */
+  public ZeroIntake(Intake intake)
+  {
+    this.m_Intake = intake;
+    
+    addRequirements(m_Intake);
+    
+    this.m_Timer = new Timer();
+    m_Timer.start();
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize()
   {
-    m_Orchestrator.freshenOrchestrator();
+    // Intentionally Empty
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() 
+  public void execute()
   {
-    m_Orchestrator.shootAmp();
+    m_Intake.setWristPercent(-0.1);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted)
+  {
+    m_Intake.setWristZero();
+    m_Intake.setWristPercent(0);
+  }
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished()
+  {
     return false;
   }
 }

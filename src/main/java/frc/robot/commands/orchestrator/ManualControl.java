@@ -37,7 +37,8 @@ public class ManualControl extends Command
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished()
+  {
     return false;
   }
 }

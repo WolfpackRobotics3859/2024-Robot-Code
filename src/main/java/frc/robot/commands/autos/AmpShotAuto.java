@@ -2,45 +2,37 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.elevator;
+package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.elevator.ElevatorConstants;
-import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Orchestrator;
+import frc.robot.subsystems.Shooter;
 
-public class ElevatorPlayAlong extends Command
+public class AmpShotAuto extends Command 
 {
   private final Orchestrator m_Orchestrator;
-  private final Elevator m_Elevator;
+  private final Shooter m_Shooter;
   
-  private double m_PreviousElevatorPosition = 0;
-
-  public ElevatorPlayAlong(Orchestrator orchestrator, Elevator elevator)
+  public AmpShotAuto(Orchestrator orchestrator, Shooter shooter) 
   {
     this.m_Orchestrator = orchestrator;
-    this.m_Elevator = elevator;
-    
-    addRequirements(m_Elevator);
+    this.m_Shooter = shooter;
+
+    addRequirements(m_Orchestrator);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize()
   {
-    // Intentionally Empty
+    m_Orchestrator.freshenOrchestrator();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute()
+  public void execute() 
   {
-    double goalPosition = this.m_Orchestrator.getElevatorPosition();
-    if(goalPosition != m_PreviousElevatorPosition)
-    {
-      m_PreviousElevatorPosition = goalPosition;
-      this.m_Elevator.elevatorRequest(ElevatorConstants.MODE.POSITION, goalPosition);
-    }
+    m_Orchestrator.shootAmp();
   }
 
   // Called once the command ends or is interrupted.
@@ -52,8 +44,8 @@ public class ElevatorPlayAlong extends Command
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() 
+  public boolean isFinished()
   {
-    return false;
+    return m_Shooter.shooterClear();
   }
 }

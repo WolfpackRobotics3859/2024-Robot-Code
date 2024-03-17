@@ -2,18 +2,22 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.orchestrator;
+package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Orchestrator;
+import frc.robot.subsystems.Shooter;
 
-public class IWantANote extends Command {
-  private Orchestrator m_Orchestrator;
-  /** Creates a new IWantANote. */
-  public IWantANote(Orchestrator orchestrator) {
+public class IntakeAuto extends Command 
+{
+  private final Orchestrator m_Orchestrator;
+  private final Shooter m_Shooter;
+
+  public IntakeAuto(Orchestrator orchestrator, Shooter shooter) {
     m_Orchestrator = orchestrator;
+    m_Shooter = shooter;
+
     addRequirements(m_Orchestrator);
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -32,11 +36,15 @@ public class IWantANote extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted)
+  {
+    // Intentionally Empty
+  }
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
-    return false;
+  public boolean isFinished()
+  {
+    return m_Shooter.hasNoteCentered() || m_Shooter.hasNoteRearPosition();
   }
 }

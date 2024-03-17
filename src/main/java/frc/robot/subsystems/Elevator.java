@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
@@ -12,6 +14,7 @@ import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,15 +26,19 @@ public class Elevator extends SubsystemBase
 {
   private final TalonFX m_ElevatorMotor1 = new TalonFX(Hardware.ELEVATOR_MOTOR_1_ID);
   private final TalonFX m_ElevatorMotor2 = new TalonFX(Hardware.ELEVATOR_MOTOR_2_ID);
+
   private final CANcoder m_CANCoder = new CANcoder(Hardware.ELEVATOR_CANCODER_ID);
   private final Timer m_TelemetryTimer = new Timer();
   private final Timer m_ExtraTelemetryTimer = new Timer();
-
+  
   public Elevator()
   {
-    m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.ELEVATOR_MOTOR_CONFIG);
+    m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.ELEVATOR_MOTOR_1_CONFIG);
+    m_ElevatorMotor2.getConfigurator().apply(ElevatorConstants.ELEVATOR_MOTOR_2_CONFIG);
+
     Follower followRequest = new Follower(Hardware.ELEVATOR_MOTOR_1_ID, false);
     m_ElevatorMotor2.setControl(followRequest);
+
     m_CANCoder.getConfigurator().apply(ElevatorConstants.ELEVATOR_CANCODER_CONFIGURATION);
     
     // Telemetry Configuration
@@ -55,16 +62,8 @@ public class Elevator extends SubsystemBase
       {
         m_TelemetryTimer.reset();
         SmartDashboard.putNumber("Current Elevator Position", this.m_ElevatorMotor1.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("Goal Elevator Position", 0);
       }
     }
-    // if(Global.ENABLE_EXTRA_TELEMETRY)
-    // {
-    //   if(m_ExtraTelemetryTimer.get() > Global.EXTRA_TELEMETRY_UPDATE_SPEED)
-    //   {
-    //     // Intentionally Empty
-    //   }
-    // }
   }
 
   /**
@@ -125,6 +124,8 @@ public class Elevator extends SubsystemBase
   {
     return Math.abs(m_ElevatorMotor1.getPosition().getValueAsDouble() - position) <  ElevatorConstants.CLOSED_LOOP_ERROR_TOLERANCE;
   }
+
+  public final BooleanSupplier killShooterForClimb = () -> this.m_ElevatorMotor1.getPosition().getValueAsDouble() < ElevatorConstants.BAR;
 
   /**
    * @brief Sets the elevator motors to a given percentage of the available voltage.

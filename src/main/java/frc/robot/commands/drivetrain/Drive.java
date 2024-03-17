@@ -7,22 +7,18 @@ package frc.robot.commands.drivetrain;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.constants.drivetrain.DriveConstants;
 
 public class Drive extends Command
 {
-  /*
-   * m_SpeedXSupplier - The supplier object for speed in the X direction
-   * m_SpeedYSupplier - The supplier object for speed in the Y direction
-   * m_RotationalSpeedSupplier - The supplier object for rotational speed
-   */
-  private Supplier<Double> m_SpeedXSupplier, m_SpeedYSupplier, m_RotationalSpeedSupplier;
-  private Drivetrain m_Drivetrain;
-  
+  private final Supplier<Double> m_SpeedXSupplier, m_SpeedYSupplier, m_RotationalSpeedSupplier;
+  private final Drivetrain m_Drivetrain;
+  private final SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric();
+
   /**
    * Sends a field centric request to the given swerve drivetrain with given X speed, Y speed, and rotational speed
    * @param drivetrain The swerve drivetrain object
@@ -51,14 +47,16 @@ public class Drive extends Command
   @Override
   public void execute()
   {
-    final SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric()
-      .withDeadband(DriveConstants.MAX_SPEED * 0.1).withRotationalDeadband(DriveConstants.MAX_ANGULAR_RATE * 0.1)
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-      .withVelocityX(m_SpeedXSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
-      .withVelocityY(m_SpeedYSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
-      .withRotationalRate(m_RotationalSpeedSupplier.get() * DriveConstants.MAX_ANGULAR_RATE * 1.2);
+      // set to basic drive request
+      driveRequest
+        .withDeadband(DriveConstants.MAX_SPEED * 0.1).withRotationalDeadband(DriveConstants.MAX_ANGULAR_RATE * 0.1)
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+        .withSteerRequestType(SteerRequestType.MotionMagic)
+        .withVelocityX(m_SpeedXSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
+        .withVelocityY(m_SpeedYSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
+        .withRotationalRate(m_RotationalSpeedSupplier.get() * DriveConstants.MAX_ANGULAR_RATE * 1.2);
 
-    m_Drivetrain.setControl(driveRequest);
+      m_Drivetrain.setControl(driveRequest);
   }
 
   // Called once the command ends or is interrupted.

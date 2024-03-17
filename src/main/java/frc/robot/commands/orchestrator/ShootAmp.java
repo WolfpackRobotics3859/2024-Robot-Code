@@ -7,38 +7,39 @@ package frc.robot.commands.orchestrator;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Orchestrator;
 
-public class BumperShot extends Command {
-  private Orchestrator m_Orchestrator;
-  public BumperShot(Orchestrator orchestrator) 
+public class ShootAmp extends Command 
+{
+  private final Orchestrator m_Orchestrator;
+
+  public ShootAmp(Orchestrator orchestrator) 
   {
-    m_Orchestrator = orchestrator;
-    addRequirements(m_Orchestrator);
+    this.m_Orchestrator = orchestrator;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() 
+  public void initialize()
   {
-    // Intentionally Empty
+    m_Orchestrator.setAmpShoot(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
-    m_Orchestrator.shootLow();
+    // Intentionally Empty
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted)
   {
-    // Intentionally Empty
+    m_Orchestrator.setAmpShoot(false);
   }
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() 
+  public boolean isFinished()
   {
     return false;
   }

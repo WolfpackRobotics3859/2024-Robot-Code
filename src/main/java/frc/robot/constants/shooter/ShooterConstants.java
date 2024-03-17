@@ -21,53 +21,35 @@ public class ShooterConstants
 {
     // Position Values
     public static final double WRIST_CLEARANCE_POSITION = .68;
-    public static final double WRIST_DEFAULT_POSITION = 0.5;
-    public static final double WRIST_AMP_SHOOTING_POSITION = 0.662598; 
-    public static final double WRIST_BUMPER_SHOT_POSITION = 0.67;
-    public static final double WRIST_MANUAL_SHOT_POSITION = 0.6;
-    public static final double WRIST_PURGE_POSITION = 0.58;
 
-    // Software Limit Values
+    // Limit Values
     public static final double WRIST_MAX_DOWN_POSITION = 0.3;
-    public static final double WRIST_MAX_UP_POSIION = 1;
-
-    // Velocities
-    public static final double BUMPER_SHOT_VELOCITY = 35;
-    public static final double INTAKE_SHOOTERS_VELOCITY = -18;
-    public static final double PURGE_VELOCITY = 20;
-
-    // Voltages
-    public static final double INTAKE_FEEDER_VOLTAGE = -2.5;
-    public static final double FEEDER_SHOOTING_VOLTAGE = 7;
-    public static final double FEEDER_AMP_SHOT_VOLTAGE = 3;
-
-
-    // Wrist values
-    public static final double SHOOTER_WRIST_FEED_FORWARD = 0.75;
-
-    // Shooter motor configs
+    public static final double WRIST_MAX_UP_POSIION = 0.71;
+    
+    // Accelerations
     public static final double SHOOTER_MOTOR_ACCELERATION = 30;
 
+    // Misc values
+    public static final double SHOOTER_WRIST_FEED_FORWARD = 0.3;
+
+    // Motor Configs
     public static final Slot0Configs SHOOTER_1_GAINS = new Slot0Configs()
-        .withKP(0.0025769).withKI(0).withKD(0)
-        .withKS(0.17472).withKV(0.11134).withKA(0.029604);
+        .withKP(0.094562).withKI(0).withKD(0)
+        .withKS(0.095166).withKV(0.11334).withKA(0.023285);
 
     public static final Slot0Configs SHOOTER_2_GAINS = new Slot0Configs()
-        .withKP(0.011753).withKI(0).withKD(0)
-        .withKS(0.13771).withKV(0.10834).withKA(0.01631);
+        .withKP(0.090537).withKI(0).withKD(0)
+        .withKS(0.090537).withKV(0.11444).withKA(0.021771);
     
-    // Wrist motor configs
     public static final Slot0Configs WRIST_GAINS = new Slot0Configs()
-        .withKP(25).withKI(0).withKD(0)
+        .withKP(37).withKI(0).withKD(0)
         .withKS(0).withKV(0).withKA(0)
         .withGravityType(GravityTypeValue.Arm_Cosine);
 
-    // Feeder motor
     public static final Slot0Configs FEEDER_GAINS = new Slot0Configs()
         .withKP(0.5).withKI(0).withKD(0)
         .withKS(0.15837).withKV(0.10739).withKA(0.0018114);
 
-    // Wrist configs
     public static final MotionMagicConfigs WRIST_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(5)
         .withMotionMagicAcceleration(1);
@@ -88,13 +70,13 @@ public class ShooterConstants
         .withNeutralMode(NeutralModeValue.Brake)
         .withInverted(InvertedValue.CounterClockwise_Positive);
     
-    // Wrist CANCoder
+    // CANCoder configs
     public static final MagnetSensorConfigs WRIST_CANCODER_MAGNET_CONFIGS = new MagnetSensorConfigs()
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
-        .withMagnetOffset(-0.25)
+        .withMagnetOffset(0.26)
         .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1);
 
-    // Compile all configs into a single config variable for ease of use
+    // Condensed Configs
     public static final TalonFXConfiguration SHOOTER_MOTOR_1_CONFIGURATION = new TalonFXConfiguration()
         .withSlot0(SHOOTER_1_GAINS);
 
@@ -121,6 +103,7 @@ public class ShooterConstants
         FEEDER_MOTOR
     }
 
+    // Mode Enum
     public enum MODE
     {
         VELOCITY,
@@ -130,10 +113,7 @@ public class ShooterConstants
         POSITION
     }
 
+    // Tolerances
     public static final double VELOCITY_CLOSED_LOOP_ERROR_TOLERANCE = 1;
     public static final double POSITION_CLOSED_LOOP_ERROR_TOLERANCE = 0.04;
-
-    // Misc
-    public static final double WRIST_MOVEMENT_TOLERANCE = 0.04;
-    public static final double SHOOTER_VELOCITY_TOLERANCE = 3;
 }

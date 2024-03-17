@@ -12,6 +12,7 @@ import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+
 import frc.robot.constants.Global;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.shooter.ShooterConstants;
@@ -26,7 +27,9 @@ public class Shooter extends SubsystemBase
   private final TalonFX m_ShooterMotor2 = new TalonFX(Hardware.SHOOTER_MOTOR_2_ID);
   private final TalonFX m_WristMotor = new TalonFX(Hardware.WRIST_MOTOR_ID);
   private final TalonFX m_FeederMotor = new TalonFX(Hardware.FEEDER_MOTOR_ID);
+
   private final CANcoder m_WristCANCoder = new CANcoder(Hardware.SHOOTER_WRIST_CANCODER_ID);
+
   private final DigitalInput m_BeamBreak1 = new DigitalInput(Hardware.BEAM_BREAK_1_ID);
   private final DigitalInput m_BeamBreak2 = new DigitalInput(Hardware.BEAM_BREAK_2_ID);
 
@@ -39,10 +42,9 @@ public class Shooter extends SubsystemBase
   public Shooter() 
   {
     // Motor Configuration
+    m_WristMotor.getConfigurator().apply(ShooterConstants.WRIST_MOTOR_CONFIGURATION);
     m_ShooterMotor1.getConfigurator().apply(ShooterConstants.SHOOTER_MOTOR_1_CONFIGURATION);
     m_ShooterMotor2.getConfigurator().apply(ShooterConstants.SHOOTER_MOTOR_2_CONFIGURATION);
-    m_WristMotor.getConfigurator().apply(ShooterConstants.WRIST_MOTOR_CONFIGURATION);
-    m_FeederMotor.getConfigurator().apply(ShooterConstants.FEEDER_GAINS);
 
     // Encoder Configuration
     m_WristCANCoder.getConfigurator().apply(ShooterConstants.WRIST_CANCODER_CONFIGURATION);
@@ -68,8 +70,6 @@ public class Shooter extends SubsystemBase
       {
         m_TelemetryTimer.reset();
         SmartDashboard.putNumber("Shooter Wrist Position", m_WristMotor.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("Shooter Motor 1 Velocity", m_ShooterMotor1.getVelocity().getValueAsDouble());
-        SmartDashboard.putNumber("Shooter Motor 2 Velocity", m_ShooterMotor2.getVelocity().getValueAsDouble());
         SmartDashboard.putBoolean("Beam Break 1", m_BeamBreak1.get());
         SmartDashboard.putBoolean("Beam Break 2", m_BeamBreak2.get());
       }
@@ -94,12 +94,14 @@ public class Shooter extends SubsystemBase
         break;
       case POSITION:
         this.setMotorPosition(motor, value);
+        break;
       default:
         System.out.println("Warning: Invalid control mode for shooter.");
         break;
     }
   }
 
+  // Beam Break Logic
   public boolean hasNoteRearPosition()
   {
     return m_BeamBreak1.get() && !m_BeamBreak2.get();
@@ -122,9 +124,10 @@ public class Shooter extends SubsystemBase
 
   public boolean getShooterReady()
   {
-    return this.motor1Ready() && this.motor2Ready();
+    return !this.getBeamBreak1() && !this.getBeamBreak2();
   }
 
+  // Beam Break Getters
   public boolean getBeamBreak1()
   {
     return m_BeamBreak1.get();
@@ -294,15 +297,5 @@ public class Shooter extends SubsystemBase
         System.out.println("Warning: Shooter cannot brake a motor that doesn't exist.");
         break;
     }
-  }
-
-  private boolean motor1Ready()
-  {
-    return m_ShooterMotor1.getClosedLoopError().getValueAsDouble() < ShooterConstants.VELOCITY_CLOSED_LOOP_ERROR_TOLERANCE;
-  }
-
-  private boolean motor2Ready()
-  {
-    return m_ShooterMotor1.getClosedLoopError().getValueAsDouble() < ShooterConstants.VELOCITY_CLOSED_LOOP_ERROR_TOLERANCE;
   }
 }

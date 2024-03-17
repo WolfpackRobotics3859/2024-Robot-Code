@@ -26,7 +26,7 @@ public class Hardware
     public static final int BACK_RIGHT_STEER_MOTOR_ID = 6;
     public static final int BACK_RIGHT_ENCODER_ID = 3;
 
-    // Shooter Motors
+    // Shooter
     public static final int SHOOTER_MOTOR_1_ID = 14;
     public static final int SHOOTER_MOTOR_2_ID = 15;
     public static final int WRIST_MOTOR_ID = 13;
@@ -35,7 +35,7 @@ public class Hardware
     public static final int BEAM_BREAK_1_ID = 8;
     public static final int BEAM_BREAK_2_ID = 9;
 
-    //Intake Motors
+    // Intake
     public static final int INTAKE_WRIST_MOTOR_ID = 9;
     public static final int INTAKE_ROLLER_MOTOR_ID = 10;
     
