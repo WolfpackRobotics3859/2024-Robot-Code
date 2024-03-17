@@ -192,6 +192,11 @@ public class Lights extends SubsystemBase
     m_led.start();
   }
 
+  /**
+   * @brief Sets a fading in and out brightness pattern for any hue or saturation. 
+   * @param hue The hue (color) of the lights.
+   * @param saturation The saturation (amount of gray) in the lights.
+   */
   public void fadeInFadeOut(int hue, int saturation)
   {
     if(m_LightTimer.get() > 0.25)
