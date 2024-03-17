@@ -12,7 +12,7 @@ public class AmpShotAuto extends Command
 {
   private final Orchestrator m_Orchestrator;
   private final Shooter m_Shooter;
-  /** Creates a new AmpShot. */
+  
   public AmpShotAuto(Orchestrator orchestrator, Shooter shooter) 
   {
     this.m_Orchestrator = orchestrator;

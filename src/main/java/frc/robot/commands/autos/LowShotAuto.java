@@ -27,7 +27,6 @@ public class LowShotAuto extends Command {
   public void initialize() 
   {
     m_Orchestrator.freshenOrchestrator();
-    System.out.print("Low Shot Auto Started");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -53,7 +52,6 @@ public class LowShotAuto extends Command {
   {
     m_Timer.stop();
     m_Timer.reset();
-    System.out.print("Low Shot Auto Ended");
   }
 
   // Returns true when the command should end.

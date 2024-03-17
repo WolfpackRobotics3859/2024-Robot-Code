@@ -64,13 +64,6 @@ public class Elevator extends SubsystemBase
         SmartDashboard.putNumber("Current Elevator Position", this.m_ElevatorMotor1.getPosition().getValueAsDouble());
       }
     }
-    // if(Global.ENABLE_EXTRA_TELEMETRY)
-    // {
-    //   if(m_ExtraTelemetryTimer.get() > Global.EXTRA_TELEMETRY_UPDATE_SPEED)
-    //   {
-    //     // Intentionally Empty
-    //   }
-    // }
   }
 
   /**
@@ -127,12 +120,12 @@ public class Elevator extends SubsystemBase
     return position < ElevatorConstants.BAR_BOTTOM_CLEAR;
   }
 
-  public final BooleanSupplier killShooterForClimb = () -> this.m_ElevatorMotor1.getPosition().getValueAsDouble() < ElevatorConstants.BAR;
-
   public boolean isInPosition(double position)
   {
     return Math.abs(m_ElevatorMotor1.getPosition().getValueAsDouble() - position) <  ElevatorConstants.CLOSED_LOOP_ERROR_TOLERANCE;
   }
+
+  public final BooleanSupplier killShooterForClimb = () -> this.m_ElevatorMotor1.getPosition().getValueAsDouble() < ElevatorConstants.BAR;
 
   /**
    * @brief Sets the elevator motors to a given percentage of the available voltage.

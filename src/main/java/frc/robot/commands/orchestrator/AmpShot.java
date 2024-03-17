@@ -10,10 +10,11 @@ import frc.robot.subsystems.Orchestrator;
 public class AmpShot extends Command 
 {
   private final Orchestrator m_Orchestrator;
-  /** Creates a new AmpShot. */
+  
   public AmpShot(Orchestrator orchestrator) 
   {
     this.m_Orchestrator = orchestrator;
+
     addRequirements(m_Orchestrator);
   }
 

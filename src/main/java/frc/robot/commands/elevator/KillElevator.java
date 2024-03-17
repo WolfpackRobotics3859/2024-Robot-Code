@@ -15,6 +15,7 @@ public class KillElevator extends Command
   public KillElevator(Elevator elevator)
   {
     this.m_Elevator = elevator;
+    
     addRequirements(m_Elevator);
   }
 

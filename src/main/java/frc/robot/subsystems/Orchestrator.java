@@ -234,7 +234,6 @@ public class Orchestrator extends SubsystemBase
         double i = m_Drivetrain.distanceToSpeaker.get();
           // 0.738 + -0.0567x + 5.12E-03x^2
           double shooterAngle = 0.738 + (-0.0567 * i) + (5.12*Math.pow(10, -3)*Math.pow(i, 2));
-          //double shooterAngle = SmartDashboard.getNumber("[Manual] Shooter Angle", 0.6);
           m_ShooterAngle = MathUtil.clamp(shooterAngle, 0.55, Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE);
         if(m_Elevator.isInPosition(m_ElevatorPosition))
         {
@@ -349,20 +348,20 @@ public class Orchestrator extends SubsystemBase
       }
       else
       {
-        m_ShooterFeederVoltage = Positions.AMP.SHOOTER_FEEDER_VOLTAGE;
+        m_ShooterFeederVoltage = Positions.AMP_SHOT.SHOOTER_FEEDER_VOLTAGE;
       }
 
-      m_ElevatorPosition = Positions.AMP.ELEVATOR_POSITION;
-      m_IntakePosition = Positions.AMP.INTAKE_WRIST_POSITION;
-      m_IntakeRollersVoltage = Positions.AMP.INTAKE_ROLLER_VOLTAGE;
-      m_ShooterAngle = Positions.AMP.SHOOTER_WRIST_ANGLE;
+      m_ElevatorPosition = Positions.AMP_SHOT.ELEVATOR_POSITION;
+      m_IntakePosition = Positions.AMP_SHOT.INTAKE_WRIST_POSITION;
+      m_IntakeRollersVoltage = Positions.AMP_SHOT.INTAKE_ROLLER_VOLTAGE;
+      m_ShooterAngle = Positions.AMP_SHOT.SHOOTER_WRIST_ANGLE;
 
       if(m_Elevator.isInPosition(m_ElevatorPosition))
       {
-        if (this.m_Shooter.inPosition(Positions.AMP.SHOOTER_WRIST_ANGLE))
+        if (this.m_Shooter.inPosition(Positions.AMP_SHOT.SHOOTER_WRIST_ANGLE))
         {
-          m_ShooterTopRollerVelocity = Positions.AMP.SHOOTER_ROLLER_1_VELOCITY;
-          m_ShooterBottomRollerVelocity = Positions.AMP.SHOOTER_ROLLER_2_VELOCITY;
+          m_ShooterTopRollerVelocity = Positions.AMP_SHOT.SHOOTER_ROLLER_1_VELOCITY;
+          m_ShooterBottomRollerVelocity = Positions.AMP_SHOT.SHOOTER_ROLLER_2_VELOCITY;
 
         }
       }
@@ -411,22 +410,22 @@ public class Orchestrator extends SubsystemBase
       }
       else
       {
-        m_ShooterFeederVoltage = Positions.AMP.SHOOTER_FEEDER_VOLTAGE;
+        m_ShooterFeederVoltage = Positions.AMP_SHOT.SHOOTER_FEEDER_VOLTAGE;
       }
 
-      m_ElevatorPosition = Positions.AMP.ELEVATOR_POSITION;
-      m_IntakePosition = Positions.AMP.INTAKE_WRIST_POSITION;
-      m_IntakeRollersVoltage = Positions.AMP.INTAKE_ROLLER_VOLTAGE;
-      m_ShooterAngle = Positions.AMP.SHOOTER_WRIST_ANGLE;
+      m_ElevatorPosition = Positions.AMP_SHOT.ELEVATOR_POSITION;
+      m_IntakePosition = Positions.AMP_SHOT.INTAKE_WRIST_POSITION;
+      m_IntakeRollersVoltage = Positions.AMP_SHOT.INTAKE_ROLLER_VOLTAGE;
+      m_ShooterAngle = Positions.AMP_SHOT.SHOOTER_WRIST_ANGLE;
 
       if(m_Elevator.isInPosition(m_ElevatorPosition))
       {
-        if (this.m_Shooter.inPosition(Positions.AMP.SHOOTER_WRIST_ANGLE))
+        if (this.m_Shooter.inPosition(Positions.AMP_SHOT.SHOOTER_WRIST_ANGLE))
         {
           if (this.m_ShootAmp)
           {
-            m_ShooterTopRollerVelocity = Positions.AMP.SHOOTER_ROLLER_1_VELOCITY;
-            m_ShooterBottomRollerVelocity = Positions.AMP.SHOOTER_ROLLER_2_VELOCITY;
+            m_ShooterTopRollerVelocity = Positions.AMP_SHOT.SHOOTER_ROLLER_1_VELOCITY;
+            m_ShooterBottomRollerVelocity = Positions.AMP_SHOT.SHOOTER_ROLLER_2_VELOCITY;
           }
         }
       }
@@ -455,8 +454,8 @@ public class Orchestrator extends SubsystemBase
   // just runs motors
   public void shootAmpWithPrep()
   {
-    m_ShooterTopRollerVelocity = Positions.AMP.SHOOTER_ROLLER_1_VELOCITY;
-    m_ShooterBottomRollerVelocity = Positions.AMP.SHOOTER_ROLLER_2_VELOCITY;
+    m_ShooterTopRollerVelocity = Positions.AMP_SHOT.SHOOTER_ROLLER_1_VELOCITY;
+    m_ShooterBottomRollerVelocity = Positions.AMP_SHOT.SHOOTER_ROLLER_2_VELOCITY;
   }
 
   public void setAmpShoot(boolean shoot)

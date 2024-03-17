@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Hardware;
@@ -35,7 +34,6 @@ import frc.robot.commands.elevator.KillElevator;
 import frc.robot.commands.intake.IntakePlayAlong;
 import frc.robot.commands.intake.KillIntake;
 import frc.robot.commands.orchestrator.AmpPrep;
-import frc.robot.commands.orchestrator.AmpShot;
 import frc.robot.commands.orchestrator.Climb;
 import frc.robot.commands.orchestrator.ClimbPrep;
 import frc.robot.commands.orchestrator.DefenseShot;
@@ -72,7 +70,6 @@ public class RobotContainer
 
   // Choosers
   private final SendableChooser<Command> autoSelector = new SendableChooser<>();
-  private final SendableChooser<Double> seedAngleSelector = new SendableChooser<>();
 
   /**
    * @brief Gets the Drivetrain subsystem.
@@ -115,10 +112,6 @@ public class RobotContainer
     return this.m_Orchestrator;
   }
   
-  /**
-   * Gets the driver controller
-   * @return The primary (driver) controller
-   */
   public CommandXboxController getPrimaryController()
   {
     return this.m_PrimaryController;
@@ -184,11 +177,6 @@ public class RobotContainer
     autoSelector.setDefaultOption("None", new SeedFieldRelative(m_Drivetrain));
     autoSelector.addOption("2 Note", new PathPlannerAuto("2Note"));
     autoSelector.addOption("4 Note", new PathPlannerAuto("3Note"));
-
-    // Seed Angle Selector
-    seedAngleSelector.setDefaultOption("Center", 180.0);
-    seedAngleSelector.addOption("Left", 120.0);
-    seedAngleSelector.addOption("Right", 240.0);
   }
 
   private void configureBindings() 

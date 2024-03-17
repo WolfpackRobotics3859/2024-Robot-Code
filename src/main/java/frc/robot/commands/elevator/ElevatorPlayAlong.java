@@ -20,6 +20,7 @@ public class ElevatorPlayAlong extends Command
   {
     this.m_Orchestrator = orchestrator;
     this.m_Elevator = elevator;
+    
     addRequirements(m_Elevator);
   }
 

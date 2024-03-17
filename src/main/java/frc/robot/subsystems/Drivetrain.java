@@ -69,6 +69,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     super(driveTrainConstants, OdometryUpdateFrequency, modules);
     configurePhotonVision();
     configurePathPlanner();
+
     if(Global.ENABLE_TELEMETRY)
     {
       m_TelemetryTimer.start();
@@ -86,25 +87,27 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   {
     if (!hasAppliedPerspective || DriverStation.isDisabled())
     {
-            DriverStation.getAlliance().ifPresent((allianceColor) -> {
-                this.setOperatorPerspectiveForward(
-                        allianceColor == Alliance.Red ? m_RedOperatorForwardPerspective
-                                : m_BlueOperatorForwardPerspective);
-                hasAppliedPerspective = true;
-                if(allianceColor == Alliance.Red)
-                {
-                  axisModifier = -1;
-                }
-                else
-                {
-                  axisModifier = 1;
-                }
+      DriverStation.getAlliance().ifPresent((allianceColor) -> {
+        this.setOperatorPerspectiveForward
+        (
+          allianceColor == Alliance.Red ? m_RedOperatorForwardPerspective: m_BlueOperatorForwardPerspective
+        );
+        hasAppliedPerspective = true;
+        
+        if(allianceColor == Alliance.Red)
+        {
+          axisModifier = -1;
+        }
+        else
+        {
+          axisModifier = 1;
+        }
       });
     }
-        
 
     m_CameraRight1ExceptionCount = updateVisionWithCamera(m_CameraRight1, m_CameraRight1Estimator, m_CameraRight1ExceptionCount);
     m_CameraLeft1ExceptionCount = updateVisionWithCamera(m_CameraLeft1, m_CameraLeft1Estimator, m_CameraLeft1ExceptionCount);
+
     if(Global.ENABLE_TELEMETRY)
     {
       if(m_TelemetryTimer.get() > Global.TELEMETRY_UPDATE_SPEED)
@@ -156,7 +159,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
       return DriveConstants.APRIL_TAG_POSES.BLUE_SPEAKER;
     }
     return DriveConstants.APRIL_TAG_POSES.RED_SPEAKER;
-    //return DriveConstants.APRIL_TAG_POSES.RED_SPEAKER.rotateBy(Rotation2d.fromRadians(Math.PI));
   }
 
   public ChassisSpeeds getCurrentRobotChassisSpeeds()

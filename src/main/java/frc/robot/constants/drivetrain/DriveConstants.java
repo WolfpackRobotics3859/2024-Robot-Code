@@ -16,20 +16,17 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class DriveConstants 
 {
-    /** Meters per second */
+    // Speed limits
     public static final double MAX_SPEED = 6;
-
-    /** Radians per second */
     public static final double MAX_ANGULAR_RATE = Math.PI;
 
     // Turn to angle PID
-    // TODO: tune these numbers
     public static final double TURN_TO_ANGLE_P = 10;
     public static final double TURN_TO_ANGLE_I = 0.001;
     public static final double TURN_TO_ANGLE_D = 0;
 
-    // tolerance in degrees
-    public static final double TURN_TO_ANGLE_TOLERANCE = 0.5;
+    // Turn to angle tolerance (radians)
+    public static final double TURN_TO_ANGLE_TOLERANCE = Math.PI*0.15;
 
     // VISION
     public static final AprilTagFieldLayout TAG_LAYOUT;
@@ -70,7 +67,6 @@ public class DriveConstants
                                                 new Rotation3d(0, Rotation2d.fromDegrees(-10).getDegrees(), 0));
     }
 
-    // POSES
     public static class APRIL_TAG_POSES
     {
         public static final Pose2d RED_SPEAKER = TAG_LAYOUT.getTagPose(4).get().toPose2d();
@@ -84,9 +80,5 @@ public class DriveConstants
         public static final Supplier<Rotation2d> OPERATOR_OFFSET_SUPPLIER = () -> DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red ?
             Rotation2d.fromDegrees(0) : Rotation2d.fromDegrees(180);
     }
-
-    // SHOOTING DISTANCES
-    public static final double MIN_SHOOTING_DISTANCE = 0;
-    public static final double MAX_SHOOTING_DISTANCE = 8;
 }
 

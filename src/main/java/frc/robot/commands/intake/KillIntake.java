@@ -14,6 +14,7 @@ public class KillIntake extends Command
   public KillIntake(Intake intake)
   {
     this.m_Intake = intake;
+
     addRequirements(m_Intake);
   }
 
@@ -41,7 +42,8 @@ public class KillIntake extends Command
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished()
+  {
     return false;
   }
 }

@@ -16,6 +16,7 @@ public class IntakeAuto extends Command
   public IntakeAuto(Orchestrator orchestrator, Shooter shooter) {
     m_Orchestrator = orchestrator;
     m_Shooter = shooter;
+
     addRequirements(m_Orchestrator);
   }
 
@@ -23,8 +24,6 @@ public class IntakeAuto extends Command
   @Override
   public void initialize() 
   {
-    System.out.print("Intake Auto Started");
-
     // Intentionally Empty
   }
 
@@ -39,7 +38,7 @@ public class IntakeAuto extends Command
   @Override
   public void end(boolean interrupted)
   {
-    System.out.print("Intake Auto Started");
+    // Intentionally Empty
   }
 
   // Returns true when the command should end.

@@ -14,6 +14,7 @@ public class AmpPrep extends Command
   public AmpPrep(Orchestrator orchestrator) 
   {
     this.m_Orchestrator = orchestrator;
+    
     addRequirements(m_Orchestrator);
   }
 
