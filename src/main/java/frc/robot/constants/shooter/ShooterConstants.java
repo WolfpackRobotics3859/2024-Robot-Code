@@ -54,8 +54,8 @@ public class ShooterConstants
         .withKS(0.15837).withKV(0.10739).withKA(0.0018114);
 
     public static final MotionMagicConfigs WRIST_MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(3)
-        .withMotionMagicAcceleration(1.2);
+        .withMotionMagicCruiseVelocity(5)
+        .withMotionMagicAcceleration(1);
 
     public static final SoftwareLimitSwitchConfigs WRIST_SOFT_LIMIT_CONFIGS = new SoftwareLimitSwitchConfigs()
         .withForwardSoftLimitEnable(false)

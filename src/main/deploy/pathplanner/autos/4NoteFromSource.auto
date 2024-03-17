@@ -14,42 +14,23 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4NoteLeg1"
+            "pathName": "3NotePart1"
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "AimAuto"
-                }
-              },
               {
                 "type": "named",
                 "data": {
                   "name": "LowShotAuto"
                 }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "4NoteLeg2"
-                }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "IntakeAuto"
+                  "name": "AimAuto"
                 }
               }
             ]
@@ -58,99 +39,109 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4NoteLeg3"
+            "pathName": "3NotePart2"
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
+          "data": {
+            "name": "IntakeAuto"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3NotePart3"
+          }
+        },
+        {
+          "type": "deadline",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "AimAuto"
-                }
-              },
               {
                 "type": "named",
                 "data": {
                   "name": "LowShotAuto"
                 }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeAuto"
-                }
               },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "4NoteLeg4"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
               {
                 "type": "named",
                 "data": {
                   "name": "AimAuto"
                 }
-              },
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3NotePart4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeAuto"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3NotePart5"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
               {
                 "type": "named",
                 "data": {
                   "name": "LowShotAuto"
                 }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "4NoteLeg5"
-                }
               },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeAuto"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
               {
                 "type": "named",
                 "data": {
                   "name": "AimAuto"
                 }
-              },
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3NotePart6"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeAuto"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3NotePart7"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
               {
                 "type": "named",
                 "data": {
                   "name": "LowShotAuto"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AimAuto"
                 }
               }
             ]

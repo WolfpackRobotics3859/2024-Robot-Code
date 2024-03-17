@@ -6,19 +6,31 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "SeedField"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2NoteFromSourcePart1"
+          }
+        },
+        {
           "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 3.0
+                  "name": "LowShotAuto"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "LowShotAuto"
+                  "name": "AimAuto"
                 }
               }
             ]
@@ -27,7 +39,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2NoteIntake"
+            "pathName": "2NoteFromSourcePart2"
           }
         },
         {
@@ -39,13 +51,26 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2NoteBumperShot"
+            "pathName": "2NoteFromSourcePart3"
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "ShootLowAuto"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "LowShotAuto"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AimAuto"
+                }
+              }
+            ]
           }
         }
       ]

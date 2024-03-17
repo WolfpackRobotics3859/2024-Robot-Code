@@ -3,11 +3,11 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "Auto Paths"
+    "3 Note From Amp",
+    "2 Note From Source",
+    "4 Note From Source"
   ],
-  "autoFolders": [
-    "New Folder"
-  ],
+  "autoFolders": [],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,

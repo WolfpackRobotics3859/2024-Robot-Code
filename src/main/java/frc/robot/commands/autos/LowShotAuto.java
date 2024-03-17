@@ -12,7 +12,7 @@ import frc.robot.subsystems.Shooter;
 public class LowShotAuto extends Command {
   private final Orchestrator m_Orchestrator;
   private final Shooter m_Shooter;
-  private final Timer m_Timer = new Timer();
+  private Timer m_Timer = new Timer();
 
   public LowShotAuto(Orchestrator orchestrator, Shooter shooter) 
   {
@@ -27,6 +27,7 @@ public class LowShotAuto extends Command {
   public void initialize() 
   {
     m_Orchestrator.freshenOrchestrator();
+    System.out.print("Low Shot Auto Started");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -34,20 +35,31 @@ public class LowShotAuto extends Command {
   public void execute() 
   {
     m_Orchestrator.shootLow();
+
+    if(m_Shooter.shooterClear())
+    {
+      m_Timer.start();
+    }
+    else
+    {
+      m_Timer.stop();
+      m_Timer.reset();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted)
   {
-    m_Orchestrator.stow();
-    // Intentionally Empty
+    m_Timer.stop();
+    m_Timer.reset();
+    System.out.print("Low Shot Auto Ended");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
   {
-    return m_Shooter.shooterClear();
+    return m_Timer.hasElapsed(0.5);
   }
 }

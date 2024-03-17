@@ -28,6 +28,8 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,13 +42,17 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
 {
   private PhotonCamera m_CameraRight1, m_CameraLeft1, m_CameraRear1, m_DriverCamera;
   private PhotonPoseEstimator m_CameraRight1Estimator, m_CameraLeft1Estimator, m_CameraRear1Estimator;
-  private Timer m_TelemetryTimer = new Timer();
-  private Timer m_ExtraTelemetryTimer = new Timer();
+  private final Timer m_TelemetryTimer = new Timer();
+  private final Timer m_ExtraTelemetryTimer = new Timer();
   private int m_CameraRight1ExceptionCount, m_CameraLeft1ExceptionCount, m_CameraRear1ExceptionCount;
-  private boolean m_VisionEnabled = false;
+  private boolean m_VisionEnabled = true;
   private boolean m_Aligned = false;
 
-  private final Rotation2d m_OperatorForwardPerspective = DriveConstants.APRIL_TAG_POSES.OPERATOR_OFFSET_SUPPLIER.get();
+  private final Rotation2d m_RedOperatorForwardPerspective = Rotation2d.fromDegrees(180);
+  private final Rotation2d m_BlueOperatorForwardPerspective = Rotation2d.fromDegrees(0);
+  private boolean hasAppliedPerspective = false;
+  public int axisModifier = 1;
+
 
   private final SwerveRequest.ApplyChassisSpeeds m_AutoRequest = new SwerveRequest.ApplyChassisSpeeds()
     .withDriveRequestType(DriveRequestType.Velocity)
@@ -73,12 +79,30 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     }
 
     SmartDashboard.setDefaultBoolean("Is Blue", false);
-    this.setOperatorPerspectiveForward(this.m_OperatorForwardPerspective);
   }
 
   @Override
   public void periodic()
   {
+    if (!hasAppliedPerspective || DriverStation.isDisabled())
+    {
+            DriverStation.getAlliance().ifPresent((allianceColor) -> {
+                this.setOperatorPerspectiveForward(
+                        allianceColor == Alliance.Red ? m_RedOperatorForwardPerspective
+                                : m_BlueOperatorForwardPerspective);
+                hasAppliedPerspective = true;
+                if(allianceColor == Alliance.Red)
+                {
+                  axisModifier = -1;
+                }
+                else
+                {
+                  axisModifier = 1;
+                }
+      });
+    }
+        
+
     m_CameraRight1ExceptionCount = updateVisionWithCamera(m_CameraRight1, m_CameraRight1Estimator, m_CameraRight1ExceptionCount);
     m_CameraLeft1ExceptionCount = updateVisionWithCamera(m_CameraLeft1, m_CameraLeft1Estimator, m_CameraLeft1ExceptionCount);
     if(Global.ENABLE_TELEMETRY)
@@ -195,7 +219,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
       this::getCurrentRobotChassisSpeeds,
       (speeds)->this.setControl(m_AutoRequest.withSpeeds(speeds)),
       new HolonomicPathFollowerConfig(new PIDConstants(7, 0, 0), new PIDConstants(7, 0, 0), TunerConstants.SPEED_AT_12_VOLTS_MPS, driveBaseRadius, new ReplanningConfig()),
-      ()->true,
+      () -> DriverStation.getAlliance().orElse(Alliance.Blue)==Alliance.Red,
       this);
   }
 

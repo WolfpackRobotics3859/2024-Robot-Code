@@ -41,7 +41,7 @@ public class ElevatorConstants
 
     public static final MotionMagicConfigs MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
         .withMotionMagicCruiseVelocity(1)
-        .withMotionMagicAcceleration(0.3);
+        .withMotionMagicAcceleration(0.5);
 
     public static final SoftwareLimitSwitchConfigs SOFT_LIMIT_CONFIGS = new SoftwareLimitSwitchConfigs()
         .withForwardSoftLimitEnable(true)

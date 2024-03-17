@@ -231,18 +231,17 @@ public class Orchestrator extends SubsystemBase
         m_IntakePosition = Positions.LOW_SHOT.INTAKE_WRIST_POSITION;
         m_IntakeRollersVoltage = Positions.LOW_SHOT.INTAKE_ROLLER_VOLTAGE;
   
-        if(m_Elevator.isInPosition(m_ElevatorPosition))
-        {
-          double i = m_Drivetrain.distanceToSpeaker.get();
+        double i = m_Drivetrain.distanceToSpeaker.get();
           // 0.738 + -0.0567x + 5.12E-03x^2
           double shooterAngle = 0.738 + (-0.0567 * i) + (5.12*Math.pow(10, -3)*Math.pow(i, 2));
           //double shooterAngle = SmartDashboard.getNumber("[Manual] Shooter Angle", 0.6);
           m_ShooterAngle = MathUtil.clamp(shooterAngle, 0.55, Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE);
+        if(m_Elevator.isInPosition(m_ElevatorPosition))
+        {
           if (this.m_Shooter.readyToShoot(MathUtil.clamp(shooterAngle, 0.55, Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE), 
                                           Positions.LOW_SHOT.SHOOTER_ROLLER_1_VELOCITY,
                                           Positions.LOW_SHOT.SHOOTER_ROLLER_2_VELOCITY)
                                           && m_Drivetrain.getAligned())
-
           {
             m_ShooterFeederVoltage = Positions.LOW_SHOT.SHOOTER_FEEDER_VOLTAGE;
           }

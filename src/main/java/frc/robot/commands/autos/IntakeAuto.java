@@ -23,6 +23,8 @@ public class IntakeAuto extends Command
   @Override
   public void initialize() 
   {
+    System.out.print("Intake Auto Started");
+
     // Intentionally Empty
   }
 
@@ -37,15 +39,13 @@ public class IntakeAuto extends Command
   @Override
   public void end(boolean interrupted)
   {
-    m_Orchestrator.stow();
-    // Intentionally Empty
+    System.out.print("Intake Auto Started");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished()
   {
-    
-   return m_Shooter.hasNoteCentered() || m_Shooter.hasNoteRearPosition();
+    return m_Shooter.hasNoteCentered() || m_Shooter.hasNoteRearPosition();
   }
 }

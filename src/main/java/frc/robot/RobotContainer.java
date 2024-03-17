@@ -6,16 +6,15 @@ package frc.robot;
 
 import java.util.function.Supplier;
 
-import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Hardware;
@@ -66,8 +65,8 @@ public class RobotContainer
   // Controllers
   private final CommandXboxController m_PrimaryController = new CommandXboxController(Hardware.PRIMARY_CONTROLLER_PORT);
   private final CommandXboxController m_SecondaryController = new CommandXboxController(Hardware.SECONDARY_CONTROLLER_PORT);
-  private final Supplier<Double> m_PrimaryControllerLeftY = () -> -m_PrimaryController.getLeftY();
-  private final Supplier<Double> m_PrimaryControllerLeftX = () -> -m_PrimaryController.getLeftX();
+  private final Supplier<Double> m_PrimaryControllerLeftY = () -> -m_PrimaryController.getLeftY() * m_Drivetrain.axisModifier;
+  private final Supplier<Double> m_PrimaryControllerLeftX = () -> -m_PrimaryController.getLeftX() * m_Drivetrain.axisModifier;
   private final Supplier<Double> m_PrimaryControllerRightX = () -> -m_PrimaryController.getRightX();
   private final Supplier<Double> m_SecondaryControllerRightY = () -> -m_SecondaryController.getRightY();
 
@@ -166,6 +165,7 @@ public class RobotContainer
     NamedCommands.registerCommand("IntakeAuto", new IntakeAuto(m_Orchestrator, m_Shooter));
     NamedCommands.registerCommand("SeedField", new SeedFieldRelative(m_Drivetrain));
     NamedCommands.registerCommand("AimAuto", new DriveWithTargetAngle(m_Drivetrain, () -> 0.0, () -> 0.0, m_Drivetrain.yawToSpeaker));
+    NamedCommands.registerCommand("FinalLowShot", new LowShot(m_Orchestrator));
   }
 
   private void configureSmartDashboardCommands()
@@ -181,11 +181,9 @@ public class RobotContainer
   private void configureAutoSelector()
   {
     // TODO: add auto options
-    autoSelector.setDefaultOption("None", new PrintCommand("No auto selected."));
-    autoSelector.addOption("Shoot + Nun", new PathPlannerAuto("Shoot + Nun"));
-    autoSelector.addOption("2 note", new PathPlannerAuto("2Note"));
-    autoSelector.addOption("4 note", new PathPlannerAuto("4Note"));
-    autoSelector.addOption("Shoot only", new PathPlannerAuto("Shoot only"));
+    autoSelector.setDefaultOption("None", new SeedFieldRelative(m_Drivetrain));
+    autoSelector.addOption("2 Note", new PathPlannerAuto("2Note"));
+    autoSelector.addOption("4 Note", new PathPlannerAuto("3Note"));
 
     // Seed Angle Selector
     seedAngleSelector.setDefaultOption("Center", 180.0);
@@ -193,24 +191,25 @@ public class RobotContainer
     seedAngleSelector.addOption("Right", 240.0);
   }
 
-
   private void configureBindings() 
   {
     // PRIMARY CONTROLLER
     m_PrimaryController.rightTrigger().whileTrue(new IntakeCommand(m_Orchestrator)); // intake
-    m_PrimaryController.leftTrigger().whileTrue(new LowShot(m_Orchestrator));
-    // m_PrimaryController.leftTrigger().whileTrue(new ParallelCommandGroup // low shot
-    // (
-    //   new LowShot(m_Orchestrator),
-    //   new DriveWithTargetAngle(m_Drivetrain, m_PrimaryControllerLeftY, m_PrimaryControllerLeftX, m_Drivetrain.yawToSpeaker)
-    // ));
+    m_PrimaryController.leftTrigger().whileTrue(new ConditionalCommand // low shot
+    (
+      new ParallelCommandGroup(
+        new LowShot(m_Orchestrator),
+        new DriveWithTargetAngle(m_Drivetrain, m_PrimaryControllerLeftY, m_PrimaryControllerLeftX, m_Drivetrain.yawToSpeaker)
+      ),
+      new LowShot(m_Orchestrator),
+      () -> m_Drivetrain.getVisionEnabled()
+    ));
     m_PrimaryController.rightBumper().whileTrue(new DefenseShot(m_Orchestrator)); // defense shot
     m_PrimaryController.leftBumper().whileTrue(new ParallelCommandGroup // shoot amp after prep (preps if not yet)
     (
       new AmpPrep(m_Orchestrator),
       new ShootAmp(m_Orchestrator)
     ));
-    m_PrimaryController.b().onTrue(new SeedFieldRelative(m_Drivetrain)); // reset gyro
 
     // SECONDARY CONTROLLER
     m_SecondaryController.rightTrigger().whileTrue(new ClimbPrep(m_Orchestrator)); // move to climb
@@ -226,6 +225,7 @@ public class RobotContainer
     m_SecondaryController.leftBumper().whileTrue(new AmpPrep(m_Orchestrator)); // prepare amp
     m_SecondaryController.x().whileTrue(new Purge(m_Orchestrator)); // purge
     m_SecondaryController.a().whileTrue(new LowShot(m_Orchestrator));
+    m_SecondaryController.rightBumper().onTrue(new SeedFieldRelative(m_Drivetrain));
   }
 
   public Command getAutonomousCommand() 
