@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.8838033526882899,
-        "y": 7.051575128791284
+        "x": 1.4827362513562519,
+        "y": 7.284168115192696
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5822633043867484,
-        "y": 6.439226677987156
+        "x": 1.9793840773921174,
+        "y": 6.865425830495789
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.9841169752269572,
-        "y": 5.807742338095399
+        "x": 2.291006242747955,
+        "y": 6.82647305982631
       },
       "prevControl": {
-        "x": 1.6492389161934495,
-        "y": 6.305275454373753
+        "x": 1.5216890220257315,
+        "y": 7.254953537190586
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,8 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Prep Shot",
-      "waypointRelativePos": 0.0,
+      "name": "Prep Low",
+      "waypointRelativePos": 0,
       "command": {
         "type": "sequential",
         "data": {
@@ -50,7 +50,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 6.0,
+    "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0

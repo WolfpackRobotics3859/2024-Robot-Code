@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.98,
-        "y": 5.81
+        "x": 1.463259866021512,
+        "y": 7.216000766521106
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.405106535154795,
-        "y": 6.467930511618599
+        "x": 1.8883664011763066,
+        "y": 7.873931278139706
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.653873093293972,
-        "y": 6.754968847933033
+        "x": 2.7584394907817105,
+        "y": 6.865425830495789
       },
       "prevControl": {
-        "x": 2.1946117551908757,
-        "y": 6.075644785322205
+        "x": 1.804096609379459,
+        "y": 5.774748251750359
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "Intake",
-      "waypointRelativePos": 0.7,
+      "waypointRelativePos": 0.2,
       "command": {
         "type": "sequential",
         "data": {
@@ -63,7 +63,7 @@
   "reversed": false,
   "folder": "4 Note From Amp (Close)",
   "previewStartingState": {
-    "rotation": -171.1763075194586,
+    "rotation": -123.12199767524137,
     "velocity": 0
   },
   "useDefaultConstraints": false

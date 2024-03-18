@@ -40,6 +40,8 @@ import frc.robot.constants.drivetrain.TunerConstants;
 
 public class Drivetrain extends SwerveDrivetrain implements Subsystem 
 {
+  
+  private Optional<EstimatedRobotPose> optionalPose;
   private PhotonCamera m_CameraRight1, m_CameraLeft1, m_CameraRear1, m_DriverCamera;
   private PhotonPoseEstimator m_CameraRight1Estimator, m_CameraLeft1Estimator, m_CameraRear1Estimator;
   private final Timer m_TelemetryTimer = new Timer();
@@ -224,7 +226,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
 
   private int updateVisionWithCamera(PhotonCamera camera, PhotonPoseEstimator estimator, int exceptionCount)
   {
-    Optional<EstimatedRobotPose> optionalPose;
     if(camera.isConnected())
     {
       optionalPose = estimator.update();

@@ -71,7 +71,7 @@ public class ElevatorConstants
     // CANCoder Configs
     public static final MagnetSensorConfigs MAGNET_SENSOR_CONFIGS = new MagnetSensorConfigs()
         .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
-        .withMagnetOffset(-0.125)
+        .withMagnetOffset(-0.37)
         .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1);
     
     // Condensed Configs

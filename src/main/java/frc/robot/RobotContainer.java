@@ -179,8 +179,10 @@ public class RobotContainer
   {
     // TODO: add auto options
     autoSelector.setDefaultOption("None", new SeedFieldRelative(m_Drivetrain));
-    autoSelector.addOption("2 Note", new PathPlannerAuto("2Note"));
-    autoSelector.addOption("4 Note", new PathPlannerAuto("3Note"));
+    autoSelector.addOption("2 Note From Source", new PathPlannerAuto("2NoteFromSource"));
+    autoSelector.addOption("4 Note From Amp", new PathPlannerAuto("4NoteFromAmp"));
+    autoSelector.addOption("4 Note From Amp (Close)", new PathPlannerAuto("4NoteFromAmpClose"));
+    autoSelector.addOption("3 Note From Amp", new PathPlannerAuto("3NoteFromAmp"));
   }
 
   private void configureBindings() 

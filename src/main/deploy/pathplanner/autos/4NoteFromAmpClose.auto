@@ -1,14 +1,20 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 1.463259866021512,
+      "y": 7.216000766521106
+    },
+    "rotation": 0
+  },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "4NoteFromAmpClosePart1"
+            "name": "SeedField"
           }
         },
         {
@@ -18,13 +24,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AimAuto"
+                  "name": "LowShotFromPrep"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "LowShotFromPrep"
+                  "name": "AimAuto"
                 }
               }
             ]
@@ -49,13 +55,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AimAuto"
+                  "name": "LowShotAuto"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "LowShotAuto"
+                  "name": "AimAuto"
                 }
               }
             ]
@@ -80,13 +86,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AimAuto"
+                  "name": "LowShotAuto"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "LowShotAuto"
+                  "name": "AimAuto"
                 }
               }
             ]
@@ -111,13 +117,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AimAuto"
+                  "name": "LowShotAuto"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "LowShotAuto"
+                  "name": "AimAuto"
                 }
               }
             ]
@@ -126,6 +132,6 @@
       ]
     }
   },
-  "folder": "Amp Starts",
+  "folder": null,
   "choreoAuto": false
 }
