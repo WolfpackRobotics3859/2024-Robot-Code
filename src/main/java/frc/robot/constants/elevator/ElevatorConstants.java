@@ -40,8 +40,8 @@ public class ElevatorConstants
         .withKG(0).withGravityType(GravityTypeValue.Elevator_Static);
 
     public static final MotionMagicConfigs MOTION_MAGIC_CONFIGS = new MotionMagicConfigs()
-        .withMotionMagicCruiseVelocity(1)
-        .withMotionMagicAcceleration(0.5);
+        .withMotionMagicCruiseVelocity(1.3)
+        .withMotionMagicAcceleration(0.7);
 
     public static final SoftwareLimitSwitchConfigs SOFT_LIMIT_CONFIGS = new SoftwareLimitSwitchConfigs()
         .withForwardSoftLimitEnable(true)

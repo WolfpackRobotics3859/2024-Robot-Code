@@ -40,18 +40,18 @@ public class Drive extends Command
   @Override
   public void initialize() 
   {
-    // Intentionally Empty
+    driveRequest
+      .withDeadband(DriveConstants.MAX_SPEED * 0.1)
+      .withRotationalDeadband(DriveConstants.MAX_ANGULAR_RATE * 0.1)
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+      .withSteerRequestType(SteerRequestType.MotionMagic);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute()
   {
-      // set to basic drive request
       driveRequest
-        .withDeadband(DriveConstants.MAX_SPEED * 0.1).withRotationalDeadband(DriveConstants.MAX_ANGULAR_RATE * 0.1)
-        .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-        .withSteerRequestType(SteerRequestType.MotionMagic)
         .withVelocityX(m_SpeedXSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
         .withVelocityY(m_SpeedYSupplier.get() * DriveConstants.MAX_SPEED * 0.65)
         .withRotationalRate(m_RotationalSpeedSupplier.get() * DriveConstants.MAX_ANGULAR_RATE * 1.2);

@@ -4,10 +4,12 @@
   "holonomicMode": true,
   "pathFolders": [
     "2 Note From Source",
+    "2 Note From Source (Far)",
     "3 Note From Amp",
+    "4 Note From Amp",
     "4 Note From Amp (Close)",
     "4 Note From Source",
-    "4 Note From Amp"
+    "4 Note From Source (Close)"
   ],
   "autoFolders": [
     "Amp Starts",
