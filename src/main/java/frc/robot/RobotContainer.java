@@ -6,15 +6,11 @@ package frc.robot;
 
 import java.util.function.Supplier;
 
-import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.constants.Hardware;
@@ -27,31 +23,9 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.utils.Vision;
 
-import frc.robot.commands.autos.AmpShotAuto;
-import frc.robot.commands.autos.IntakeAuto;
-import frc.robot.commands.autos.LowShotAuto;
-import frc.robot.commands.autos.LowShotAutoPrep;
-import frc.robot.commands.autos.LowShotAutoShoot;
 import frc.robot.commands.drivetrain.Drive;
 import frc.robot.commands.drivetrain.DriveWithTargetAngle;
 import frc.robot.commands.drivetrain.SeedFieldRelative;
-import frc.robot.commands.elevator.ElevatorPlayAlong;
-import frc.robot.commands.elevator.KillElevator;
-import frc.robot.commands.intake.IntakePlayAlong;
-import frc.robot.commands.intake.KillIntake;
-import frc.robot.commands.orchestrator.AmpPrep;
-import frc.robot.commands.orchestrator.Climb;
-import frc.robot.commands.orchestrator.ClimbPrep;
-import frc.robot.commands.orchestrator.DefenseShot;
-import frc.robot.commands.orchestrator.IntakeCommand;
-import frc.robot.commands.orchestrator.LowShot;
-import frc.robot.commands.orchestrator.ManualControl;
-import frc.robot.commands.orchestrator.Purge;
-import frc.robot.commands.orchestrator.ShootAmp;
-import frc.robot.commands.orchestrator.Stow;
-import frc.robot.commands.orchestrator.ZeroIntake;
-import frc.robot.commands.shooter.KillShooter;
-import frc.robot.commands.shooter.ShooterPlayAlong;
 import frc.robot.commands.vision.DisableVision;
 
 public class RobotContainer 
@@ -74,7 +48,6 @@ public class RobotContainer
   private final Supplier<Double> m_PrimaryControllerLeftY = () -> -m_PrimaryController.getLeftY() * m_Drivetrain.axisModifier;
   private final Supplier<Double> m_PrimaryControllerLeftX = () -> -m_PrimaryController.getLeftX() * m_Drivetrain.axisModifier;
   private final Supplier<Double> m_PrimaryControllerRightX = () -> -m_PrimaryController.getRightX();
-  private final Supplier<Double> m_SecondaryControllerRightY = () -> -m_SecondaryController.getRightY();
 
   // Auto Chooser
   private final SendableChooser<Command> autoSelector = new SendableChooser<>();
@@ -138,6 +111,17 @@ public class RobotContainer
 
   private void configureDefaultCommands()
   {
+    m_Drivetrain.setDefaultCommand
+    (
+      new Drive
+      (
+        m_Drivetrain,
+        m_PrimaryControllerLeftY, 
+        m_PrimaryControllerLeftX, 
+        m_PrimaryControllerRightX
+      )
+    );
+
 
   }
 
