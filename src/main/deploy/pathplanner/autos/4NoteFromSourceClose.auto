@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.4243070953520323,
-      "y": 7.303644500527436
-    },
-    "rotation": 0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -18,19 +12,25 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "4NoteFromSourceClosePart1"
+          }
+        },
+        {
           "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "LowShotAuto"
+                  "name": "AimAuto"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "AimAuto"
+                  "name": "LowShotAuto"
                 }
               }
             ]
@@ -39,7 +39,51 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4NoteFromAmpClosePart1"
+            "pathName": "4NoteFromSourceClosePart2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeAuto"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4NoteFromSourceClosePart3"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "deadline",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AimAuto"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "LowShotAuto"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4NoteFromSourceClosePart4"
           }
         },
         {
@@ -55,13 +99,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "LowShotAuto"
+                  "name": "AimAuto"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "AimAuto"
+                  "name": "LowShotAuto"
                 }
               }
             ]
@@ -70,7 +114,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4NoteFromAmpClosePart2"
+            "pathName": "4NoteFromSourceClosePart5"
           }
         },
         {
@@ -86,44 +130,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "LowShotAuto"
+                  "name": "AimAuto"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "AimAuto"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "4NoteFromAmpClosePart3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeAuto"
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
                   "name": "LowShotAuto"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AimAuto"
                 }
               }
             ]
@@ -132,6 +145,6 @@
       ]
     }
   },
-  "folder": "Amp Starts",
+  "folder": "Source Starts",
   "choreoAuto": false
 }

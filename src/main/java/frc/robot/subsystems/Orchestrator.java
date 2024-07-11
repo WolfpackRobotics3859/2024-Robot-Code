@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 
 import edu.wpi.first.math.MathUtil;
@@ -52,6 +51,7 @@ public class Orchestrator extends SubsystemBase
     this.m_Elevator = elevator;
     this.m_Shooter = shooter;
     this.m_Intake = intake;
+    
     this.setup();
     this.initializeManualControlValues();
 
@@ -89,7 +89,7 @@ public class Orchestrator extends SubsystemBase
     {
       if(m_TelemetryTimer.get() > Global.TELEMETRY_UPDATE_SPEED)
       {
-        BaseStatusSignal.refreshAll(m_ElevatorPositionSignal);
+        m_ElevatorPositionSignal.refresh();
         m_TelemetryTimer.reset();
       }
     }
@@ -254,7 +254,7 @@ public class Orchestrator extends SubsystemBase
         m_IntakePosition = Positions.LOW_SHOT.INTAKE_WRIST_POSITION;
         m_IntakeRollersVoltage = Positions.LOW_SHOT.INTAKE_ROLLER_VOLTAGE;
   
-        double i = m_Drivetrain.distanceToSpeaker.get();
+        double i = m_Drivetrain.getDistanceToSpeakerMeters();
           // 0.738 + -0.0567x + 5.12E-03x^2
           double shooterAngle = 0.738 + (-0.0567 * i) + (5.12*Math.pow(10, -3)*Math.pow(i, 2));
           m_ShooterAngle = MathUtil.clamp(shooterAngle, 0.55, Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE);
@@ -332,7 +332,7 @@ public class Orchestrator extends SubsystemBase
         m_IntakePosition = Positions.LOW_SHOT.INTAKE_WRIST_POSITION;
         m_IntakeRollersVoltage = Positions.LOW_SHOT.INTAKE_ROLLER_VOLTAGE;
 
-        double i = m_Drivetrain.distanceToSpeaker.get();
+        double i = m_Drivetrain.getDistanceToSpeakerMeters();
         // 0.738 + -0.0567x + 5.12E-03x^2
         double shooterAngle = 0.738 + (-0.0567 * i) + (5.12*Math.pow(10, -3)*Math.pow(i, 2));
         m_ShooterAngle = MathUtil.clamp(shooterAngle, 0.55, Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE);
@@ -369,7 +369,7 @@ public class Orchestrator extends SubsystemBase
     {
       if(m_Elevator.isInPosition(m_ElevatorPosition))
       {
-        double i = m_Drivetrain.distanceToSpeaker.get();
+        double i = m_Drivetrain.getDistanceToSpeakerMeters();
         // 0.738 + -0.0567x + 5.12E-03x^2
         double shooterAngle = 0.738 + (-0.0567 * i) + (5.12*Math.pow(10, -3)*Math.pow(i, 2));
         if (this.m_Shooter.readyToShoot(MathUtil.clamp(shooterAngle, 0.55, Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE), 

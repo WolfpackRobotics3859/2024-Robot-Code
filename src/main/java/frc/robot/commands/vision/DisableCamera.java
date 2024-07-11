@@ -2,24 +2,26 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.orchestrator;
+package frc.robot.commands.vision;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.utils.Vision;
 
-public class EnableVision extends InstantCommand
+public class DisableCamera extends InstantCommand
 {
-  private final Drivetrain m_Drivetrain;
+  private final Vision m_Vision;
+  private final int m_Index;
 
-  public EnableVision(Drivetrain drivetrain)
+  public DisableCamera(Vision vision, int index)
   {
-    this.m_Drivetrain = drivetrain;
+    this.m_Vision = vision;
+    this.m_Index = index;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize()
   {
-    m_Drivetrain.setVisionEnabled(true);
+    m_Vision.setCamEnabled(m_Index, false);
   }
 }

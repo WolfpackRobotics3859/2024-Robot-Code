@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "Slow Down",
-      "minWaypointRelativePos": 0.7,
+      "minWaypointRelativePos": 0.5,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 0.5,
