@@ -96,7 +96,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
         DriverStation.getAlliance().ifPresent((allianceColor) -> {
           this.setOperatorPerspectiveForward
           (
-            allianceColor == Alliance.Red ? DriveConstants.RED_OPERATOR_FORWARD_PERSPECTIVE: DriveConstants.BLUE_OPERATOR_FORWARD_PERSPECTIVE
+            allianceColor == Alliance.Red ? DriveConstants.RED_OPERATOR_FORWARD_PERSPECTIVE : DriveConstants.BLUE_OPERATOR_FORWARD_PERSPECTIVE
           );
           hasAppliedPerspective = true;
           

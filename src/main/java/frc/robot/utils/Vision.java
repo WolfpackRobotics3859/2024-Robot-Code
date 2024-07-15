@@ -50,14 +50,14 @@ public class Vision
      * Gets the estimated poses from each camera.
      * @return The list of the estimated poses each camera is returning. May be empty.
      */
-    private ArrayList<EstimatedRobotPose> getEstimatedPoses()
+    private ArrayList<EstimatedRobotPose> getEstimatedPoses(Pose2d referencePose)
     {
         ArrayList<EstimatedRobotPose> estimatedPoses = new ArrayList<>();
 
         for (int i = 0; i < m_Cameras.size(); i++)
         {
             // get the poses from the camera
-            Optional<EstimatedRobotPose> estimatedPose = m_Cameras.get(i).getEstimatedPose();
+            Optional<EstimatedRobotPose> estimatedPose = m_Cameras.get(i).getEstimatedPose(referencePose);
 
             // if poses are present and not null
             if (estimatedPose.isPresent() && estimatedPose.get().estimatedPose != null)
@@ -76,7 +76,7 @@ public class Vision
      */
     public void updateOdometry(SwerveDrivePoseEstimator poseEstimator)
     {
-        ArrayList<EstimatedRobotPose> estimatedPoses = getEstimatedPoses();
+        ArrayList<EstimatedRobotPose> estimatedPoses = getEstimatedPoses(poseEstimator.getEstimatedPosition());
 
         // return if the estimated pose list is empty or has more poses than cameras
         if(estimatedPoses.isEmpty() || estimatedPoses.size() > m_Cameras.size())
@@ -233,6 +233,7 @@ public class Vision
                 robotToCam
             );
 
+            this.m_PoseEstimator.setReferencePose(new Pose2d());
             this.m_PoseEstimator.setMultiTagFallbackStrategy(VisionConstants.FALLBACK_POSE_STRATEGY);
         }
 
@@ -247,8 +248,10 @@ public class Vision
          * </ul>
          * @return The estimated pose
          */
-        public Optional<EstimatedRobotPose> getEstimatedPose()
+        public Optional<EstimatedRobotPose> getEstimatedPose(Pose2d referencePose)
         {
+            m_PoseEstimator.setReferencePose(referencePose);
+
             // if camera is disabled return empty
             if (!enabled)
             {
