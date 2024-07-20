@@ -17,7 +17,10 @@ import frc.robot.constants.Global;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.shooter.ShooterConstants;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
+//import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -30,8 +33,10 @@ public class Shooter extends SubsystemBase
 
   private final CANcoder m_WristCANCoder = new CANcoder(Hardware.SHOOTER_WRIST_CANCODER_ID);
 
-  private final DigitalInput m_BeamBreak1 = new DigitalInput(Hardware.BEAM_BREAK_1_ID);
-  private final DigitalInput m_BeamBreak2 = new DigitalInput(Hardware.BEAM_BREAK_2_ID);
+  // private final DigitalInput m_BeamBreak1 = new DigitalInput(Hardware.BEAM_BREAK_1_ID);
+  // private final DigitalInput m_BeamBreak2 = new DigitalInput(Hardware.BEAM_BREAK_2_ID);
+  private final Ultrasonic m_FrontUltraSonic = new Ultrasonic(new DigitalOutput(Hardware.ULTRASONIC_FRONT_TRIG), new DigitalInput(Hardware.ULTRASONIC_FRONT_ECHO));
+  private final Ultrasonic m_BackUltraSonic = new Ultrasonic(Hardware.ULTRASONIC_BACK_TRIG, Hardware.ULTRASONIC_BACK_ECHO);
 
   private final Timer m_TelemetryTimer = new Timer();
   private final Timer m_ExtraTelemetryTimer = new Timer();
@@ -45,6 +50,10 @@ public class Shooter extends SubsystemBase
     m_WristMotor.getConfigurator().apply(ShooterConstants.WRIST_MOTOR_CONFIGURATION);
     m_ShooterMotor1.getConfigurator().apply(ShooterConstants.SHOOTER_MOTOR_1_CONFIGURATION);
     m_ShooterMotor2.getConfigurator().apply(ShooterConstants.SHOOTER_MOTOR_2_CONFIGURATION);
+
+    m_FrontUltraSonic.setEnabled(true);
+    m_BackUltraSonic.setEnabled(true);
+    m_FrontUltraSonic.setAutomaticMode(true);
 
     // Encoder Configuration
     m_WristCANCoder.getConfigurator().apply(ShooterConstants.WRIST_CANCODER_CONFIGURATION);
@@ -70,8 +79,11 @@ public class Shooter extends SubsystemBase
       {
         m_TelemetryTimer.reset();
         SmartDashboard.putNumber("Shooter Wrist Position", m_WristMotor.getPosition().getValueAsDouble());
-        SmartDashboard.putBoolean("Beam Break 1", m_BeamBreak1.get());
-        SmartDashboard.putBoolean("Beam Break 2", m_BeamBreak2.get());
+        SmartDashboard.putBoolean("Front Sensor", getFrontUltrasonic());
+        SmartDashboard.putBoolean("Back Sensor", getBackUltrasonic());
+        SmartDashboard.putNumber("Front Ultrasonic Range", m_FrontUltraSonic.getRangeInches());
+        SmartDashboard.putNumber("Back Ultrasonic Range", m_BackUltraSonic.getRangeInches());
+        SmartDashboard.putBoolean("Front Valid", m_FrontUltraSonic.isRangeValid());
       }
     }
   }
@@ -101,42 +113,52 @@ public class Shooter extends SubsystemBase
     }
   }
 
+  public boolean getFrontUltrasonic()
+  {
+    // if beam break has note, return false 
+    // if utrasonic detects range less than limit (note), return false
+
+    // if beam break has no note, return true
+    // if ultrasonic detects range greater than limit (no note), return true
+    return m_FrontUltraSonic.getRangeInches() >= ShooterConstants.ULTRASONIC_RANGE_LIMIT;
+  }
+
+  public boolean getBackUltrasonic()
+  {
+    return m_BackUltraSonic.getRangeInches() >= ShooterConstants.ULTRASONIC_RANGE_LIMIT;
+  }
+
   // Beam Break Logic
   public boolean hasNoteRearPosition()
   {
-    return m_BeamBreak1.get() && !m_BeamBreak2.get();
+    return getFrontUltrasonic() && !getBackUltrasonic();
   }
 
   public boolean hasNoteForwardPosition()
   {
-    return !m_BeamBreak1.get() && m_BeamBreak2.get();
+    return !getFrontUltrasonic() && getBackUltrasonic();
   }
 
   public boolean hasNoteCentered()
   {
-    return !m_BeamBreak1.get() && !m_BeamBreak2.get();
+    return !getFrontUltrasonic() && !getBackUltrasonic();
   }
 
   public boolean shooterClear()
   {
-    return m_BeamBreak1.get() && m_BeamBreak2.get();
-  }
-
-  public boolean getShooterReady()
-  {
-    return !this.getBeamBreak1() && !this.getBeamBreak2();
+    return getFrontUltrasonic() && getBackUltrasonic();
   }
 
   // Beam Break Getters
-  public boolean getBeamBreak1()
-  {
-    return m_BeamBreak1.get();
-  }
+  // public boolean getBeamBreak1()
+  // {
+  //   return m_BeamBreak1.get();
+  // }
 
-  public boolean getBeamBreak2()
-  {
-    return m_BeamBreak2.get();
-  }
+  // public boolean getBeamBreak2()
+  // {
+  //   return m_BeamBreak2.get();
+  // }
 
   public boolean readyToShoot(double expectedWristPosition, double expectedRoller1Speed, double expectedRoller2Speed)
   {

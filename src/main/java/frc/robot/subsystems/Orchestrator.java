@@ -327,39 +327,18 @@ public class Orchestrator extends SubsystemBase
             this.m_FreshCommand = false;
           }
         }
-
+  
         m_ElevatorPosition = Positions.LOW_SHOT.ELEVATOR_POSITION;
         m_IntakePosition = Positions.LOW_SHOT.INTAKE_WRIST_POSITION;
         m_IntakeRollersVoltage = Positions.LOW_SHOT.INTAKE_ROLLER_VOLTAGE;
-
+  
         double i = m_Drivetrain.distanceToSpeaker.get();
-        // 0.738 + -0.0567x + 5.12E-03x^2
-        double shooterAngle = 0.738 + (-0.0567 * i) + (5.12*Math.pow(10, -3)*Math.pow(i, 2));
-        m_ShooterAngle = MathUtil.clamp(shooterAngle, 0.55, Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE);
+          // 0.738 + -0.0567x + 5.12E-03x^2
+          double shooterAngle = 0.738 + (-0.0567 * i) + (5.12*Math.pow(10, -3)*Math.pow(i, 2));
+          m_ShooterAngle = MathUtil.clamp(shooterAngle, 0.55, Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE);
+        } 
       }
-      else
-      {
-        if(this.m_FreshCommand)
-        {
-          if(this.noteBackward())
-          {
-            m_ShooterTopRollerVelocity = Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_1_VELOCITY;
-            m_ShooterBottomRollerVelocity = Positions.LOW_BUMPER_SHOT.SHOOTER_ROLLER_2_VELOCITY;
-            this.m_FreshCommand = false;
-          }
-        }
-  
-        m_ElevatorPosition = Positions.LOW_BUMPER_SHOT.ELEVATOR_POSITION;
-        m_IntakePosition = Positions.LOW_BUMPER_SHOT.INTAKE_WRIST_POSITION;
-        m_IntakeRollersVoltage = Positions.LOW_BUMPER_SHOT.INTAKE_ROLLER_VOLTAGE;
-  
-        if(m_Elevator.isInPosition(m_ElevatorPosition))
-        {
-          m_ShooterAngle = Positions.LOW_BUMPER_SHOT.SHOOTER_WRIST_ANGLE;
-        }
-      }
-    }
-    return false;
+      return false;
   }
 
   public void shootLowAfterPrep()
@@ -601,16 +580,15 @@ public class Orchestrator extends SubsystemBase
     }
   }
 
-  public boolean climb()
+  public boolean climb() //Chris was here
   {
     m_ShooterFeederVoltage = Positions.CLIMB.SHOOTER_FEEDER_VOLTAGE;
     m_ShooterTopRollerVelocity = Positions.CLIMB.SHOOTER_ROLLER_1_VELOCITY;
     m_ShooterBottomRollerVelocity = Positions.CLIMB.SHOOTER_ROLLER_2_VELOCITY;
-    m_IntakePosition = Positions.CLIMB.INTAKE_WRIST_POSITION;
     m_IntakeRollersVoltage = Positions.CLIMB.INTAKE_ROLLER_VOLTAGE;
 
-    // if elevator is up all the way
-    if(elevatorUp())
+    m_IntakePosition = Positions.CLIMB.INTAKE_WRIST_POSITION; //do i need to change this
+     if(elevatorUp())
     {
       // set to clearance
       m_ShooterAngle = ShooterConstants.WRIST_CLEARANCE_POSITION;
@@ -622,6 +600,7 @@ public class Orchestrator extends SubsystemBase
         return true;
       }
     }
+
     return false;
   }
 

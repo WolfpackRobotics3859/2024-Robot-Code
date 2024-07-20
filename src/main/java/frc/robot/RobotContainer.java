@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.drivetrain.TunerConstants;
+import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Orchestrator;
@@ -37,12 +38,14 @@ import frc.robot.commands.elevator.KillElevator;
 import frc.robot.commands.intake.IntakePlayAlong;
 import frc.robot.commands.intake.KillIntake;
 import frc.robot.commands.orchestrator.AmpPrep;
-import frc.robot.commands.orchestrator.Climb;
+import frc.robot.commands.orchestrator.ClimbCommand;
 import frc.robot.commands.orchestrator.ClimbPrep;
 import frc.robot.commands.orchestrator.DefenseShot;
 import frc.robot.commands.orchestrator.DisableVision;
 import frc.robot.commands.orchestrator.IntakeCommand;
 import frc.robot.commands.orchestrator.LowShot;
+import frc.robot.commands.orchestrator.LowShotPrep;
+import frc.robot.commands.orchestrator.LowShotShoot;
 import frc.robot.commands.orchestrator.ManualControl;
 import frc.robot.commands.orchestrator.Purge;
 import frc.robot.commands.orchestrator.ShootAmp;
@@ -59,6 +62,7 @@ public class RobotContainer
   private final Elevator m_Elevator = new Elevator();
   private final Shooter m_Shooter = new Shooter();
   private final Intake m_Intake = new Intake();
+  private final Climb m_Climb = new Climb();
 
   // Orchestrator
   private final Orchestrator m_Orchestrator = new Orchestrator(m_Drivetrain, m_Elevator, m_Shooter, m_Intake);
@@ -192,7 +196,7 @@ public class RobotContainer
     m_PrimaryController.leftTrigger().whileTrue(new ConditionalCommand // low shot
     (
       new ParallelCommandGroup(
-        new LowShot(m_Orchestrator),
+        new LowShotShoot(m_Orchestrator),
         new DriveWithTargetAngle(m_Drivetrain, m_PrimaryControllerLeftY, m_PrimaryControllerLeftX, m_Drivetrain.yawToSpeaker)
       ),
       new LowShot(m_Orchestrator),
@@ -206,25 +210,17 @@ public class RobotContainer
     ));
 
     // SECONDARY CONTROLLER
-    m_SecondaryController.rightTrigger().whileTrue(new ClimbPrep(m_Orchestrator)); // move to climb
-    m_SecondaryController.leftTrigger().whileTrue // climb
-    (
-      new ParallelCommandGroup
-      (
-        new Climb(m_Elevator, m_SecondaryControllerRightY),
-        new WaitUntilCommand(m_Elevator.killShooterForClimb).andThen(new KillShooter(m_Shooter))
-      )
-    );
+    m_SecondaryController.rightTrigger().whileTrue(new LowShotPrep(m_Orchestrator));
     m_SecondaryController.y().whileTrue(new ZeroIntake(m_Intake)); // zero intake
-    m_SecondaryController.leftBumper().whileTrue(new AmpPrep(m_Orchestrator)); // prepare amp
     m_SecondaryController.x().whileTrue(new Purge(m_Orchestrator)); // purge
-    m_SecondaryController.a().whileTrue(new LowShot(m_Orchestrator));
     m_SecondaryController.rightBumper().onTrue(new SeedFieldRelative(m_Drivetrain));
   }
+  
 
   public Command getAutonomousCommand() 
   {
     return autoSelector.getSelected();
   }
 }
+
 
