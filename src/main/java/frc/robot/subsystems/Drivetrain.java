@@ -4,9 +4,11 @@
 
 package frc.robot.subsystems;
 
-import java.util.Map;
+import java.util.ArrayList;
 
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.EstimatedRobotPose;
+
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
@@ -81,9 +83,9 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   @Override
   public void periodic()
   {
-    if(m_VisionTimer.get() > 0.05)
+    if(m_VisionTimer.hasElapsed(5))
     {
-      m_Vision.updateOdometry(this.m_odometry);
+      updateOdometry();
     }
 
     // slow down applying perspective, as polling driverstation every loop takes resources
@@ -129,7 +131,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
       {
         m_ExtraTelemetryTimer.reset();
         m_Vision.logVision();
-        SmartDashboard.putString("Applied Perspective", m_OperatorPerspectiveMap.get(this.m_operatorForwardDirection.getDegrees()));
+        SmartDashboard.putString("Applied Perspective", DriveConstants.PERSPECTIVE_MAP.get(this.m_operatorForwardDirection.getDegrees()));
         SmartDashboard.putNumber("Distance to Speaker", getDistanceToSpeakerMeters());
       }
     } 
@@ -146,6 +148,24 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   }
 
   // Vision
+  private void updateOdometry()
+  {
+    ArrayList<EstimatedRobotPose> estimatedPoses = m_Vision.getEstimatedPoses(m_odometry.getEstimatedPosition());
+
+    // return if the estimated pose list is empty
+    if(estimatedPoses.isEmpty())
+    {
+      return;
+    }
+
+    estimatedPoses.forEach(pose -> {
+      addVisionMeasurement
+      (
+        pose.estimatedPose.toPose2d(),
+        pose.timestampSeconds
+      );
+    });
+  }
   public Rotation2d getRotationToSpeaker()
   {
     return m_Vision.getRotationToTarget(m_odometry.getEstimatedPosition(), m_CurrentSpeakerPose);
@@ -171,9 +191,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     return m_Vision.getVisionEnabled();
   }
   
-  /** 
-    @brief Configure PathPlanner objects for automatic path following
-  */
   private void configurePathPlanner()
   {
     //Determine the radius of the drivebase from module locations
@@ -195,10 +212,4 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
       this
     );
   }
-
-  private static final Map<Double, String> m_OperatorPerspectiveMap = Map.of
-  (
-    0.0, "Blue",
-    180.0, "Red"
-  );
 }

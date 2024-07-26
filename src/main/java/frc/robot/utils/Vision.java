@@ -50,7 +50,7 @@ public class Vision
      * Gets the estimated poses from each camera.
      * @return The list of the estimated poses each camera is returning. May be empty.
      */
-    private ArrayList<EstimatedRobotPose> getEstimatedPoses(Pose2d referencePose)
+    public ArrayList<EstimatedRobotPose> getEstimatedPoses(Pose2d referencePose)
     {
         ArrayList<EstimatedRobotPose> estimatedPoses = new ArrayList<>();
 
@@ -68,38 +68,6 @@ public class Vision
         }
 
         return estimatedPoses;
-    }
-
-    /**
-     * Adds vision measurements to the given SwerveDrivePoseEstimator.
-     * @param poseEstimator The pose estimator to update
-     */
-    public void updateOdometry(SwerveDrivePoseEstimator poseEstimator)
-    {
-        ArrayList<EstimatedRobotPose> estimatedPoses = getEstimatedPoses(poseEstimator.getEstimatedPosition());
-
-        // return if the estimated pose list is empty or has more poses than cameras
-        if(estimatedPoses.isEmpty() || estimatedPoses.size() > m_Cameras.size())
-        {
-            return;
-        }
-
-        for (int i = 0; i < estimatedPoses.size(); i++)
-        {
-            EstimatedRobotPose estimatedPose = estimatedPoses.get(i);
-            
-            // if pose doesn't exist continue
-            if(estimatedPose.timestampSeconds < 0 || Timer.getFPGATimestamp() < estimatedPose.timestampSeconds || Timer.getFPGATimestamp() > estimatedPose.timestampSeconds + 1)
-            {
-                continue;
-            }
-
-            poseEstimator.addVisionMeasurement
-            (
-                estimatedPose.estimatedPose.toPose2d(),
-                estimatedPose.timestampSeconds
-            );
-        }
     }
 
     /**
