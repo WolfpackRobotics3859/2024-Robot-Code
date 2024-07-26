@@ -30,8 +30,8 @@ public class Shooter extends SubsystemBase
 
   private final CANcoder m_WristCANCoder = new CANcoder(Hardware.SHOOTER_WRIST_CANCODER_ID);
 
-  private final DigitalInput m_BeamBreak1 = new DigitalInput(Hardware.BEAM_BREAK_1_ID);
-  private final DigitalInput m_BeamBreak2 = new DigitalInput(Hardware.BEAM_BREAK_2_ID);
+  private final DigitalInput m_BeamBreakFront = new DigitalInput(Hardware.BEAM_BREAK_FRONT_ID);
+  private final DigitalInput m_BeamBreakBack = new DigitalInput(Hardware.BEAM_BREAK_BACK_ID);
 
   private final Timer m_TelemetryTimer = new Timer();
   private final Timer m_ExtraTelemetryTimer = new Timer();
@@ -70,8 +70,8 @@ public class Shooter extends SubsystemBase
       {
         m_TelemetryTimer.reset();
         SmartDashboard.putNumber("Shooter Wrist Position", m_WristMotor.getPosition().getValueAsDouble());
-        SmartDashboard.putBoolean("Beam Break 1", m_BeamBreak1.get());
-        SmartDashboard.putBoolean("Beam Break 2", m_BeamBreak2.get());
+        SmartDashboard.putBoolean("Beam Break 1", m_BeamBreakFront.get());
+        SmartDashboard.putBoolean("Beam Break 2", m_BeamBreakBack.get());
       }
     }
   }
@@ -104,22 +104,22 @@ public class Shooter extends SubsystemBase
   // Beam Break Logic
   public boolean hasNoteRearPosition()
   {
-    return m_BeamBreak1.get() && !m_BeamBreak2.get();
+    return m_BeamBreakFront.get() && !m_BeamBreakBack.get();
   }
 
   public boolean hasNoteForwardPosition()
   {
-    return !m_BeamBreak1.get() && m_BeamBreak2.get();
+    return !m_BeamBreakFront.get() && m_BeamBreakBack.get();
   }
 
   public boolean hasNoteCentered()
   {
-    return !m_BeamBreak1.get() && !m_BeamBreak2.get();
+    return !m_BeamBreakFront.get() && !m_BeamBreakBack.get();
   }
 
   public boolean shooterClear()
   {
-    return m_BeamBreak1.get() && m_BeamBreak2.get();
+    return m_BeamBreakFront.get() && m_BeamBreakBack.get();
   }
 
   public boolean getShooterReady()
@@ -130,12 +130,12 @@ public class Shooter extends SubsystemBase
   // Beam Break Getters
   public boolean getBeamBreak1()
   {
-    return m_BeamBreak1.get();
+    return m_BeamBreakFront.get();
   }
 
   public boolean getBeamBreak2()
   {
-    return m_BeamBreak2.get();
+    return m_BeamBreakBack.get();
   }
 
   public boolean readyToShoot(double expectedWristPosition, double expectedRoller1Speed, double expectedRoller2Speed)
