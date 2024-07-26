@@ -27,6 +27,7 @@ import frc.robot.commands.drivetrain.Drive;
 import frc.robot.commands.drivetrain.DriveWithTargetAngle;
 import frc.robot.commands.drivetrain.SeedFieldRelative;
 import frc.robot.commands.vision.DisableVision;
+import frc.robot.commands.vision.EnableVision;
 
 public class RobotContainer 
 {
@@ -53,14 +54,15 @@ public class RobotContainer
   private final SendableChooser<Command> autoSelector = new SendableChooser<>();
 
   public RobotContainer() 
-  {  
-    this.configureAutoCommands();
+  {
+
     this.configureDefaultCommands();
-    this.configureSmartDashboardCommands();
     this.configureAutoSelector();
     this.configureBindings();
 
     SmartDashboard.putData("Auto Selector", autoSelector);
+    SmartDashboard.putData("Disable Vision", new DisableVision(m_Vision));
+    SmartDashboard.putData("Enable Vision", new EnableVision(m_Vision));
   }
 
   private void configureDefaultCommands()
@@ -79,17 +81,15 @@ public class RobotContainer
 
   }
 
-  private void configureAutoCommands()
+  private void registerCommands()
   {
+    // Intentionally Empty
   }
 
-  private void configureSmartDashboardCommands()
-  {
-  }
+
 
   private void configureAutoSelector()
   {
-    // TODO: add auto options
     autoSelector.setDefaultOption("None", new SeedFieldRelative(m_Drivetrain));
     autoSelector.addOption("2 Note From Source", new PathPlannerAuto("2NoteFromSource"));
     autoSelector.addOption("4 Note From Amp", new PathPlannerAuto("4NoteFromAmp"));
@@ -99,39 +99,19 @@ public class RobotContainer
 
   private void configureBindings() 
   {
-  //   // PRIMARY CONTROLLER
-  //   m_PrimaryController.rightTrigger().whileTrue(new IntakeCommand(m_Orchestrator)); // intake
-  //   m_PrimaryController.leftTrigger().whileTrue(new ConditionalCommand // low shot
-  //   (
-  //     new ParallelCommandGroup(
-  //       new LowShot(m_Orchestrator),
-  //       new DriveWithTargetAngle(m_Drivetrain, m_PrimaryControllerLeftY, m_PrimaryControllerLeftX, m_Drivetrain.yawToSpeaker)
-  //     ),
-  //     new LowShot(m_Orchestrator),
-  //     () -> m_Drivetrain.getVisionEnabled()
-  //   ));
-  //   m_PrimaryController.rightBumper().whileTrue(new DefenseShot(m_Orchestrator)); // defense shot
-  //   m_PrimaryController.leftBumper().whileTrue(new ParallelCommandGroup // shoot amp after prep (preps if not yet)
-  //   (
-  //     new AmpPrep(m_Orchestrator),
-  //     new ShootAmp(m_Orchestrator)
-  //   ));
+    /* 
+      primary:
+      right trigger = intake
+      left trigger = shot
+      right bumper = unassigned
+      left bumper = amp
+      y = reset gyro
 
-  //   // SECONDARY CONTROLLER
-  //   m_SecondaryController.rightTrigger().whileTrue(new ClimbPrep(m_Orchestrator)); // move to climb
-  //   m_SecondaryController.leftTrigger().whileTrue // climb
-  //   (
-  //     new ParallelCommandGroup
-  //     (
-  //       new Climb(m_Elevator, m_SecondaryControllerRightY),
-  //       new WaitUntilCommand(m_Elevator.killShooterForClimb).andThen(new KillShooter(m_Shooter))
-  //     )
-  //   );
-  //   m_SecondaryController.y().whileTrue(new ZeroIntake(m_Intake)); // zero intake
-  //   m_SecondaryController.leftBumper().whileTrue(new AmpPrep(m_Orchestrator)); // prepare amp
-  //   m_SecondaryController.x().whileTrue(new Purge(m_Orchestrator)); // purge
-  //   m_SecondaryController.a().whileTrue(new LowShot(m_Orchestrator));
-  //   m_SecondaryController.rightBumper().onTrue(new SeedFieldRelative(m_Drivetrain));
+      
+      secondary:
+      right bumper = reset intake
+      x = purge
+    */ 
   }
 
   public Command getAutonomousCommand() 

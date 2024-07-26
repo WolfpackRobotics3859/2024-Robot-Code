@@ -1,5 +1,7 @@
 package frc.robot.constants.drivetrain;
 
+import java.util.Map;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class DriveConstants 
@@ -18,6 +20,12 @@ public class DriveConstants
 
     // Operator Perspective
     public final static Rotation2d BLUE_OPERATOR_FORWARD_PERSPECTIVE = Rotation2d.fromDegrees(0);
-    public final static Rotation2d RED_OPERATOR_FORWARD_PERSPECTIVE = Rotation2d.fromDegrees(180);       
+    public final static Rotation2d RED_OPERATOR_FORWARD_PERSPECTIVE = Rotation2d.fromDegrees(180);  
+    
+    public static final Map<Double, String> PERSPECTIVE_MAP = Map.of
+    (
+    0.0, "Blue",
+    180.0, "Red"
+    );
 }
 
