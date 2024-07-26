@@ -52,52 +52,6 @@ public class RobotContainer
   // Auto Chooser
   private final SendableChooser<Command> autoSelector = new SendableChooser<>();
 
-  /**
-   * @brief Gets the Drivetrain subsystem.
-   * @return The drivetrain object
-   */
-  public Drivetrain getDrive()
-  {
-    return this.m_Drivetrain;
-  }
-
-  /**
-   * @brief Gets the elevator subsystem.
-   * @return The elevator object
-   */
-  public Elevator getElevator()
-  {
-    return this.m_Elevator;
-  }
-
-  /**
-   * @brief Gets the shooter subsystem.
-   * @return The shooter object
-   */
-  public Shooter getShooter()
-  {
-    return this.m_Shooter;
-  }
-
-  /**
-   * @brief Gets the intake subsystem.
-   * @return The intake object
-   */
-  public Intake getIntake()
-  {
-    return this.m_Intake;
-  }
-  
-  public CommandXboxController getPrimaryController()
-  {
-    return this.m_PrimaryController;
-  }
-
-  public CommandXboxController getSecondaryController()
-  {
-    return this.m_SecondaryController;
-  }
-
   public RobotContainer() 
   {  
     this.configureAutoCommands();
