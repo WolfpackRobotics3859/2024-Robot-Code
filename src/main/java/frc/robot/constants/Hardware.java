@@ -34,10 +34,11 @@ public class Hardware
     public static final int SHOOTER_WRIST_CANCODER_ID = 6;
     public static final int BEAM_BREAK_1_ID = 8;
     public static final int BEAM_BREAK_2_ID = 9;
-    public static final int ULTRASONIC_FRONT_TRIG = 6;
-    public static final int ULTRASONIC_FRONT_ECHO = 7;
-    public static final int ULTRASONIC_BACK_TRIG = 2;
-    public static final int ULTRASONIC_BACK_ECHO = 1;
+    public static final int ULTRASONIC_FRONT_TRIG = 5;
+    public static final int ULTRASONIC_FRONT_ECHO = 6;
+    public static final int ULTRASONIC_BACK_TRIG = 7;
+    public static final int ULTRASONIC_BACK_ECHO = 8;
+    public static final int BACK_SONAR = 3;
 
 
     // Intake

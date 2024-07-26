@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -14,8 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.drivetrain.TunerConstants;
@@ -37,10 +36,6 @@ import frc.robot.commands.elevator.ElevatorPlayAlong;
 import frc.robot.commands.elevator.KillElevator;
 import frc.robot.commands.intake.IntakePlayAlong;
 import frc.robot.commands.intake.KillIntake;
-import frc.robot.commands.orchestrator.AmpPrep;
-import frc.robot.commands.orchestrator.ClimbCommand;
-import frc.robot.commands.orchestrator.ClimbPrep;
-import frc.robot.commands.orchestrator.DefenseShot;
 import frc.robot.commands.orchestrator.DisableVision;
 import frc.robot.commands.orchestrator.IntakeCommand;
 import frc.robot.commands.orchestrator.LowShot;
@@ -48,7 +43,6 @@ import frc.robot.commands.orchestrator.LowShotPrep;
 import frc.robot.commands.orchestrator.LowShotShoot;
 import frc.robot.commands.orchestrator.ManualControl;
 import frc.robot.commands.orchestrator.Purge;
-import frc.robot.commands.orchestrator.ShootAmp;
 import frc.robot.commands.orchestrator.Stow;
 import frc.robot.commands.orchestrator.ZeroIntake;
 import frc.robot.commands.shooter.KillShooter;
@@ -56,6 +50,8 @@ import frc.robot.commands.shooter.ShooterPlayAlong;
 
 public class RobotContainer 
 {
+  private final SignalLogger m_Logger = new SignalLogger();
+
   // Subsystems
   private final Drivetrain m_Drivetrain = new Drivetrain(TunerConstants.DRIVETRAIN_CONSTANTS, 250, TunerConstants.FRONT_LEFT,
                                                          TunerConstants.FRONT_RIGHT, TunerConstants.BACK_LEFT, TunerConstants.BACK_RIGHT);
@@ -73,7 +69,6 @@ public class RobotContainer
   private final Supplier<Double> m_PrimaryControllerLeftY = () -> -m_PrimaryController.getLeftY() * m_Drivetrain.axisModifier;
   private final Supplier<Double> m_PrimaryControllerLeftX = () -> -m_PrimaryController.getLeftX() * m_Drivetrain.axisModifier;
   private final Supplier<Double> m_PrimaryControllerRightX = () -> -m_PrimaryController.getRightX();
-  private final Supplier<Double> m_SecondaryControllerRightY = () -> -m_SecondaryController.getRightY();
 
   // Choosers
   private final SendableChooser<Command> autoSelector = new SendableChooser<>();
@@ -130,7 +125,9 @@ public class RobotContainer
   }
 
   public RobotContainer() 
-  {  
+  {
+    m_Logger.enableAutoLogging(false);
+
     this.configureAutoCommands();
     this.configureDefaultCommands();
     this.configureSmartDashboardCommands();
@@ -183,6 +180,7 @@ public class RobotContainer
   {
     // TODO: add auto options
     autoSelector.setDefaultOption("None", new SeedFieldRelative(m_Drivetrain));
+    autoSelector.addOption("Shoot Only From Source", new PathPlannerAuto("ShootOnlyFromSource"));
     autoSelector.addOption("2 Note From Source", new PathPlannerAuto("2NoteFromSource"));
     autoSelector.addOption("4 Note From Amp", new PathPlannerAuto("4NoteFromAmp"));
     autoSelector.addOption("4 Note From Amp (Close)", new PathPlannerAuto("4NoteFromAmpClose"));
@@ -202,18 +200,12 @@ public class RobotContainer
       new LowShot(m_Orchestrator),
       () -> m_Drivetrain.getVisionEnabled()
     ));
-    m_PrimaryController.rightBumper().whileTrue(new DefenseShot(m_Orchestrator)); // defense shot
-    m_PrimaryController.leftBumper().whileTrue(new ParallelCommandGroup // shoot amp after prep (preps if not yet)
-    (
-      new AmpPrep(m_Orchestrator),
-      new ShootAmp(m_Orchestrator)
-    ));
+    m_PrimaryController.x().onTrue(new SeedFieldRelative(m_Drivetrain));
 
     // SECONDARY CONTROLLER
     m_SecondaryController.rightTrigger().whileTrue(new LowShotPrep(m_Orchestrator));
     m_SecondaryController.y().whileTrue(new ZeroIntake(m_Intake)); // zero intake
     m_SecondaryController.x().whileTrue(new Purge(m_Orchestrator)); // purge
-    m_SecondaryController.rightBumper().onTrue(new SeedFieldRelative(m_Drivetrain));
   }
   
 

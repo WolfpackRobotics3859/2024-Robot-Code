@@ -19,9 +19,9 @@ public class Positions
     {
         public static final double INTAKE_ROLLER_VOLTAGE = -9;
         public static final double INTAKE_WRIST_POSITION = 0;
-        public static final double SHOOTER_ROLLER_1_VELOCITY = -20;
-        public static final double SHOOTER_ROLLER_2_VELOCITY = -20;
-        public static final double SHOOTER_FEEDER_VOLTAGE = -3;
+        public static final double SHOOTER_ROLLER_1_VELOCITY = -4;
+        public static final double SHOOTER_ROLLER_2_VELOCITY = -4;
+        public static final double SHOOTER_FEEDER_VOLTAGE = -1.5;
         public static final double SHOOTER_WRIST_ANGLE = 0.53; //0.53
         public static final double ELEVATOR_POSITION = 0.0725; //0.204
     }
@@ -94,9 +94,9 @@ public class Positions
     {
         public static final double INTAKE_ROLLER_VOLTAGE = -7;
         public static final double INTAKE_WRIST_POSITION = 0;
-        public static final double SHOOTER_ROLLER_1_VELOCITY = -40;
-        public static final double SHOOTER_ROLLER_2_VELOCITY = -40;
-        public static final double SHOOTER_FEEDER_VOLTAGE = -6;
+        public static final double SHOOTER_ROLLER_1_VELOCITY = -4;
+        public static final double SHOOTER_ROLLER_2_VELOCITY = -4;
+        public static final double SHOOTER_FEEDER_VOLTAGE = -1.5;
         public static final double SHOOTER_WRIST_ANGLE = 0.53;
         public static final double ELEVATOR_POSITION = 0.0725;
     }

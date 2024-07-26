@@ -83,7 +83,7 @@ public class Intake extends SubsystemBase
 
   public void setWristZero()
   {
-    m_WristMotor.setPosition(0);
+    m_WristMotor.setPosition(4.3);
   }
 
   public StatusSignal<Double> getPositionSignal()

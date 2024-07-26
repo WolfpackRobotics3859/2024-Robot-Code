@@ -691,9 +691,9 @@ public class Orchestrator extends SubsystemBase
   {
     if(!this.m_Shooter.hasNoteForwardPosition())
     {
-      m_ShooterFeederVoltage = 3;
-      m_ShooterBottomRollerVelocity = 10;
-      m_ShooterTopRollerVelocity = 10;
+      m_ShooterFeederVoltage = 1;
+      m_ShooterBottomRollerVelocity = 3;
+      m_ShooterTopRollerVelocity = 3;
       return false;
     }
     m_ShooterFeederVoltage = 0;
@@ -707,9 +707,9 @@ public class Orchestrator extends SubsystemBase
   {
     if(!this.m_Shooter.hasNoteRearPosition())
     {
-      m_ShooterFeederVoltage = -3;
-      m_ShooterBottomRollerVelocity = -10;
-      m_ShooterTopRollerVelocity = -10;
+      m_ShooterFeederVoltage = -1;
+      m_ShooterBottomRollerVelocity = -3;
+      m_ShooterTopRollerVelocity = -3;
       return false;
     }
     m_ShooterFeederVoltage = 0;
@@ -729,15 +729,15 @@ public class Orchestrator extends SubsystemBase
     }
     if(m_Shooter.hasNoteForwardPosition())
     {
-      m_ShooterFeederVoltage = -2.5;
-      m_ShooterBottomRollerVelocity = -5;
-      m_ShooterTopRollerVelocity = -5;
+      m_ShooterFeederVoltage = -1;
+      m_ShooterBottomRollerVelocity = -3;
+      m_ShooterTopRollerVelocity = -3;
     }
     if(m_Shooter.hasNoteRearPosition())
     {
-      m_ShooterFeederVoltage = 1.5;
-      m_ShooterBottomRollerVelocity = 5;
-      m_ShooterTopRollerVelocity = 5;
+      m_ShooterFeederVoltage = 1;
+      m_ShooterBottomRollerVelocity = 3;
+      m_ShooterTopRollerVelocity = 3;
     }
     if(m_Shooter.shooterClear())
     {

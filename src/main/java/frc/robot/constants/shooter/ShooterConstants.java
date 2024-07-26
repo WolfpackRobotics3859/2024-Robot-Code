@@ -31,7 +31,8 @@ public class ShooterConstants
 
     // Misc values
     public static final double SHOOTER_WRIST_FEED_FORWARD = 0.3;
-    public static final double ULTRASONIC_RANGE_LIMIT = 1;
+    public static final double ULTRASONIC_RANGE_LIMIT = 8; // inches
+    public static final double BACK_LASER_LIMIT = 250;
 
     // Motor Configs
     public static final Slot0Configs SHOOTER_1_GAINS = new Slot0Configs()

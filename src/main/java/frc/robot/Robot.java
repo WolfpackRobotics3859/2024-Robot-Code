@@ -4,53 +4,48 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
-
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-public class Robot extends LoggedRobot 
+public class Robot extends TimedRobot
 {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
 
   @Override
-  public void robotInit() 
+  public void robotInit()
   {
     m_robotContainer = new RobotContainer();
-    Logger.addDataReceiver(new NT4Publisher());
-    Logger.start();
   }
 
   @Override
-  public void robotPeriodic() 
+  public void robotPeriodic()
   {
     CommandScheduler.getInstance().run();
   }
 
   @Override
-  public void disabledInit() 
+  public void disabledInit()
   {
     // Intentionally Empty
   }
 
   @Override
-  public void disabledPeriodic() 
+  public void disabledPeriodic()
   {
     // Intentionally Empty
   }
 
   @Override
-  public void disabledExit() 
+  public void disabledExit()
   {
     // Intentionally Empty
   }
 
   @Override
-  public void autonomousInit() 
+  public void autonomousInit()
   {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -60,52 +55,51 @@ public class Robot extends LoggedRobot
   }
 
   @Override
-  public void autonomousPeriodic() 
+  public void autonomousPeriodic()
   {
     // Intentionally Empty
   }
 
   @Override
-  public void autonomousExit() 
+  public void autonomousExit()
   {
     // Intentionally Empty
   }
 
   @Override
-  public void teleopInit() 
+  public void teleopInit()
   {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_robotContainer.startTeleopCommands();
   }
 
   @Override
-  public void teleopPeriodic() 
+  public void teleopPeriodic()
   {
     // Intentionally Empty
   }
 
   @Override
-  public void teleopExit() 
+  public void teleopExit()
   {
     // Intentionally Empty
   }
 
   @Override
-  public void testInit() 
+  public void testInit()
   {
     CommandScheduler.getInstance().cancelAll();
   }
 
   @Override
-  public void testPeriodic() 
+  public void testPeriodic()
   {
     // Intentionally Empty
   }
 
   @Override
-  public void testExit() 
+  public void testExit()
   {
     // Intentionally Empty
   }

@@ -12,13 +12,13 @@ import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.playingwithfusion.TimeOfFlight;
 
 import frc.robot.constants.Global;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.shooter.ShooterConstants;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
-//import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,7 +36,8 @@ public class Shooter extends SubsystemBase
   // private final DigitalInput m_BeamBreak1 = new DigitalInput(Hardware.BEAM_BREAK_1_ID);
   // private final DigitalInput m_BeamBreak2 = new DigitalInput(Hardware.BEAM_BREAK_2_ID);
   private final Ultrasonic m_FrontUltraSonic = new Ultrasonic(new DigitalOutput(Hardware.ULTRASONIC_FRONT_TRIG), new DigitalInput(Hardware.ULTRASONIC_FRONT_ECHO));
-  private final Ultrasonic m_BackUltraSonic = new Ultrasonic(Hardware.ULTRASONIC_BACK_TRIG, Hardware.ULTRASONIC_BACK_ECHO);
+  // private final Ultrasonic m_BackUltraSonic = new Ultrasonic(new DigitalOutput(Hardware.ULTRASONIC_BACK_TRIG), new DigitalInput(Hardware.ULTRASONIC_BACK_ECHO));
+  private final TimeOfFlight m_BackLaser = new TimeOfFlight(26);
 
   private final Timer m_TelemetryTimer = new Timer();
   private final Timer m_ExtraTelemetryTimer = new Timer();
@@ -52,7 +53,6 @@ public class Shooter extends SubsystemBase
     m_ShooterMotor2.getConfigurator().apply(ShooterConstants.SHOOTER_MOTOR_2_CONFIGURATION);
 
     m_FrontUltraSonic.setEnabled(true);
-    m_BackUltraSonic.setEnabled(true);
     m_FrontUltraSonic.setAutomaticMode(true);
 
     // Encoder Configuration
@@ -82,8 +82,8 @@ public class Shooter extends SubsystemBase
         SmartDashboard.putBoolean("Front Sensor", getFrontUltrasonic());
         SmartDashboard.putBoolean("Back Sensor", getBackUltrasonic());
         SmartDashboard.putNumber("Front Ultrasonic Range", m_FrontUltraSonic.getRangeInches());
-        SmartDashboard.putNumber("Back Ultrasonic Range", m_BackUltraSonic.getRangeInches());
         SmartDashboard.putBoolean("Front Valid", m_FrontUltraSonic.isRangeValid());
+        SmartDashboard.putNumber("Back Laser Range", m_BackLaser.getRange());
       }
     }
   }
@@ -120,12 +120,16 @@ public class Shooter extends SubsystemBase
 
     // if beam break has no note, return true
     // if ultrasonic detects range greater than limit (no note), return true
-    return m_FrontUltraSonic.getRangeInches() >= ShooterConstants.ULTRASONIC_RANGE_LIMIT;
+    //return m_FrontUltraSonic.getRangeInches() >= ShooterConstants.ULTRASONIC_RANGE_LIMIT;
+
+    return this.m_FrontUltraSonic.getRangeInches() > ShooterConstants.ULTRASONIC_RANGE_LIMIT && this.m_FrontUltraSonic.getRangeInches() < 20;
   }
 
   public boolean getBackUltrasonic()
   {
-    return m_BackUltraSonic.getRangeInches() >= ShooterConstants.ULTRASONIC_RANGE_LIMIT;
+    // return m_BackUltraSonic.getRangeInches() >= ShooterConstants.ULTRASONIC_RANGE_LIMIT;
+
+    return this.m_BackLaser.getRange() > ShooterConstants.BACK_LASER_LIMIT;
   }
 
   // Beam Break Logic

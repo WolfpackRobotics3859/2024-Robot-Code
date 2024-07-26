@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -28,9 +27,13 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.Publisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -40,12 +43,13 @@ import frc.robot.constants.drivetrain.TunerConstants;
 
 public class Drivetrain extends SwerveDrivetrain implements Subsystem 
 {
-  
+  private final Field2d m_Field = new Field2d();
   private Optional<EstimatedRobotPose> optionalPose;
   private PhotonCamera m_CameraRight1, m_CameraLeft1, m_CameraRear1, m_DriverCamera;
   private PhotonPoseEstimator m_CameraRight1Estimator, m_CameraLeft1Estimator, m_CameraRear1Estimator;
   private final Timer m_TelemetryTimer = new Timer();
   private final Timer m_ExtraTelemetryTimer = new Timer();
+  private final Timer m_ApplicationTimer = new Timer();
   private int m_CameraRight1ExceptionCount, m_CameraLeft1ExceptionCount, m_CameraRear1ExceptionCount;
   private boolean m_VisionEnabled = true;
   private boolean m_Aligned = false;
@@ -81,31 +85,39 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     {
       m_ExtraTelemetryTimer.start();
     }
+
+    m_ApplicationTimer.start();
   }
 
   @Override
   public void periodic()
   {
-    if (!hasAppliedPerspective || DriverStation.isDisabled())
+    
+    if (m_ApplicationTimer.get() > 0.2)
     {
-      DriverStation.getAlliance().ifPresent((allianceColor) -> {
-        this.setOperatorPerspectiveForward
-        (
-          allianceColor == Alliance.Red ? m_RedOperatorForwardPerspective: m_BlueOperatorForwardPerspective
-        );
-        hasAppliedPerspective = true;
-        
-        if(allianceColor == Alliance.Red)
-        {
-          this.m_CurrentSpeakerPose = DriveConstants.APRIL_TAG_POSES.RED_SPEAKER;
-          axisModifier = -1;
-        }
-        else
-        {
-          this.m_CurrentSpeakerPose = DriveConstants.APRIL_TAG_POSES.BLUE_SPEAKER;
-          axisModifier = 1;
-        }
-      });
+      if (!hasAppliedPerspective || DriverStation.isDisabled())
+      {
+        DriverStation.getAlliance().ifPresent((allianceColor) -> {
+          this.setOperatorPerspectiveForward
+          (
+            allianceColor == Alliance.Red ? m_RedOperatorForwardPerspective: m_BlueOperatorForwardPerspective
+          );
+          hasAppliedPerspective = true;
+          
+          if(allianceColor == Alliance.Red)
+          {
+            this.m_CurrentSpeakerPose = DriveConstants.APRIL_TAG_POSES.RED_SPEAKER;
+            axisModifier = -1;
+          }
+          else
+          {
+            this.m_CurrentSpeakerPose = DriveConstants.APRIL_TAG_POSES.BLUE_SPEAKER;
+            axisModifier = 1;
+          }
+        });
+      }
+
+      m_ApplicationTimer.reset();
     }
 
     m_CameraRight1ExceptionCount = updateVisionWithCamera(m_CameraRight1, m_CameraRight1Estimator, m_CameraRight1ExceptionCount);
@@ -115,8 +127,9 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     {
       if(m_TelemetryTimer.get() > Global.TELEMETRY_UPDATE_SPEED)
       {
+        m_Field.setRobotPose(m_odometry.getEstimatedPosition());
+        SmartDashboard.putData(m_Field);
         m_TelemetryTimer.reset();
-        Logger.recordOutput("robotPose", m_odometry.getEstimatedPosition());
       }
     }
     if(Global.ENABLE_EXTRA_TELEMETRY)
@@ -128,8 +141,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
         SmartDashboard.putBoolean("CameraLeft1 isConnected", m_CameraLeft1.isConnected());
         SmartDashboard.putNumber("CameraRight1ExceptionCount", m_CameraRight1ExceptionCount);
         SmartDashboard.putNumber("CameraLeft1ExceptionCount", m_CameraLeft1ExceptionCount);
-        SmartDashboard.putNumber("Yaw to speaker", this.yawToSpeaker.get().getDegrees());
-        SmartDashboard.putNumber("Distance to Speaker", this.distanceToSpeaker.get());
         SmartDashboard.putBoolean("Vision Enabled", this.getVisionEnabled());
       }
     } 
