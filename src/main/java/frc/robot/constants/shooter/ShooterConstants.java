@@ -15,7 +15,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import frc.robot.constants.Hardware;
+import frc.robot.constants.Ports;
 
 public class ShooterConstants
 {
@@ -61,7 +61,7 @@ public class ShooterConstants
         .withReverseSoftLimitThreshold(WRIST_MAX_UP_POSIION);
 
     public static final FeedbackConfigs WRIST_FEEDBACK_CONFIGS = new FeedbackConfigs()
-        .withFeedbackRemoteSensorID(Hardware.SHOOTER_WRIST_CANCODER_ID)
+        .withFeedbackRemoteSensorID(Ports.SHOOTER_WRIST_CANCODER_ID)
         .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder)
         .withRotorToSensorRatio(1)
         .withSensorToMechanismRatio(1);

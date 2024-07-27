@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.util.function.Supplier;
-
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -13,7 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
-import frc.robot.constants.Hardware;
+import frc.robot.constants.Ports;
 import frc.robot.constants.drivetrain.TunerConstants;
 import frc.robot.constants.vision.VisionConstants;
 
@@ -42,27 +40,22 @@ public class RobotContainer
   private final Intake m_Intake = new Intake();
 
   // Controllers
-  private final CommandXboxController m_PrimaryController = new CommandXboxController(Hardware.PRIMARY_CONTROLLER_PORT);
-  private final CommandXboxController m_SecondaryController = new CommandXboxController(Hardware.SECONDARY_CONTROLLER_PORT);
-
-  // Controller Suppliers
-  private final Supplier<Double> m_PrimaryControllerLeftY = () -> -m_PrimaryController.getLeftY() * m_Drivetrain.axisModifier;
-  private final Supplier<Double> m_PrimaryControllerLeftX = () -> -m_PrimaryController.getLeftX() * m_Drivetrain.axisModifier;
-  private final Supplier<Double> m_PrimaryControllerRightX = () -> -m_PrimaryController.getRightX();
+  private final CommandXboxController m_PrimaryController = new CommandXboxController(Ports.PRIMARY_CONTROLLER_PORT);
+  private final CommandXboxController m_SecondaryController = new CommandXboxController(Ports.SECONDARY_CONTROLLER_PORT);
 
   // Auto Chooser
   private final SendableChooser<Command> autoSelector = new SendableChooser<>();
 
   public RobotContainer() 
   {
-
     this.configureDefaultCommands();
     this.configureAutoSelector();
     this.configureBindings();
 
     SmartDashboard.putData("Auto Selector", autoSelector);
-    SmartDashboard.putData("Disable Vision", new DisableVision(m_Vision));
+
     SmartDashboard.putData("Enable Vision", new EnableVision(m_Vision));
+    SmartDashboard.putData("Disable Vision", new DisableVision(m_Vision));
   }
 
   private void configureDefaultCommands()
@@ -72,21 +65,19 @@ public class RobotContainer
       new Drive
       (
         m_Drivetrain,
-        m_PrimaryControllerLeftY, 
-        m_PrimaryControllerLeftX, 
-        m_PrimaryControllerRightX
+        () -> -m_PrimaryController.getLeftY(), 
+        () -> -m_PrimaryController.getLeftX(), 
+        () -> -m_PrimaryController.getRightX()
       )
     );
 
 
   }
 
-  private void registerCommands()
+  private void registerAutoCommands()
   {
     // Intentionally Empty
   }
-
-
 
   private void configureAutoSelector()
   {

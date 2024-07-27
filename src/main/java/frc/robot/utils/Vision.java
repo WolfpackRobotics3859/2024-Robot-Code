@@ -14,7 +14,6 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.math.Pair;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -22,7 +21,6 @@ import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.vision.VisionConstants;
 
@@ -77,7 +75,7 @@ public class Vision
      * @return The Rotation2d object representing the rotation the robot needs to be facing relative to the field
      * to aim at the target
      */
-    public Rotation2d getRotationToTarget(Pose2d robotPose, Pose2d targetPose)
+    public Rotation2d getRotationToPose(Pose2d robotPose, Pose2d targetPose)
     {
         // get differences between translations
         double dx = targetPose.getTranslation().getX() - robotPose.getTranslation().getX();

@@ -1,6 +1,6 @@
 package frc.robot.constants;
 
-public class Hardware
+public class Ports
 {
     // Controllers
     public static final int PRIMARY_CONTROLLER_PORT = 0;

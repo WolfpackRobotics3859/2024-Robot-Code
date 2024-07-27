@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Global;
-import frc.robot.constants.Hardware;
+import frc.robot.constants.Ports;
 import frc.robot.constants.intake.IntakeConstants;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -19,8 +19,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 public class Intake extends SubsystemBase 
 {
-  private final TalonFX m_RollerMotor = new TalonFX(Hardware.INTAKE_ROLLER_MOTOR_ID);
-  private final TalonFX m_WristMotor = new TalonFX(Hardware.INTAKE_WRIST_MOTOR_ID);
+  private final TalonFX m_RollerMotor = new TalonFX(Ports.INTAKE_ROLLER_MOTOR_ID);
+  private final TalonFX m_WristMotor = new TalonFX(Ports.INTAKE_WRIST_MOTOR_ID);
+
   private final Timer m_TelemetryTimer = new Timer();
   private final Timer m_ExtraTelemetryTimer = new Timer();
 
@@ -38,6 +39,7 @@ public class Intake extends SubsystemBase
     {
       m_ExtraTelemetryTimer.start();
     }
+
     SmartDashboard.putData(this);
     this.setWristZero();
   }

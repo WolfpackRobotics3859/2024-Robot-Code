@@ -20,24 +20,25 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.constants.Global;
 import frc.robot.constants.drivetrain.DriveConstants;
 import frc.robot.constants.drivetrain.TunerConstants;
-import frc.robot.constants.vision.*;
 import frc.robot.utils.Vision;
 
 public class Drivetrain extends SwerveDrivetrain implements Subsystem 
 {
   private final Vision m_Vision;
+
+  private final Field2d m_Field = new Field2d();
 
   private boolean m_Aligned = false;
   private Pose2d m_CurrentSpeakerPose;
@@ -63,7 +64,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   public Drivetrain(Vision vision, SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules)
   {
     super(driveTrainConstants, OdometryUpdateFrequency, modules);
-    configurePathPlanner();
 
     this.m_Vision = vision;
 
@@ -78,42 +78,32 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     {
       m_ExtraTelemetryTimer.start();
     }
+
+    configurePathPlanner();
   }
 
   @Override
   public void periodic()
   {
+    // wait 5 seconds after code has initialized to begin using vision
     if(m_VisionTimer.hasElapsed(5))
     {
       updateOdometry();
     }
 
-    // slow down applying perspective, as polling driverstation every loop takes resources
-    if(m_ApplicationTimer.get() > 0.25)
+    if (!hasAppliedPerspective || DriverStation.isDisabled())
     {
-      m_ApplicationTimer.reset();
-
-      if (!hasAppliedPerspective || DriverStation.isDisabled())
-      {
-        DriverStation.getAlliance().ifPresent((allianceColor) -> {
+      DriverStation.getAlliance().ifPresent
+      (
+        (allianceColor) -> {
           this.setOperatorPerspectiveForward
           (
-            allianceColor == Alliance.Red ? DriveConstants.RED_OPERATOR_FORWARD_PERSPECTIVE : DriveConstants.BLUE_OPERATOR_FORWARD_PERSPECTIVE
+            allianceColor == DriverStation.Alliance.Red ? 
+            DriveConstants.RED_OPERATOR_FORWARD_PERSPECTIVE : DriveConstants.BLUE_OPERATOR_FORWARD_PERSPECTIVE
           );
           hasAppliedPerspective = true;
-          
-          if(allianceColor == Alliance.Red)
-          {
-            this.m_CurrentSpeakerPose = VisionConstants.FIELD_POSES.RED_SPEAKER;
-            axisModifier = -1;
-          }
-          else
-          {
-            this.m_CurrentSpeakerPose = VisionConstants.FIELD_POSES.BLUE_SPEAKER;
-            axisModifier = 1;
-          }
-        });
-      }
+        }
+      );
     }
 
     if(Global.ENABLE_TELEMETRY)
@@ -121,6 +111,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
       if(m_TelemetryTimer.get() > Global.TELEMETRY_UPDATE_SPEED)
       {
         m_TelemetryTimer.reset();
+        m_Field.setRobotPose(m_odometry.getEstimatedPosition());
         Logger.recordOutput("robotPose", m_odometry.getEstimatedPosition());
       }
     }
@@ -135,16 +126,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
         SmartDashboard.putNumber("Distance to Speaker", getDistanceToSpeakerMeters());
       }
     } 
-  }
-
-  public SwerveDrivePoseEstimator getOdometry()
-  {
-    return m_odometry;
-  }
-
-  public ChassisSpeeds getCurrentRobotChassisSpeeds()
-  {
-    return m_kinematics.toChassisSpeeds(getState().ModuleStates);
   }
 
   // Vision
@@ -166,9 +147,10 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
       );
     });
   }
+
   public Rotation2d getRotationToSpeaker()
   {
-    return m_Vision.getRotationToTarget(m_odometry.getEstimatedPosition(), m_CurrentSpeakerPose);
+    return m_Vision.getRotationToPose(m_odometry.getEstimatedPosition(), m_CurrentSpeakerPose);
   }
 
   public double getDistanceToSpeakerMeters()
@@ -191,6 +173,12 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
     return m_Vision.getVisionEnabled();
   }
   
+  // Pathplanner
+  public ChassisSpeeds getCurrentRobotChassisSpeeds()
+  {
+    return m_kinematics.toChassisSpeeds(getState().ModuleStates);
+  }
+
   private void configurePathPlanner()
   {
     //Determine the radius of the drivebase from module locations

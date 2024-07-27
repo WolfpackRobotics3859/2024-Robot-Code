@@ -16,7 +16,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import frc.robot.constants.Hardware;
+import frc.robot.constants.Ports;
 
 public class ElevatorConstants
 {
@@ -50,7 +50,7 @@ public class ElevatorConstants
         .withReverseSoftLimitThreshold(ELEVATOR_BOTTOM_LIMIT);
 
     public static final FeedbackConfigs FEEDBACK_CONFIGS = new FeedbackConfigs()
-        .withFeedbackRemoteSensorID(Hardware.ELEVATOR_CANCODER_ID)
+        .withFeedbackRemoteSensorID(Ports.ELEVATOR_CANCODER_ID)
         .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder)
         .withRotorToSensorRatio(1)
         .withSensorToMechanismRatio(1);

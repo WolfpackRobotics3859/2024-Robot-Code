@@ -14,7 +14,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.constants.Global;
-import frc.robot.constants.Hardware;
+import frc.robot.constants.Ports;
 import frc.robot.constants.shooter.ShooterConstants;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
@@ -23,15 +23,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase
 {
-  private final TalonFX m_ShooterMotor1 = new TalonFX(Hardware.SHOOTER_MOTOR_1_ID);
-  private final TalonFX m_ShooterMotor2 = new TalonFX(Hardware.SHOOTER_MOTOR_2_ID);
-  private final TalonFX m_WristMotor = new TalonFX(Hardware.WRIST_MOTOR_ID);
-  private final TalonFX m_FeederMotor = new TalonFX(Hardware.FEEDER_MOTOR_ID);
+  private final TalonFX m_ShooterMotor1 = new TalonFX(Ports.SHOOTER_MOTOR_1_ID);
+  private final TalonFX m_ShooterMotor2 = new TalonFX(Ports.SHOOTER_MOTOR_2_ID);
+  private final TalonFX m_WristMotor = new TalonFX(Ports.WRIST_MOTOR_ID);
+  private final TalonFX m_FeederMotor = new TalonFX(Ports.FEEDER_MOTOR_ID);
 
-  private final CANcoder m_WristCANCoder = new CANcoder(Hardware.SHOOTER_WRIST_CANCODER_ID);
+  private final CANcoder m_WristCANCoder = new CANcoder(Ports.SHOOTER_WRIST_CANCODER_ID);
 
-  private final DigitalInput m_BeamBreakFront = new DigitalInput(Hardware.BEAM_BREAK_FRONT_ID);
-  private final DigitalInput m_BeamBreakBack = new DigitalInput(Hardware.BEAM_BREAK_BACK_ID);
+  private final DigitalInput m_BeamBreakFront = new DigitalInput(Ports.BEAM_BREAK_FRONT_ID);
+  private final DigitalInput m_BeamBreakBack = new DigitalInput(Ports.BEAM_BREAK_BACK_ID);
 
   private final Timer m_TelemetryTimer = new Timer();
   private final Timer m_ExtraTelemetryTimer = new Timer();
@@ -124,16 +124,16 @@ public class Shooter extends SubsystemBase
 
   public boolean getShooterReady()
   {
-    return !this.getBeamBreak1() && !this.getBeamBreak2();
+    return !this.getFrontBeamBreak() && !this.getBackBeamBreak();
   }
 
   // Beam Break Getters
-  public boolean getBeamBreak1()
+  public boolean getFrontBeamBreak()
   {
     return m_BeamBreakFront.get();
   }
 
-  public boolean getBeamBreak2()
+  public boolean getBackBeamBreak()
   {
     return m_BeamBreakBack.get();
   }
