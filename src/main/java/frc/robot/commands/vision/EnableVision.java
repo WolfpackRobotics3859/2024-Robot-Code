@@ -11,6 +11,10 @@ public class EnableVision extends InstantCommand
 {
   private final Vision m_Vision;
 
+  /**
+   * Enables vision entirely.
+   * @param vision The vision system
+   */
   public EnableVision(Vision vision)
   {
     this.m_Vision = vision;

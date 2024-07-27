@@ -12,6 +12,11 @@ public class EnableCamera extends InstantCommand
   private final Vision m_Vision;
   private final int m_Index;
 
+  /**
+   * Enables a vision camera.
+   * @param vision The vision system
+   * @param index The index of the camera to enable
+   */
   public EnableCamera(Vision vision, int index)
   {
     this.m_Vision = vision;

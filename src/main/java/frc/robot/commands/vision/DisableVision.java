@@ -11,6 +11,10 @@ public class DisableVision extends InstantCommand
 {
   private final Vision m_Vision;
 
+  /**
+   * Disables vision entirely.
+   * @param vision The vision system
+   */
   public DisableVision(Vision vision)
   {
     this.m_Vision = vision;
