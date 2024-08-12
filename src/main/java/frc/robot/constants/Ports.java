@@ -43,4 +43,7 @@ public class Ports
     public static final int ELEVATOR_MOTOR_1_ID = 11;
     public static final int ELEVATOR_MOTOR_2_ID = 12;
     public static final int ELEVATOR_CANCODER_ID = 5;
+
+    // Climb
+    public static final int CLIMB_MOTOR_ID = 17;
 }
