@@ -8,21 +8,21 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.elevator.ElevatorConstants.MODE;
-import frc.robot.subsystems.Climb;
+// import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Elevator;
 
 public class ClimbCommand extends Command 
 {
-  private final Climb m_Climb;
-  private final Supplier<Double> m_MovementSupplier;
+  // private final Climb m_Climb;
+  // private final Supplier<Double> m_MovementSupplier;
 
-  public ClimbCommand(Climb climb, Supplier<Double> movementSupplier) 
-  {
-    this.m_Climb = climb;
-    this.m_MovementSupplier = movementSupplier;
+  // public ClimbCommand(Climb climb, Supplier<Double> movementSupplier) 
+  // {
+  //   this.m_Climb = climb;
+  //   this.m_MovementSupplier = movementSupplier;
 
-    addRequirements(m_Climb);
-  }
+  //   addRequirements(m_Climb);
+  // }
 
   // Called when the command is initially scheduled.
   @Override

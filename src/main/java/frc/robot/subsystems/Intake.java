@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Global;
+import frc.robot.constants.intake.IntakeConstants;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.intake.IntakeConstants;
 import com.ctre.phoenix6.StatusSignal;
@@ -53,14 +54,6 @@ public class Intake extends SubsystemBase
         SmartDashboard.putNumber("Intake Wrist Position", m_WristMotor.getPosition().getValueAsDouble());
       }
     }
-    // if(Global.ENABLE_EXTRA_TELEMETRY)
-    // {
-    //   if(m_ExtraTelemetryTimer.get() > Global.EXTRA_TELEMETRY_UPDATE_SPEED)
-    //   {
-    //    m_ExtraTelemetryTimer.reset();
-    //     // Intentionally Empty
-    //   }
-    // }
   }
 
   public void setRollerVoltage(double voltage)
@@ -83,7 +76,7 @@ public class Intake extends SubsystemBase
 
   public void setWristZero()
   {
-    m_WristMotor.setPosition(4.3);
+    m_WristMotor.setPosition(IntakeConstants.INTAKE_WRIST_ZERO);
   }
 
   public StatusSignal<Double> getPositionSignal()

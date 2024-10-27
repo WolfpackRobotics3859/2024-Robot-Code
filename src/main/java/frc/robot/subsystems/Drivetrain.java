@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -45,12 +46,12 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
 {
   private final Field2d m_Field = new Field2d();
   private Optional<EstimatedRobotPose> optionalPose;
-  private PhotonCamera m_CameraRight1, m_CameraLeft1, m_CameraRear1, m_DriverCamera;
-  private PhotonPoseEstimator m_CameraRight1Estimator, m_CameraLeft1Estimator, m_CameraRear1Estimator;
+  private PhotonCamera m_CameraRight1, m_CameraLeft1, m_DriverCamera;
+  private PhotonPoseEstimator m_CameraRight1Estimator, m_CameraLeft1Estimator;
   private final Timer m_TelemetryTimer = new Timer();
   private final Timer m_ExtraTelemetryTimer = new Timer();
   private final Timer m_ApplicationTimer = new Timer();
-  private int m_CameraRight1ExceptionCount, m_CameraLeft1ExceptionCount, m_CameraRear1ExceptionCount;
+  private int m_CameraRight1ExceptionCount, m_CameraLeft1ExceptionCount;
   private boolean m_VisionEnabled = true;
   private boolean m_Aligned = false;
 
@@ -93,7 +94,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   public void periodic()
   {
     
-    if (m_ApplicationTimer.get() > 0.2)
+    if (m_ApplicationTimer.get() > 5.0)
     {
       if (!hasAppliedPerspective || DriverStation.isDisabled())
       {

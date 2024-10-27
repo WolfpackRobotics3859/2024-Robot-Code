@@ -55,7 +55,7 @@ public class Orchestrator extends SubsystemBase
     this.setup();
     this.initializeManualControlValues();
 
-    m_ElevatorPositionSignal = m_Elevator.getPositionSignal();
+    m_ElevatorPositionSignal = m_Elevator.getStatusSignal();
   }
 
   private void setup()

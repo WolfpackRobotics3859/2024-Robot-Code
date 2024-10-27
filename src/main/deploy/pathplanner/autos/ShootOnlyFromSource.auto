@@ -6,6 +6,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "SeedField"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Shoot Only From Source Part 1"

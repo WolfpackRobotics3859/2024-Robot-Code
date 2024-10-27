@@ -30,11 +30,15 @@ public class Elevator extends SubsystemBase
   private final CANcoder m_CANCoder = new CANcoder(Hardware.ELEVATOR_CANCODER_ID);
   private final Timer m_TelemetryTimer = new Timer();
   private final Timer m_ExtraTelemetryTimer = new Timer();
+
+  private StatusSignal<Double>  currentElevatorStatusSignal;
   
   public Elevator()
   {
     m_ElevatorMotor1.getConfigurator().apply(ElevatorConstants.ELEVATOR_MOTOR_1_CONFIG);
     m_ElevatorMotor2.getConfigurator().apply(ElevatorConstants.ELEVATOR_MOTOR_2_CONFIG);
+
+    currentElevatorStatusSignal = m_ElevatorMotor1.getPosition();
 
     Follower followRequest = new Follower(Hardware.ELEVATOR_MOTOR_1_ID, false);
     m_ElevatorMotor2.setControl(followRequest);
@@ -61,7 +65,7 @@ public class Elevator extends SubsystemBase
       if (m_TelemetryTimer.get() > Global.TELEMETRY_UPDATE_SPEED)
       {
         m_TelemetryTimer.reset();
-        SmartDashboard.putNumber("Current Elevator Position", this.m_ElevatorMotor1.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Current Elevator Position", currentElevatorStatusSignal.getValueAsDouble());
       }
     }
   }
@@ -91,18 +95,22 @@ public class Elevator extends SubsystemBase
     }
   }
 
+    public void setStatusSignal(){
+    currentElevatorStatusSignal = m_ElevatorMotor1.getPosition();
+  }
+
   /** 
    * @brief Gets the elevator's current position.
    * @return A Status Signal of the current elevator position.
    */
-  public StatusSignal<Double> getPositionSignal()
+  public StatusSignal<Double> getStatusSignal()
   {
-    return m_ElevatorMotor1.getPosition();
+    return  currentElevatorStatusSignal;
   }
 
   public boolean isAboveBar()
   {
-    return this.m_ElevatorMotor1.getPosition().getValueAsDouble() > ElevatorConstants.BAR_TOP_CLEAR;
+    return currentElevatorStatusSignal.getValueAsDouble() > ElevatorConstants.BAR_TOP_CLEAR;
   }
 
   public boolean isPositionAboveBar(double position)
@@ -112,7 +120,7 @@ public class Elevator extends SubsystemBase
 
   public boolean isBelowBar()
   {
-    return this.m_ElevatorMotor1.getPosition().getValueAsDouble() < ElevatorConstants.BAR_BOTTOM_CLEAR;
+    return currentElevatorStatusSignal.getValueAsDouble() < ElevatorConstants.BAR_BOTTOM_CLEAR;
   }
 
   public boolean isPositionBelowBar(double position)
@@ -122,10 +130,10 @@ public class Elevator extends SubsystemBase
 
   public boolean isInPosition(double position)
   {
-    return Math.abs(m_ElevatorMotor1.getPosition().getValueAsDouble() - position) <  ElevatorConstants.CLOSED_LOOP_ERROR_TOLERANCE;
+    return Math.abs(currentElevatorStatusSignal.getValueAsDouble() - position) <  ElevatorConstants.CLOSED_LOOP_ERROR_TOLERANCE;
   }
 
-  public final BooleanSupplier killShooterForClimb = () -> this.m_ElevatorMotor1.getPosition().getValueAsDouble() < ElevatorConstants.BAR;
+  public final BooleanSupplier killShooterForClimb = () -> currentElevatorStatusSignal.getValueAsDouble() < ElevatorConstants.BAR;
 
   /**
    * @brief Sets the elevator motors to a given percentage of the available voltage.

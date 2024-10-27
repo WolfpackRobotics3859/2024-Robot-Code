@@ -47,7 +47,7 @@ public class ElevatorPlayAlong extends Command
   @Override
   public void end(boolean interrupted)
   {
-    // Intentionally Empty
+    this.m_Elevator.setStatusSignal();
   }
 
   // Returns true when the command should end.

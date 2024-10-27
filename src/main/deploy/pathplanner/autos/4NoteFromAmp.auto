@@ -6,6 +6,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "SeedField"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "4NoteFromAmpPart1"
@@ -18,13 +24,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AimAuto"
+                  "name": "LowShotFromPrep"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "LowShotFromPrep"
+                  "name": "AimAuto"
                 }
               }
             ]

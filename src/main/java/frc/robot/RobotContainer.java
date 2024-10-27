@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.Hardware;
 import frc.robot.constants.drivetrain.TunerConstants;
-import frc.robot.subsystems.Climb;
+// import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Orchestrator;
@@ -58,7 +58,7 @@ public class RobotContainer
   private final Elevator m_Elevator = new Elevator();
   private final Shooter m_Shooter = new Shooter();
   private final Intake m_Intake = new Intake();
-  private final Climb m_Climb = new Climb();
+  // private final Climb m_Climb = new Climb();
 
   // Orchestrator
   private final Orchestrator m_Orchestrator = new Orchestrator(m_Drivetrain, m_Elevator, m_Shooter, m_Intake);
@@ -185,6 +185,8 @@ public class RobotContainer
     autoSelector.addOption("4 Note From Amp", new PathPlannerAuto("4NoteFromAmp"));
     autoSelector.addOption("4 Note From Amp (Close)", new PathPlannerAuto("4NoteFromAmpClose"));
     autoSelector.addOption("3 Note From Amp", new PathPlannerAuto("3NoteFromAmp"));
+    autoSelector.addOption("Shoot Only", new PathPlannerAuto("ShootOnly"));
+
   }
 
   private void configureBindings() 

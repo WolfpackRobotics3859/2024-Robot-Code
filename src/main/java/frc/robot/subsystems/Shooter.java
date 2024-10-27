@@ -37,7 +37,7 @@ public class Shooter extends SubsystemBase
   // private final DigitalInput m_BeamBreak2 = new DigitalInput(Hardware.BEAM_BREAK_2_ID);
   private final Ultrasonic m_FrontUltraSonic = new Ultrasonic(new DigitalOutput(Hardware.ULTRASONIC_FRONT_TRIG), new DigitalInput(Hardware.ULTRASONIC_FRONT_ECHO));
   // private final Ultrasonic m_BackUltraSonic = new Ultrasonic(new DigitalOutput(Hardware.ULTRASONIC_BACK_TRIG), new DigitalInput(Hardware.ULTRASONIC_BACK_ECHO));
-  private final TimeOfFlight m_BackLaser = new TimeOfFlight(26);
+  private final TimeOfFlight m_BackLaser = new TimeOfFlight(0);
 
   private final Timer m_TelemetryTimer = new Timer();
   private final Timer m_ExtraTelemetryTimer = new Timer();

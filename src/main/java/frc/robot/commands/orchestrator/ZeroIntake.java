@@ -35,7 +35,7 @@ public class ZeroIntake extends Command
   @Override
   public void execute()
   {
-    m_Intake.setWristPercent(-0.1);
+    m_Intake.setWristPercent(0.1);
   }
 
   // Called once the command ends or is interrupted.

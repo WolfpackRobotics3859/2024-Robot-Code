@@ -19,6 +19,8 @@ public class IntakeConstants
     public static final double INTAKE_WRIST_FEED_FORWARD = 0.2;
     public static final double INTAKE_ROLLERS_ACCELERATION = 30;
 
+    public static final double INTAKE_WRIST_ZERO = 4.3;
+
     // Motor Configs
     public static final Slot0Configs INTAKE_ROLLER_GAINS = new Slot0Configs()
         .withKP(0.089884).withKI(0).withKD(0)

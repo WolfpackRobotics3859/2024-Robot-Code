@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "SeedField"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "3NoteFromAmpPart1"
