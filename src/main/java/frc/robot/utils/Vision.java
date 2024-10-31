@@ -4,15 +4,19 @@
 
 package frc.robot.utils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -31,6 +35,10 @@ public class Vision
 {
     private final List<Camera> m_Cameras = new ArrayList<Camera>();
     
+    private AprilTagFieldLayout m_FieldLayout;
+
+    private ConcurrentLinkedQueue<EstimatedRobotPose> m_VisionCache = new ConcurrentLinkedQueue<>();
+
     private boolean visionEnabled = true;
 
     /**
@@ -39,34 +47,91 @@ public class Vision
      */
     public Vision(ArrayList<Pair<String, Transform3d>> camList)
     {
+        
+        // load field layout
+        try {
+            m_FieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+        } catch (IOException err) {
+            System.err.println("Failed to load field layout.");
+            err.printStackTrace();
+            return;
+        }
+
+        // create cameras
         camList.forEach(camera ->
             this.m_Cameras.add(new Camera(camera.getFirst(), camera.getSecond()))
         );
+
+        // create seperate thread to run vision processing
+        Thread m_Thread = new Thread
+        (
+            () -> {
+                if (m_FieldLayout == null) return;
+                while (!Thread.currentThread().isInterrupted())
+                {
+                    // update vision
+                    updateVision();
+                    try {
+                        // sleep thread every 5 ms
+                        Thread.sleep(VisionConstants.THREAD_SLEEP_TIME_MS);
+                    } catch (InterruptedException err) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }
+        );
+
+        // set thread to daemon and lowest priority
+        m_Thread.setDaemon(true);
+        m_Thread.setPriority(VisionConstants.THREAD_PRIORITY);
+
+        // start thread
+        m_Thread.start();
     }
 
     /**
-     * Gets the estimated poses from each camera.
-     * @return The list of the estimated poses each camera is returning. May be empty.
+     * Grabs the head data in the vision cache, then deletes it from the cache
+     * @return The oldest pose in the vision cache
      */
-    public ArrayList<EstimatedRobotPose> getEstimatedPoses(Pose2d referencePose)
+    public EstimatedRobotPose pollVision()
     {
-        ArrayList<EstimatedRobotPose> estimatedPoses = new ArrayList<>();
+        return m_VisionCache.poll();
+    }
 
-        for (int i = 0; i < m_Cameras.size(); i++)
+    /**
+     * Adds new vision poses to the vision cache.
+     */
+    private void updateVision()
+    {
+        for (Camera camera : m_Cameras)
         {
-            // get the poses from the camera
-            Optional<EstimatedRobotPose> estimatedPose = m_Cameras.get(i).getEstimatedPose(referencePose);
+            // if camera is disabled, ignore
+            if (!camera.getEnabled()) continue;
 
-            // if poses are present and not null
-            if (estimatedPose.isPresent() && estimatedPose.get().estimatedPose != null)
+            // get camera result
+            PhotonPipelineResult result = camera.getResult();
+
+            // if result has targets, process
+            if(result.hasTargets())
             {
-                // add pose to list
-                estimatedPoses.add(estimatedPose.get());
+                // update pose estimator
+                Optional<EstimatedRobotPose> optEst = camera.updateEstimator(result);
+                if (optEst.isEmpty()) continue;
+
+                EstimatedRobotPose est = optEst.get();
+
+                // if result has only one target and the targets pose ambiguity is too high, continue
+                if (est.targetsUsed.size() == 1
+                && est.targetsUsed.get(0).getPoseAmbiguity() > VisionConstants.AMBIGUITY_THRESHOLD
+                ) continue;
+                
+                // add estimation to vision cache
+                m_VisionCache.add(est);
             }
         }
-
-        return estimatedPoses;
     }
+
+    // CALCULATION FUNCTIONS
 
     /**
      * Calculates a field relative Rotation2d the robot should target to point at the given target pose.
@@ -167,9 +232,7 @@ public class Vision
     }
 
     /**
-     * A class combining the PhotonCamera and PhotonPoseEstimator into one object, as well as providing
-     * simple functionality for getting estimated robot position from each camera and enabling/disabling
-     * individual cameras.
+     * A class combining the PhotonCamera and PhotonPoseEstimator into one object.
      */
     public class Camera
     {
@@ -182,7 +245,7 @@ public class Vision
 
         /**
          * Constructs a new Camera object and configures the PhotonCamera and PhotonPoseEstimator.
-         * @param cameraName The name of the camera in PhotonVision.
+         * @param cameraName The name of the camera in PhotonVision
          * @param robotToCam The Transform3d of the offset of the camera relative to the robot
          */
         public Camera(String cameraName, Transform3d robotToCam)
@@ -198,50 +261,26 @@ public class Vision
                 m_Camera,
                 robotToCam
             );
-
-            this.m_PoseEstimator.setReferencePose(new Pose2d());
             this.m_PoseEstimator.setMultiTagFallbackStrategy(VisionConstants.FALLBACK_POSE_STRATEGY);
         }
 
         /**
-         * Gets the estimated pose from the PhotonPoseEstimator. This function also trims all
-         * visible targets with pose ambiguity higher than the set threshold. Returns empty if:
-         * <ul>
-         *   <li>The timestamp of the provided pipeline result is the same as in the previous call to
-         *       {@code update()}.
-         *   <li>No targets are visible by the camera.
-         *   <li>All targets visible by the camera have pose ambiguities greater than the threshold.
-         * </ul>
-         * @return The estimated pose
+         * Gets the latest result from the camera.
+         * @return The latest result
          */
-        public Optional<EstimatedRobotPose> getEstimatedPose(Pose2d referencePose)
+        public PhotonPipelineResult getResult()
         {
-            m_PoseEstimator.setReferencePose(referencePose);
+            return m_Camera.getLatestResult();
+        }
 
-            // if camera is disabled return empty
-            if (!enabled)
-            {
-                return Optional.empty();
-            }
-
-            PhotonPipelineResult result = m_Camera.getLatestResult();
-
-            // if no targets or timestap is less than 0 return empty
-            if (!result.hasTargets() || result.getTimestampSeconds() < 0)
-            {
-                return Optional.empty();
-            }
-
-            // trim all targets from the result that have an ambiguity higher than 0.2
-            result.targets.removeIf(target -> target.getPoseAmbiguity() > VisionConstants.AMBIGUITY_THRESHOLD);
-
-            // if trimmed list has no targets return empty
-            if(result.targets.size() == 0)
-            {
-                return Optional.empty();
-            }
-            
-            return this.m_PoseEstimator.update(result);
+        /**
+         * Updates the PhotonPoseEstimator associated with the given camera.
+         * @param result The result from the camera
+         * @return The estimated robot pose (can be empty)
+         */
+        public Optional<EstimatedRobotPose> updateEstimator(PhotonPipelineResult result)
+        {
+            return m_PoseEstimator.update(result);
         }
 
         /**

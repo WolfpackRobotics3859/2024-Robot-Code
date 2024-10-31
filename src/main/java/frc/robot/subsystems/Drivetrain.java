@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.ArrayList;
-
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 
@@ -131,21 +129,17 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem
   // Vision
   private void updateOdometry()
   {
-    ArrayList<EstimatedRobotPose> estimatedPoses = m_Vision.getEstimatedPoses(m_odometry.getEstimatedPosition());
+    EstimatedRobotPose pose;
 
-    // return if the estimated pose list is empty
-    if(estimatedPoses.isEmpty())
+    // empty vision cache (if it is empty, this should finish immediately)
+    while ((pose = m_Vision.pollVision()) != null)
     {
-      return;
-    }
-
-    estimatedPoses.forEach(pose -> {
-      addVisionMeasurement
+      m_odometry.addVisionMeasurement
       (
-        pose.estimatedPose.toPose2d(),
-        pose.timestampSeconds
+          pose.estimatedPose.toPose2d(),
+          pose.timestampSeconds
       );
-    });
+    }
   }
 
   public Rotation2d getRotationToSpeaker()

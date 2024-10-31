@@ -22,7 +22,7 @@ import edu.wpi.first.math.util.Units;
 public class VisionConstants
 {
     // Camera Stuff
-    public static final double AMBIGUITY_THRESHOLD = 0.2;
+    public static final double AMBIGUITY_THRESHOLD = 0.15;
 
     public static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
 
@@ -55,6 +55,10 @@ public class VisionConstants
             )
         )
     );
+
+    // Threading
+    public static final int THREAD_PRIORITY = 1;
+    public static final long THREAD_SLEEP_TIME_MS = 5;
 
     // Field Stuff
     public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
